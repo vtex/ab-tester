@@ -7,20 +7,6 @@ This APP controls the analytics part during a A/B test. Its functions are:
   - Based on these probabilities assign weights for the Workspaces controlling their traffic
   - Evaluate when the test ends and decides the winner Workspace
 
-
-Download this repo and open a terminal in its folder.
-
-Then, use `link` to start developing your app:
-
-```bash
-$ vtex link
-```
-
-Finally, access your endpoint at:
-
-https://{{workspace}}--{{account}}.myvtex.com/api/vtex/hello
-
-
 ## The `decision-rule.js`
 
 There are the functions that can answer the question "Does the A/B Test ended?". The way it does it is verifying if the test already has a winner or 
@@ -52,9 +38,3 @@ Returns a data from StoreDash given an endpoint
 #### `Evaluate` function
 
 Returns the winner Workspace. Uses function `Ammount` to get the specifics data about `Sessions` and `orderPlacedSessions`.
-
-## Debugging
-
-Once the app is linked, toolbelt listens on port `5858` (_localhost_) for Node inspect connections.
-
-In **Visual Studio Code**, you can simply set breakpoints and start debugging (<kbd>F5</kbd>).
