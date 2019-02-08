@@ -1,6 +1,6 @@
 # A/B Tester
 
-This APP controls the analytics part during an A/B test. Its functions are:
+This APP controls the analytics part during a A/B test. Its functions are:
 
   - Keep tracking of the Workspaces metrics
   - Evaluate what are the probabilities of each conversion rate to be a specific value
