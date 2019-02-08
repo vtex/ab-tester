@@ -1,4 +1,4 @@
-var mTools = require('./math-tools/beta&gamma');
+var mTools = require('./math-tools/beta&gamma-functions');
 
 function ProbabilityOfMistake(a, b, c, d)
 {
