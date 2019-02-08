@@ -9,8 +9,7 @@ This APP controls the analytics part during a A/B test. Its functions are:
 
 ## The `decision-rule.js`
 
-There are the functions that can answer the question "Does the A/B Test ended?". The way it does it is verifying if the test already has a winner or 
-if both `Workspaces` have equal (almost) performance.
+There are functions that can answer the question "Does the A/B Test finished?". The way it does it is verifying if the test already has a winner or if both `Workspaces` have (almost) equal performance.
 The most important function here is the `LossFunction`. It tell us, in some sense, how much we'll loose if chosen one of the options. With this evaluation 
 we can create a Decision Rule that tell us that one `Workspace` won the Test if the evaluated `LossFunction` in respect to it is smaller than `epsilon`.
 
