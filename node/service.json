@@ -1,0 +1,16 @@
+{
+    "stack": "nodejs",
+    "memory": 128,
+    "routes": {
+      "abTest": {
+        "path": "/_v/private/abtesting/test",
+        "public": false
+      }
+    },
+    "events": {
+      "onAppsLinked": {
+        "sender": "apps",
+        "keys": ["linked"]
+      }
+    }
+  }
