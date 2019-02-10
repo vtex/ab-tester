@@ -22,10 +22,10 @@ function LossFunction(x, y, z, w)
 }
 exports.LossFunction = LossFunction;
 
-function ChooseWinner(x, y, z, w, epsilon)
+function ChooseWinner(convertedA, notConvertedA, convertedB, notConvertedB, epsilon)
 {
-    var chooseA = (LossFunction(x, y, z, w) < epsilon),
-        chooseB = (LossFunction(z, w, x, y) < epsilon)
+    var chooseA = (LossFunction(convertedA, notConvertedA, convertedB, notConvertedB) < epsilon),
+        chooseB = (LossFunction(convertedB, notConvertedB, convertedA, notConvertedA) < epsilon)
 
     if (chooseA && chooseB)
     {
