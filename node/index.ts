@@ -11,7 +11,10 @@ export default {
     abTest: async (ctx: ColossusContext) => {
       ctx.set('Cache-Control', 'no-cache')
       ctx.response.status = 200
-      ctx.response.body = ABtest()
+
+      var ResultAB = await ABtest(ctx)
+
+      ctx.response.body = ResultAB
     }
   }
 }

@@ -25,7 +25,7 @@
       "name": "vbase-read-write"
     },
     {
-      "name": "insights_metrics"
+      "name": "view_metrics"
     }
   ],
   "scripts": {
