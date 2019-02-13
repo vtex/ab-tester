@@ -7,7 +7,7 @@ This APP controls the analytics part during a A/B test. Its functions are:
   - Based on these probabilities assign weights for the Workspaces controlling their traffic
   - Evaluate when the test ends and decides the winner Workspace
 
-## The `decision-rule.js`
+## The `decision-rule.ts`
 
 There are functions that can answer the question "Does the A/B Test finished?". The way it does it is verifying if the test already has a winner or if both `Workspaces` have (almost) equal performance.
 The most important function here is the `LossFunction`. It tell us, in some sense, how much we'll loose if chosen one of the options. With this evaluation 
@@ -28,7 +28,7 @@ This function calculates the expected value of loss choosing `Workspace A` inste
 for `Beta` distributions we have the beautiful formula given in the function `LossFunction` that came from a algebraic manipulation using the formula of 
 E. Miller used in the function `ProbabilityOfMistake`.
 
-## The `test-evaluation.js`
+## The `test-evaluation.ts`
 
 #### `getDataStoreDash` function
 
