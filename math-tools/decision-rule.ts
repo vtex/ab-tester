@@ -1,4 +1,4 @@
-import { logBeta } from './math-tools/beta-function';
+import { logBeta } from './beta-function';
 
 /*
     The reason for using the function logBeta is that we're dealing with very large numbers and the 
