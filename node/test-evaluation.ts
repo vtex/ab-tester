@@ -2,26 +2,26 @@ import axios from 'axios'
 import { ChooseWinner, LossFunction } from '../decision-rule';
 import { ColossusContext } from 'colossus'
 
-// declare const baseURL = 'http://api.vtex.com/api/storedash/'
-// declare const metricsStoreDashPath = '/metrics/storedash/'
-
 export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB, ctx: ColossusContext)
 {
     var endPointBounceSessions = StoreDashRequestURL(account, ABTestBeginning, 'bouncesessions'),
         endPointNoBounceSessions = StoreDashRequestURL(account, ABTestBeginning, 'nobouncesessions'),
         endPointOrderPlacedSessions = StoreDashRequestURL(account, ABTestBeginning, 'orderplacedsessions')
 
-    var ordersA = await Ammount(endPointOrderPlacedSessions, workspaceA, ctx),
-        ordersB = await Ammount(endPointOrderPlacedSessions, workspaceB, ctx),
-        bounceSessionsA = await Ammount(endPointBounceSessions, workspaceA, ctx),
-        bounceSessionsB = await Ammount(endPointBounceSessions, workspaceB, ctx),
-        noBounceSessionsA = await Ammount(endPointNoBounceSessions, workspaceA, ctx),
-        noBounceSessionsB = await Ammount(endPointNoBounceSessions, workspaceB, ctx)
+    var ordersA = await GetMetricFromStoreDash(endPointOrderPlacedSessions, workspaceA, ctx),
+        ordersB = await GetMetricFromStoreDash(endPointOrderPlacedSessions, workspaceB, ctx),
+        bounceSessionsA = await GetMetricFromStoreDash(endPointBounceSessions, workspaceA, ctx),
+        bounceSessionsB = await GetMetricFromStoreDash(endPointBounceSessions, workspaceB, ctx),
+        noBounceSessionsA = await GetMetricFromStoreDash(endPointNoBounceSessions, workspaceA, ctx),
+        noBounceSessionsB = await GetMetricFromStoreDash(endPointNoBounceSessions, workspaceB, ctx)
 
     var sessionsA = bounceSessionsA + noBounceSessionsA,
         sessionsB = bounceSessionsB + noBounceSessionsB
-    
-    console.log( LossFunction(10000, 1000000, 12000, 1000150) )
+
+    if(sessionsA == 0 || sessionsB == 0)
+    {
+        return 'A/B Test not initialized for one of the workspaces or it does not already has visitors.'
+    }
 
     var lossA = LossFunction(ordersA, sessionsA - ordersA, ordersB, sessionsB - ordersB),
         lossB = LossFunction(ordersB, sessionsB - ordersB, ordersA, sessionsA - ordersA)
@@ -30,7 +30,7 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
     return 'Winner: ' + winner + ' ; Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB
 }
 
-export async function Ammount(endPoint, workspace, ctx: ColossusContext)
+export async function GetMetricFromStoreDash(endPoint, workspace, ctx: ColossusContext)
 {
     var metrics = await getDataStoreDash(endPoint, ctx)
     for(var metric of metrics)
