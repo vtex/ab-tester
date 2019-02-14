@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { ChooseWinner, LossFunction } from '../decision-rule';
 import { ColossusContext } from 'colossus'
-import { logBeta } from '../math-tools/beta-function';
 
 // declare const baseURL = 'http://api.vtex.com/api/storedash/'
 // declare const metricsStoreDashPath = '/metrics/storedash/'

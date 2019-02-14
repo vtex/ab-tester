@@ -1,5 +1,4 @@
 import { logBeta } from './math-tools/beta-function';
-import { beta, logBeta } from'./math-tools/beta-function'
 
 export function ProbabilityOfMistake(a, b, c, d)
 {
