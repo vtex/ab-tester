@@ -19,6 +19,7 @@ export function beta(x, y) {
 
 	// make sure x + y doesn't exceed the upper limit of usable values
   else if (x + y > 170) {
+    //return Math.exp(logBeta(x, y))
     return Math.exp(logBeta(x, y))
   }
 

@@ -1,11 +1,15 @@
-import { Beta } from'./math-tools/beta&gamma-functions'
+import { logBeta } from './math-tools/beta-function';
+import { beta, logBeta } from'./math-tools/beta-function'
 
 export function ProbabilityOfMistake(a, b, c, d)
 {
     var result = 1
 
     for (var j = 0; j < c; j++) {
-        result -= Beta(a+j, b+d)/((d+j) * Beta(1+j, d) * Beta(a, b))
+        var logNum = logBeta(a+j, b+d),
+            logDen = logBeta(1+j, d) + logBeta(a, b) + Math.log(d+j)
+
+        result -= Math.exp(logNum - logDen)
     } 
     return result
 }
@@ -17,7 +21,10 @@ export function LossFunction(x, y, z, w)
         c = z+1,
         d = w+1
 
-    return ( Beta(a+1, b) / Beta(a, b) ) * ProbabilityOfMistake(a+1, b, c, d) - ( Beta(c+1, d) / Beta(c, d) ) * ProbabilityOfMistake(a, b, c+1, d)      
+    var M1 = logBeta(a+1, b) - logBeta(a, b),
+        M2 = logBeta(c+1, d) - logBeta(c, d)
+
+    return Math.exp(M1) * ProbabilityOfMistake(a+1, b, c, d) - Math.exp(M2) * ProbabilityOfMistake(a, b, c+1, d)
 }
 
 export function ChooseWinner(convertedA, notConvertedA, convertedB, notConvertedB, epsilon)

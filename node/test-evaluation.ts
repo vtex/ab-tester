@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { LossFunction } from '../decision-rule'
+import { ChooseWinner, LossFunction } from '../decision-rule';
 import { ColossusContext } from 'colossus'
-// import { gamma, logGamma } from '../math-tools/gamma-function'
-import { beta } from '../math-tools/beta-function' 
+import { logBeta } from '../math-tools/beta-function';
 
 // declare const baseURL = 'http://api.vtex.com/api/storedash/'
 // declare const metricsStoreDashPath = '/metrics/storedash/'
@@ -23,16 +22,13 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
     var sessionsA = bounceSessionsA + noBounceSessionsA,
         sessionsB = bounceSessionsB + noBounceSessionsB
     
-    console.log(ordersA)
-    console.log(sessionsA - ordersA)
-    console.log( beta(2, 10*ordersA) )
+    console.log( LossFunction(10000, 1000000, 12000, 1000150) )
 
     var lossA = LossFunction(ordersA, sessionsA - ordersA, ordersB, sessionsB - ordersB),
         lossB = LossFunction(ordersB, sessionsB - ordersB, ordersA, sessionsA - ordersA)
 
-    return 'Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB
-
-    // return ChooseWinner(ordersA, (bounceSessionsA + noBounceSessionsA) - ordersA, ordersB, (bounceSessionsB + noBounceSessionsB) - ordersB, 0.05)
+    var winner = ChooseWinner(ordersA, (bounceSessionsA + noBounceSessionsA) - ordersA, ordersB, (bounceSessionsB + noBounceSessionsB) - ordersB, 0.005)    
+    return 'Winner: ' + winner + ' ; Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB
 }
 
 export async function Ammount(endPoint, workspace, ctx: ColossusContext)
