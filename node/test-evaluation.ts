@@ -1,6 +1,10 @@
 import axios from 'axios'
-import { ChooseWinner, LossFunction } from '../math-tools/decision-rule';
+import { ChooseWinner, LossFunction } from '../math-tools/decision-rule'
 import { ColossusContext } from 'colossus'
+
+const boundError = 0.00001
+const baseURL = 'http://api.vtex.com/api/storedash/'
+const metricsStoreDashURL = '/metrics/storedash/'
 
 export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB, ctx: ColossusContext)
 {
@@ -26,7 +30,7 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
     var lossA = LossFunction(ordersA, sessionsA - ordersA, ordersB, sessionsB - ordersB),
         lossB = LossFunction(ordersB, sessionsB - ordersB, ordersA, sessionsA - ordersA)
 
-    var winner = ChooseWinner(ordersA, (bounceSessionsA + noBounceSessionsA) - ordersA, ordersB, (bounceSessionsB + noBounceSessionsB) - ordersB, 0.0025)    
+    var winner = ChooseWinner(ordersA, (bounceSessionsA + noBounceSessionsA) - ordersA, ordersB, (bounceSessionsB + noBounceSessionsB) - ordersB, boundError)    
     return 'Winner: ' + winner + ' ; Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB
 }
 
@@ -65,7 +69,5 @@ export async function getDataStoreDash(endPoint, ctx: ColossusContext): Promise<
 
 export function StoreDashRequestURL(account, ABTestBeginning, metric)
 {
-    const baseURL = 'http://api.vtex.com/api/storedash/'
-    const metricsStoreDashURL = '/metrics/storedash/'
     return baseURL + account + metricsStoreDashURL + metric + '?from=' + ABTestBeginning + '&to=now&operation=sum&aggregateBy=workspace'
 }
