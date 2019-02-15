@@ -1,3 +1,8 @@
+/*
+    This algorithm probably wont be there anymore and implemented in the kube-router as a logic of sortition for 
+    Workspaces.
+*/
+
 function sample(sum, count) 
 {
     return rbeta(1 + sum, 1 + count - sum)
