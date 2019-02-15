@@ -15,9 +15,7 @@ we can create a Decision Rule that tell us that one `Workspace` won the Test if 
 
 #### `ProbabilityOfMistake` function
 
-Here we're trying to calculate the probability of `P(X>Y)` where `X` and `Y` are two random variables. The parameters are `a`, `b`, `c` and `d` are the parameters 
-of the Beta distributions `X~Beta(a, b)` and `Y~Beta(c, d)`. Considering a `Beta` distribution we have the beautiful formula calculated in the function 
-`ProbabilityOfMistake` due to Evan Miller. 
+Here we're trying to calculate the probability of `P(X>Y)` where `X` and `Y` are the conversion rates of Workspaces A and B as random variables. The parameters are `a`, `b`, `c` and `d` of the Beta distributions `X~Beta(a, b)` and `Y~Beta(c, d)`. Considering a `Beta` distribution we have the beautiful formula calculated in the function `ProbabilityOfMistake` due to Evan Miller. 
 
 #### `LossFunction` function
 
