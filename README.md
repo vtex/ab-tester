@@ -2,7 +2,7 @@
 
 This APP controls the analytics part during a A/B test. Its functions are:
 
-  - Keep tracking of the Workspaces metrics
+  - Track the Workspace metrics
   - Evaluate what are the probabilities of each conversion rate to be a specific value
   - Based on these probabilities assign weights for the Workspaces controlling their traffic
   - Evaluate when the test ends and decides the winner Workspace
