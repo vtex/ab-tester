@@ -14,7 +14,7 @@ const toStream = (arg: any) => {
 
 export default function VBaseClient({ account, workspace, region, authToken }: IOContext) {
     const client = new VBase({ account, workspace, region, authToken, userAgent })
-    const fileName = 'ab-test-data.txt'
+    const fileName = 'ab-test-data.json'
 
     return {
         loadBeginning: async () => {
