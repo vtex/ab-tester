@@ -25,7 +25,13 @@
       "name": "vbase-read-write"
     },
     {
+      "name": "read-write-workspace"
+    },
+    {
       "name": "view_metrics"
+    },
+    {
+      "name": "promote-workspace"
     }
   ],
   "scripts": {
