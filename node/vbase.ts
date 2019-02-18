@@ -37,11 +37,9 @@ export default function VBaseClient({ account, workspace, region, authToken }: I
           }
         },
 
-        saveAsBeginning: async () => {
+        saveAsBeginning: async (data) => {
           try {
-            const currentTime = new Date()
-            const stream = toStream({'account': account, 'beginning': currentTime})
-            return await client.saveFile(bucket, fileName, stream, false)
+            return await client.saveFile(bucket, fileName, toStream(data), false)
           } catch (err) {
             throw err
           }
