@@ -30,7 +30,7 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
     var lossA = LossFunction(ordersA, sessionsA - ordersA, ordersB, sessionsB - ordersB),
         lossB = LossFunction(ordersB, sessionsB - ordersB, ordersA, sessionsA - ordersA)
 
-    var winner = ChooseWinner(ordersA, (bounceSessionsA + noBounceSessionsA) - ordersA, ordersB, (bounceSessionsB + noBounceSessionsB) - ordersB, boundError)    
+    var winner = ChooseWinner(ordersA, (bounceSessionsA + noBounceSessionsA) - ordersA, ordersB, (bounceSessionsB + noBounceSessionsB) - ordersB, boundError)
     return 'Winner: ' + winner + ' ; Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB
 }
 
