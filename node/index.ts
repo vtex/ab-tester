@@ -1,5 +1,5 @@
 import {ColossusContext} from 'colossus'
-import {ABtest} from '../TestCase'
+import { initializeABtest, ABTestStatus} from '../TestCase'
 
 export default {
   events: {
@@ -8,11 +8,19 @@ export default {
     }
   },
   routes: {
-    abTest: async (ctx: ColossusContext) => {
+    initializeAbTest: async (ctx: ColossusContext) => {
       ctx.set('Cache-Control', 'no-cache')
       ctx.response.status = 200
 
-      var ResultAB = await ABtest(ctx)
+      await initializeABtest(ctx)
+
+      ctx.response.body = 'A/B Test initialized'
+    },
+    abTestStatus: async (ctx: ColossusContext) => {
+      ctx.set('Cache-Control', 'no-cache')
+      ctx.response.status = 200
+
+      var ResultAB = await ABTestStatus(ctx)
 
       ctx.response.body = ResultAB
     }

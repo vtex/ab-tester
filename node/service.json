@@ -2,8 +2,12 @@
     "stack": "nodejs",
     "memory": 128,
     "routes": {
-      "abTest": {
-        "path": "/_v/private/abtesting/test",
+      "initializeAbTest": {
+        "path": "/_v/private/abtesting/initialize",
+        "public": false
+      },
+      "abTestStatus": {
+        "path": "/_v/private/abtesting/status",
         "public": false
       }
     },
