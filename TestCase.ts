@@ -1,6 +1,5 @@
 import { Evaluate } from './ab-test/evaluate'
 import { ColossusContext } from 'colossus'
-import VBase from './node/vbase'
 
 const account = 'boticario'
 const bucket = 'ABTest'
@@ -10,9 +9,8 @@ const fileName = 'currentTestAB.json'
 const testId = '0001'
 
 export async function initializeABtest(ctx: ColossusContext) {
-    const vbase = await new VBase(ctx.vtex)
+    const { resources: { vbase } } = ctx
     const beginning = new Date().toISOString().substr(0, 10)
-    console.log(beginning)
 
     await vbase.save('ABTest', 'currentTestAB.json', {
         name: testId,
@@ -21,9 +19,9 @@ export async function initializeABtest(ctx: ColossusContext) {
 }
 
 export async function ABTestStatus(ctx: ColossusContext): Promise<string> {
-    const vbase = await new VBase(ctx.vtex)
+    const { resources: { vbase } } = ctx
 
-    var data = await vbase.get(bucket, fileName)
+    let data = await vbase.get(bucket, fileName)
     var beginning = data.timeStart
     if (data.name == testId) {
         beginning = data.timeStart
