@@ -2,7 +2,7 @@ import axios from 'axios'
 import { ChooseWinner, LossFunction } from '../math-tools/decision-rule'
 import { ColossusContext } from 'colossus'
 
-const boundError = 0.00000001
+const boundError = 0.000000001
 const baseURL = 'http://api.vtex.com/api/storedash/'
 const metricsStoredashURL = '/metrics/storedash/SessionCube?from='
 const aggregationURL = '&to=now&operation=sum&aggregateBy=workspace,data.orders'
@@ -26,8 +26,7 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
           lossB = LossFunction(orderSessionsB, noOrderSessionsB, orderSessionsA, noOrderSessionsA)
 
     let winner = ChooseWinner(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB, boundError)
-    if (winner == null)
-    {
+    if (winner == null) {
         winner = 'not yet decided'
     }
     return 'Winner: ' + winner + ' | Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB

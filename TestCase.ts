@@ -1,6 +1,6 @@
 import { Evaluate } from './ab-test/evaluate'
 import { ColossusContext } from 'colossus'
-import VBase from './node/vbase';
+import VBase from './node/vbase'
 
 const account = 'boticario'
 const bucket = 'ABTest'
