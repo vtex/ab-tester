@@ -1,15 +1,18 @@
 import { Evaluate } from './ab-test/evaluate'
 import { ColossusContext } from 'colossus'
-// import { formatDate } from './ab-test/date-formater'
+import { formatDate } from './ab-test/date-formater'
 import VBase from './node/vbase';
 
-const account = 'basedevmkp'
+const account = 'boticario'
+const bucket = 'ABTest'
+const fileName = 'currentTestAB.json'
 
-export async function initializeABtest(ctx: ColossusContext)
-{
+// TODO: `testId` should be determined in a general way based on account and workspaces
+const testId = '0001'
+
+export async function initializeABtest(ctx: ColossusContext) {
     const vbase = await new VBase(ctx.vtex)
-    var beginning = '2019-01-01' //formatDate(new Date().getTime())
-    var testId = '0001'
+    const beginning = formatDate(new Date().getTime())
 
     await vbase.save('ABTest', 'currentTestAB.json', {
         name: testId,
@@ -17,18 +20,16 @@ export async function initializeABtest(ctx: ColossusContext)
     })
 }
 
-export async function ABTestStatus(ctx: ColossusContext)
-{
+export async function ABTestStatus(ctx: ColossusContext): Promise<string> {
     const vbase = await new VBase(ctx.vtex)
 
-    var data = await vbase.get('ABTest', 'currentTestAB.json')
+    var data = await vbase.get(bucket, fileName)
     var beginning = data.timeStart
-    /* if(data.name == testId)
-    {
+    if (data.name == testId) {
         beginning = data.timeStart
-    }*/
+    }
 
     const tResult = await Evaluate(account, beginning, 'master', 'abtesting', ctx)
     console.log(tResult)
-    return  tResult
+    return tResult
 }

@@ -1,4 +1,4 @@
-import { VBase as BaseClient} from '@vtex/api'
+import { VBase as BaseClient } from '@vtex/api'
 import { Readable } from 'stream'
 
 const jsonStream = (arg: any) => {
@@ -20,7 +20,7 @@ export default class VBase {
     return JSON.parse(file.data.toString())
   }
 
-  save = async (bucket, path, data) => {
+  save = async (bucket: string, path: string, data: any) => {
     try {
       await this.client.saveFile(bucket, path, jsonStream(data))
     } catch (ex) {

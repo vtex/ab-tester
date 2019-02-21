@@ -1,5 +1,5 @@
-import {ColossusContext} from 'colossus'
-import { initializeABtest, ABTestStatus} from '../TestCase'
+import { ColossusContext } from 'colossus'
+import { initializeABtest, ABTestStatus } from '../TestCase'
 
 export default {
   events: {
