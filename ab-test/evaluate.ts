@@ -10,10 +10,10 @@ const aggregationURL = '&to=now&operation=sum&aggregateBy=workspace,data.orders'
 export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB, ctx: ColossusContext) {
     const endPoint = StoreDashRequestURL(account, ABTestBeginning)
 
-    var noOrderSessionsA = await GetMetricFromStoreDash(endPoint, workspaceA, false, ctx),
-        noOrderSessionsB = await GetMetricFromStoreDash(endPoint, workspaceB, false, ctx),
-        sessionsA = await GetMetricFromStoreDash(endPoint, workspaceA, true, ctx),
-        sessionsB = await GetMetricFromStoreDash(endPoint, workspaceB, true, ctx)
+    var noOrderSessionsA = await GetSessionsFromStoreDash(endPoint, workspaceA, false, ctx),
+        noOrderSessionsB = await GetSessionsFromStoreDash(endPoint, workspaceB, false, ctx),
+        sessionsA = await GetSessionsFromStoreDash(endPoint, workspaceA, true, ctx),
+        sessionsB = await GetSessionsFromStoreDash(endPoint, workspaceB, true, ctx)
 
     if (sessionsA == 0 || sessionsB == 0) {
         return 'A/B Test not initialized for one of the workspaces or it does not already has visitors.'
@@ -23,13 +23,17 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
         orderSessionsB = sessionsB - noOrderSessionsB
 
     const lossA = LossFunction(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB),
-        lossB = LossFunction(orderSessionsB, noOrderSessionsB, orderSessionsA, noOrderSessionsA)
+          lossB = LossFunction(orderSessionsB, noOrderSessionsB, orderSessionsA, noOrderSessionsA)
 
-    const winner = ChooseWinner(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB, boundError)
-    return 'Winner: ' + winner + ' ; Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB
+    let winner = ChooseWinner(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB, boundError)
+    if (winner == null)
+    {
+        winner = 'not yet decided'
+    }
+    return 'Winner: ' + winner + ' | Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB
 }
 
-export async function GetMetricFromStoreDash(endPoint, workspace, isTotalSessions: boolean, ctx: ColossusContext) {
+export async function GetSessionsFromStoreDash(endPoint, workspace, isTotalSessions: boolean, ctx: ColossusContext) {
     var metrics = await getDataStoreDash(endPoint, ctx)
     var total = 0
     for (var metric of metrics) {
