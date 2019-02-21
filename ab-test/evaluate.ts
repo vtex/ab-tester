@@ -25,10 +25,7 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
     const lossA = LossFunction(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB),
           lossB = LossFunction(orderSessionsB, noOrderSessionsB, orderSessionsA, noOrderSessionsA)
 
-    let winner = ChooseWinner(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB, boundError)
-    if (winner == null) {
-        winner = 'not yet decided'
-    }
+    let winner = ChooseWinner(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB, boundError) || 'not yet decided'
     return 'Winner: ' + winner + ' | Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB
 }
 

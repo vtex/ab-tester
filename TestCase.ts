@@ -22,12 +22,12 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<string> {
     const { resources: { vbase } } = ctx
 
     let data = await vbase.get(bucket, fileName)
-    var beginning = data.timeStart
-    if (data.name == testId) {
-        beginning = data.timeStart
+    if(data)
+    {
+        var beginning = data.timeStart
+        const tResult = await Evaluate(account, beginning, 'master', 'abtesting', ctx)
+        console.log(tResult)
+        return tResult
     }
-
-    const tResult = await Evaluate(account, beginning, 'master', 'abtesting', ctx)
-    console.log(tResult)
-    return tResult
+    return 'Test not initialized'
 }
