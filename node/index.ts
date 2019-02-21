@@ -1,4 +1,4 @@
-import { initializeAbTest, abTestStatus } from './abtest-manager';
+import { initializeAbTest, abTestStatus } from '../ab-test/abtest-manager';
 
 export default {
   events: {

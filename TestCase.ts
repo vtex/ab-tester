@@ -1,6 +1,5 @@
 import { Evaluate } from './ab-test/evaluate'
 import { ColossusContext } from 'colossus'
-import { formatDate } from './ab-test/date-formater'
 import VBase from './node/vbase';
 
 const account = 'boticario'
@@ -12,7 +11,8 @@ const testId = '0001'
 
 export async function initializeABtest(ctx: ColossusContext) {
     const vbase = await new VBase(ctx.vtex)
-    const beginning = formatDate(new Date().getTime())
+    const beginning = new Date().toISOString().substr(0, 10)
+    console.log(beginning)
 
     await vbase.save('ABTest', 'currentTestAB.json', {
         name: testId,
