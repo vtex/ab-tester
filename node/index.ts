@@ -1,5 +1,4 @@
 import { map } from 'ramda'
-import { ColossusContext } from 'colossus'
 import { initializeAbTest, abTestStatus } from '../abTest/abtest-manager'
 import { Resources } from './resources/index'
 

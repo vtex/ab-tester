@@ -1,4 +1,3 @@
-import { ColossusContext } from 'colossus'
 import VBase from '../vbase'
 
 export class Resources {

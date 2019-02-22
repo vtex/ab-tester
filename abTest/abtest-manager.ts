@@ -1,4 +1,3 @@
-import { ColossusContext } from 'colossus'
 import { initializeABtest as initialize, ABTestStatus } from '../TestCase'
 
 export const initializeAbTest = async (ctx: ColossusContext) => {

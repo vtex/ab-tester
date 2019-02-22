@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { ChooseWinner, LossFunction } from '../mathTools/decision-rule'
 import { boundError } from '../mathTools/statistics/bound-error'
-import { ColossusContext } from 'colossus'
 
 const baseURL = 'http://api.vtex.com/api/storedash/'
 const metricsStoredashURL = '/metrics/storedash/SessionCube?from='

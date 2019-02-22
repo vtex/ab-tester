@@ -1,27 +1,26 @@
 import { Evaluate } from './abTest/evaluate'
-import { ColossusContext } from 'colossus'
 
 const account = 'boticario'
 const bucket = 'ABTest'
 const fileName = 'currentABTest.json'
 
-// TODO: `testId` should be determined in a general way based on account and workspaces
+// TODO: `Id` should be determined in a general way based on account and workspaces
 const testId = '0001'
 
-export async function initializeABtest(ctx: ColossusContext) {
+export async function initializeABtest(ctx: ColossusContext): Promise<void> {
     const { resources: { vbase } } = ctx
     const beginning = new Date().toISOString().substr(0, 10)
 
-    await vbase.save(bucket, fileName, {
-        name: testId,
+    return vbase.save(bucket, fileName, {
+        Id: testId,
         timeStart: beginning
-    })
+    } as ABTestData)
 }
 
 export async function ABTestStatus(ctx: ColossusContext): Promise<string> {
     const { resources: { vbase } } = ctx
 
-    let data = await vbase.get(bucket, fileName)
+    const data = await vbase.get(bucket, fileName)
     if (!data) {
         return 'Test not initialized'
     }
