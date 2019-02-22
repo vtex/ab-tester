@@ -4,7 +4,8 @@ import { initializeABtest as initialize, ABTestStatus } from '../TestCase'
 export const initializeAbTest = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
-  await initialize(ctx)
+  initialize(ctx).then(success => console.log(success))
+                 .catch(err => console.log(err))
 
   ctx.status = 200
   ctx.body = 'A/B Test initialized'
