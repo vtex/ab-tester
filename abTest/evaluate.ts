@@ -10,7 +10,7 @@ const aggregationURL = '&to=now&operation=sum&aggregateBy=workspace,data.orders'
 export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB, ctx: ColossusContext) {
     const endPoint = StoreDashRequestURL(account, ABTestBeginning)
 
-    var noOrderSessionsA = await GetSessionsFromStoreDash(endPoint, workspaceA, false, ctx),
+    const noOrderSessionsA = await GetSessionsFromStoreDash(endPoint, workspaceA, false, ctx),
         noOrderSessionsB = await GetSessionsFromStoreDash(endPoint, workspaceB, false, ctx),
         sessionsA = await GetSessionsFromStoreDash(endPoint, workspaceA, true, ctx),
         sessionsB = await GetSessionsFromStoreDash(endPoint, workspaceB, true, ctx)
@@ -25,7 +25,7 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
     const lossA = LossFunction(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB),
           lossB = LossFunction(orderSessionsB, noOrderSessionsB, orderSessionsA, noOrderSessionsA)
 
-    let winner = ChooseWinner(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB, boundError) || 'not yet decided'
+    const winner = ChooseWinner(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB, boundError()) || 'not yet decided'
     return 'Winner: ' + winner + ' | Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB
 }
 
