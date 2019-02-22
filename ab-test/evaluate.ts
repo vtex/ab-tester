@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { ChooseWinner, LossFunction } from '../math-tools/decision-rule'
+import { boundError } from '../math-tools/statistics/bound-error'
 import { ColossusContext } from 'colossus'
 
-const boundError = 0.000000001
 const baseURL = 'http://api.vtex.com/api/storedash/'
 const metricsStoredashURL = '/metrics/storedash/SessionCube?from='
 const aggregationURL = '&to=now&operation=sum&aggregateBy=workspace,data.orders'

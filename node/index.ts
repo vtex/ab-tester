@@ -3,7 +3,7 @@ import { ColossusContext } from 'colossus'
 import { initializeAbTest, abTestStatus } from '../ab-test/abtest-manager'
 import { Resources } from './resources/index'
 
-const prepare = (handler: any) => async (ctx: ColossusContext) => {
+const testManager = (handler: any) => async (ctx: ColossusContext) => {
   ctx.resources = new Resources(ctx)
   try {
     await handler(ctx)
@@ -30,17 +30,6 @@ const prepare = (handler: any) => async (ctx: ColossusContext) => {
     }
 
     throw err
-  } finally {
-    // const end = process.hrtime(start)
-    // if (ctx.status >= 200 && ctx.status < 300) {
-    //   metrics.batchHrTimeMetric('http-2xx', start, production)
-    // }
-    // else if (ctx.status >= 400 && ctx.status < 500) {
-    //   metrics.batchHrTimeMetric('http-4xx', start, production)
-    // }
-    // else if (ctx.status >= 500) {
-    //   metrics.batchHrTimeMetric('http-5xx', start, production)
-    // }
   }
 }
 
@@ -51,7 +40,7 @@ export default {
     }
   },
   routes:
-    map(prepare, {
+    map(testManager, {
       initializeAbTest,
       abTestStatus
     })

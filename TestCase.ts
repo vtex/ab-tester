@@ -12,7 +12,7 @@ export async function initializeABtest(ctx: ColossusContext) {
     const { resources: { vbase } } = ctx
     const beginning = new Date().toISOString().substr(0, 10)
 
-    await vbase.save('ABTest', 'currentTestAB.json', {
+    await vbase.save(bucket, fileName, {
         name: testId,
         timeStart: beginning
     })
