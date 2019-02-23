@@ -1,4 +1,3 @@
-// MODULES //
 export function evalpoly(P: number[], x)
 {
     var num = 0
@@ -46,22 +45,17 @@ var Q = [
 
 // DIGAMMA //
 
-/**
-* FUNCTION: digamma( x )
+/*
+* FUNCTION: digammaRationalApprox( x )
 *	Evaluates the digamma function over interval [1,2].
-*
-* @param {Number} x - input value
-* @returns {Number} function value
 */
 export function digammaRationalApprox(x) {
-    var g;
-    var r;
-    g = x - root1;
+    var r = evalrational(P, Q, x - 1),
+        g = x - root1
     g -= root2;
     g -= root3;
-    r = evalrational(P, Q, x - 1);
     return g * Y + g * r;
-} // end FUNCTION digamma()
+}
 
 var H = [
     0.083333333333333333333333333333333333333333333333333,
@@ -76,12 +70,9 @@ var H = [
 
 // DIGAMMA //
 
-/**
-* FUNCTION: digamma( x )
+/*
+* FUNCTION: digammaAsymptoticApprox( x )
 *	Evaluate the digamma function via asymptotic expansion.
-*
-* @param {Number} x - input value
-* @returns {Number} function value
 */
 export function digammaAsymptoticApprox(x) {
     var y;
