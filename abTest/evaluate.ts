@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ChooseWinner, LossFunction } from '../mathTools/decision-rule'
 import { boundError } from '../mathTools/statistics/bound-error'
+import { KLDivergence } from '../mathTools/statistics/kullback-leibler'
 
 const baseURL = 'http://api.vtex.com/api/storedash/'
 const metricsStoredashURL = '/metrics/storedash/SessionCube?from='
@@ -22,10 +23,11 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
         orderSessionsB = sessionsB - noOrderSessionsB
 
     const lossA = LossFunction(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB),
-          lossB = LossFunction(orderSessionsB, noOrderSessionsB, orderSessionsA, noOrderSessionsA)
+          lossB = LossFunction(orderSessionsB, noOrderSessionsB, orderSessionsA, noOrderSessionsA),
+          kldivergence = KLDivergence(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB)
 
     const winner = ChooseWinner(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB, boundError()) || 'not yet decided'
-    return 'Winner: ' + winner + ' | Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB
+    return 'Winner: ' + winner + ' | Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB + ' KL: ' + kldivergence
 }
 
 export async function GetSessionsFromStoreDash(endPoint, workspace, isTotalSessions: boolean, ctx: ColossusContext) {
