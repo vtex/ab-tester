@@ -5,6 +5,10 @@ const root2 = (381566830 / 1073741824) / 1073741824
 const root3 = 0.9016312093258695918615325266959189453125e-19
 const Y = 0.99558162689208984;
 
+/*
+* These are the coefficients for the Lanczos approximation of digamma function by a rational function.
+*/
+
 const P = [
     0.25479851061131551,
     -0.32555031186804491,
@@ -24,6 +28,11 @@ const Q = [
     -0.55789841321675513e-6
 ]
 
+/*
+* These are the coefficients for series expansion on 1/x^2 of digamma function. These numbers are B_2j / 2j where B_n is
+* the n-th Bernoulli number
+*/
+
 const H = [
     0.083333333333333333333333333333333333333333333333333,
     -0.0083333333333333333333333333333333333333333333333333,
@@ -42,11 +51,18 @@ const PI = 3.14159265358979323846264338327950288419716939937510
 * FUNCTION: digammaRationalApprox( x )
 *	Evaluates the digamma function over interval [1,2].
 */
+
+/*
+* Here we use the Lanczos approximation for digamma(x-1), being P(x-1)/Q(x-1).
+* The value x_0 = root1+root2+root3 equals the unique positive zero of digamma function.
+* The algorithm can be found in
+* https://www.ams.org/journals/mcom/1973-27-121/S0025-5718-1973-0326986-3/
+*/
 export function digammaRationalApprox(x) {
     var r = evalrational(P, Q, x - 1),
-        g = x - root1
-    g -= root2;
-    g -= root3;
+        root = root1 + root2 + root3,
+        g = x
+    g -= root
     return g * Y + g * r;
 }
 
@@ -66,8 +82,7 @@ export function digammaAsymptoticApprox(x) {
 // DIGAMMA //
 
 export function digamma(x) {
-    var rem;
-    var tmp;
+    var rem, tmp
     if (x !== x || x === 0) {
         return NaN;
     }
