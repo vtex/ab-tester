@@ -1,38 +1,10 @@
-export function evalpoly(P: number[], x)
-{
-    var num =0;
-    var length = P.length;
-
-	if ( length < 2 || x === 0 ) {
-		if ( length === 0 ) {
-			return 0;
-		}
-		return P[ 0 ];
-	}
-	length -= 1;
-    num = P[ length ]*x + P[ length - 1 ];
-	length -= 2;
-	while ( length >= 0 ) {
-		num = num*x + P[ length ];
-		length -= 1;
-	}
-	return num;
-}
-
-export function evalrational(P: number[], Q: number[], x)
-{
-    var num = evalpoly(P, x),
-        den = evalpoly(Q, x)
-
-    return num / den
-}
-
-// CONSTANTS //
+import { evalpoly, evalrational } from './polynomial-evaluation'
 
 const root1 = 1569415565 / 1073741824
 const root2 = (381566830 / 1073741824) / 1073741824
 const root3 = 0.9016312093258695918615325266959189453125e-19
 const Y = 0.99558162689208984;
+
 const P = [
     0.25479851061131551,
     -0.32555031186804491,
