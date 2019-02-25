@@ -11,4 +11,10 @@ declare global{
     Id: string
     timeStart: string
   }
+  export interface TestResult {
+    Winner: string
+    ExpectedLossChoosingA: number
+    ExpectedLossChoosingB: number
+    KullbackLeibler: number
+  }
 }

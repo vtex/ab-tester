@@ -1,5 +1,3 @@
-// import * as Math from 'math.ts'
-
 var GAMMA_CONST = 0.577215664901532860606512090;
 
 // numerator coefficients for approximation over the interval (1,2)
@@ -35,7 +33,7 @@ export function gamma(x) {
   else if (x < 0.001) {
     return 1.0/(x*(1.0 + GAMMA_CONST*x))
   }
-  
+
   // The algorithm directly approximates gamma over (1,2) and uses
   // reduction identities to reduce other arguments to this interval.
   else if (x < 12.0) {
@@ -48,7 +46,7 @@ export function gamma(x) {
       n = Math.floor(y) - 1
       y -= n
     }
-    
+
     var num = 0.0, den = 1.0, z = y - 1
     for (var i = 0; i < 8; i++) {
       num = (num + P_COFF[i])*z
@@ -72,7 +70,7 @@ export function gamma(x) {
   else if (x > 171.624) {
 		return Infinity
   }
-  
+
   else {
     return Math.exp(logGamma(x))
   }
@@ -104,7 +102,7 @@ export function logGamma(x) {
   // Asymptotic series should be good to at least 11 or 12 figures
   // For error analysis, see Whittiker and Watson
   // A Course in Modern Analysis (1927), page 252
-  
+
   else {
     var  z = 1.0/(x*x)
     var sum = C_COFF[7]

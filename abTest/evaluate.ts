@@ -7,7 +7,7 @@ const baseURL = 'http://api.vtex.com/api/storedash/'
 const metricsStoredashURL = '/metrics/storedash/SessionCube?from='
 const aggregationURL = '&to=now&operation=sum&aggregateBy=workspace,data.orders'
 
-export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB, ctx: ColossusContext) {
+export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB, ctx: ColossusContext): Promise<TestResult> {
     const endPoint = StoreDashRequestURL(account, ABTestBeginning)
 
     const noOrderSessionsA = await GetSessionsFromStoreDash(endPoint, workspaceA, false, ctx),
@@ -16,18 +16,28 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
         sessionsB = await GetSessionsFromStoreDash(endPoint, workspaceB, true, ctx)
 
     if (sessionsA == 0 || sessionsB == 0) {
-        return 'A/B Test not initialized for one of the workspaces or it does not already has visitors.'
+        return {
+            Winner: 'A/B Test not initialized for one of the workspaces or it does not already has visitors.',
+            ExpectedLossChoosingA: 0,
+            ExpectedLossChoosingB: 0,
+            KullbackLeibler: 0
+        }
     }
 
     var orderSessionsA = sessionsA - noOrderSessionsA,
         orderSessionsB = sessionsB - noOrderSessionsB
 
     const lossA = LossFunction(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB),
-          lossB = LossFunction(orderSessionsB, noOrderSessionsB, orderSessionsA, noOrderSessionsA),
-          kldivergence = KLDivergence(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB)
+        lossB = LossFunction(orderSessionsB, noOrderSessionsB, orderSessionsA, noOrderSessionsA),
+        kldivergence = KLDivergence(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB)
 
     const winner = ChooseWinner(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB, boundError()) || 'not yet decided'
-    return 'Winner: ' + winner + ' | Expected Loss Choosing A: ' + lossA + ' ; Expected Loss Choosing B: ' + lossB + ' KL: ' + kldivergence
+    return {
+        Winner: winner,
+        ExpectedLossChoosingA: lossA,
+        ExpectedLossChoosingB: lossB,
+        KullbackLeibler: kldivergence
+    }
 }
 
 export async function GetSessionsFromStoreDash(endPoint, workspace, isTotalSessions: boolean, ctx: ColossusContext) {
@@ -67,6 +77,5 @@ export async function getDataStoreDash(endPoint, ctx: ColossusContext): Promise<
     })
 }
 
-export function StoreDashRequestURL(account, ABTestBeginning) {
-    return baseURL + account + metricsStoredashURL + ABTestBeginning + aggregationURL
-}
+export const StoreDashRequestURL = (account, ABTestBeginning): string =>
+    baseURL + account + metricsStoredashURL + ABTestBeginning + aggregationURL
