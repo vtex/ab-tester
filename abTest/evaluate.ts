@@ -2,6 +2,7 @@ import axios from 'axios'
 import { ChooseWinner, LossFunction } from '../mathTools/decision-rule'
 import { boundError } from '../mathTools/statistics/bound-error'
 import { KLDivergence } from '../mathTools/statistics/kullback-leibler'
+import { Workspaces } from '@vtex/api';
 
 const baseURL = 'http://api.vtex.com/api/storedash/'
 const metricsStoredashURL = '/metrics/storedash/SessionCube?from='
@@ -10,55 +11,38 @@ const aggregationURL = '&to=now&operation=sum&aggregateBy=workspace,data.orders'
 export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB, ctx: ColossusContext): Promise<TestResult> {
     const endPoint = StoreDashRequestURL(account, ABTestBeginning)
 
-    const noOrderSessionsA = await GetSessionsFromStoreDash(endPoint, workspaceA, false, ctx),
-        noOrderSessionsB = await GetSessionsFromStoreDash(endPoint, workspaceB, false, ctx),
-        sessionsA = await GetSessionsFromStoreDash(endPoint, workspaceA, true, ctx),
-        sessionsB = await GetSessionsFromStoreDash(endPoint, workspaceB, true, ctx)
+    const workspaceAData = await GetSessionsFromStoreDash(endPoint, workspaceA, ctx),
+        workspaceBData = await GetSessionsFromStoreDash(endPoint, workspaceB, ctx)
 
-    if (sessionsA == 0 || sessionsB == 0) {
-        return {
-            Winner: 'A/B Test not initialized for one of the workspaces or it does not already has visitors.',
-            ExpectedLossChoosingA: 0,
-            ExpectedLossChoosingB: 0,
-            KullbackLeibler: 0
-        }
+    if (workspaceAData["sessions"] == 0 || workspaceBData["sessions"] == 0) {
+        return EvaluationResponse('A/B Test not initialized for one of the workspaces or it does not already has visitors.', 0, 0, 0)
     }
 
-    var orderSessionsA = sessionsA - noOrderSessionsA,
-        orderSessionsB = sessionsB - noOrderSessionsB
+    const lossA = LossFunction(workspaceAData["OrderSessions"], workspaceAData["NoOrderSessions"], workspaceBData["OrderSessions"], workspaceBData["NoOrderSessions"]),
+        lossB = LossFunction(workspaceBData["OrderSessions"], workspaceBData["NoOrderSessions"], workspaceAData["OrderSessions"], workspaceAData["NoOrderSessions"]),
+        kldivergence = KLDivergence(workspaceAData["OrderSessions"], workspaceAData["NoOrderSessions"], workspaceBData["OrderSessions"], workspaceBData["NoOrderSessions"])
 
-    const lossA = LossFunction(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB),
-        lossB = LossFunction(orderSessionsB, noOrderSessionsB, orderSessionsA, noOrderSessionsA),
-        kldivergence = KLDivergence(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB)
-
-    const winner = ChooseWinner(orderSessionsA, noOrderSessionsA, orderSessionsB, noOrderSessionsB, boundError()) || 'not yet decided'
-    return {
-        Winner: winner,
-        ExpectedLossChoosingA: lossA,
-        ExpectedLossChoosingB: lossB,
-        KullbackLeibler: kldivergence
-    }
+    const winner = ChooseWinner(workspaceAData["OrderSessions"], workspaceAData["NoOrderSessions"], workspaceBData["OrderSessions"], workspaceBData["NoOrderSessions"], boundError()) || 'not yet decided'
+    return EvaluationResponse(winner, lossA, lossB, kldivergence)
 }
 
-export async function GetSessionsFromStoreDash(endPoint, workspace, isTotalSessions: boolean, ctx: ColossusContext) {
-    var metrics = await getDataStoreDash(endPoint, ctx)
-    var total = 0
+export async function GetSessionsFromStoreDash(endPoint, workspace, ctx: ColossusContext) {
+    var metrics = await getDataFromStoreDash(endPoint, ctx)
+    var total = 0,
+        noOrders = 0
     for (var metric of metrics) {
-        if (isTotalSessions) {
-            if (metric["workspace"] == workspace) {
+        if (metric["workspace"] == workspace) {
+            if (metric["data.orders"] == 0) {
+                noOrders += metric["sum"]
                 total += metric["sum"]
             }
-        }
-        else {
-            if (metric["workspace"] == workspace && metric["data.orders"] != 0) {
-                total += metric["sum"]
-            }
+            total += metric["sum"]
         }
     }
-    return total
+    return WorkspaceData(workspace, total, noOrders)
 }
 
-export async function getDataStoreDash(endPoint, ctx: ColossusContext): Promise<JSON[]> {
+export async function getDataFromStoreDash(endPoint, ctx: ColossusContext): Promise<JSON[]> {
     return new Promise<JSON[]>((resolve, _reject) => {
         axios.get(endPoint,
             {
@@ -77,5 +61,19 @@ export async function getDataStoreDash(endPoint, ctx: ColossusContext): Promise<
     })
 }
 
-export const StoreDashRequestURL = (account, ABTestBeginning): string =>
-    baseURL + account + metricsStoredashURL + ABTestBeginning + aggregationURL
+export const StoreDashRequestURL = (account, ABTestBeginning): string => (
+    baseURL + account + metricsStoredashURL + ABTestBeginning + aggregationURL)
+
+export const WorkspaceData = (Workspace, TotalSessions, NoOrderSessions): WorkspaceData => ({
+    Workspace: Workspace,
+    Sessions: TotalSessions,
+    OrderSessions: (TotalSessions - NoOrderSessions),
+    NoOrderSessions: NoOrderSessions
+})
+
+export const EvaluationResponse = (winner, lossA, lossB, KullbackLeibler): TestResult => ({
+    Winner: winner,
+    ExpectedLossChoosingA: lossA,
+    ExpectedLossChoosingB: lossB,
+    KullbackLeibler: KullbackLeibler
+})

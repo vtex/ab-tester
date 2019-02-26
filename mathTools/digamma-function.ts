@@ -63,7 +63,7 @@ export function digammaRationalApprox(x) {
         root = root1 + root2 + root3,
         g = x
     g -= root
-    return g * Y + g * r;
+    return g * (Y + r)
 }
 
 /*

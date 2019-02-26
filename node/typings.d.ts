@@ -11,6 +11,12 @@ declare global{
     Id: string
     timeStart: string
   }
+  export interface WorkspaceData {
+    Workspace: string
+    Sessions: number
+    OrderSessions: number
+    NoOrderSessions: number
+  }
   export interface TestResult {
     Winner: string
     ExpectedLossChoosingA: number
