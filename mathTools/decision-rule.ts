@@ -18,7 +18,7 @@ export function ProbabilityOfVariantOneBeatVriantTwo(a, b, c, d) {
     return result
 }
 
-export function LossFunction(Beta1: BetaDistribution, Beta2: BetaDistribution) {
+export function LossFunctionChossingVariantOne(Beta1: BetaDistribution, Beta2: BetaDistribution) {
     /*
         We sum 1 to the variables because the Beta function Beta(alpha, beta) consider the situation of
         alpha-1 successes and beta-1 failures.
@@ -35,8 +35,8 @@ export function LossFunction(Beta1: BetaDistribution, Beta2: BetaDistribution) {
 }
 
 export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, epsilon) {
-    var chooseA = (LossFunction(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon),
-        chooseB = (LossFunction(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon)
+    const chooseA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon,
+        chooseB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon
 
     if (chooseA && chooseB) {
         return 'draw'

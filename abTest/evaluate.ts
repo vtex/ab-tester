@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ChooseWinner, LossFunction } from '../mathTools/decision-rule'
+import { ChooseWinner, LossFunctionChossingVariantOne } from '../mathTools/decision-rule';
 import { boundError } from '../mathTools/statistics/bound-error'
 import { KLDivergence } from '../mathTools/statistics/kullback-leibler'
 import { WorkspaceToBetaDistribution } from '../abTest/workspace-to-distribution'
@@ -20,9 +20,9 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
         return EvaluationResponse('A/B Test not initialized for one of the workspaces or it does not already has visitors.', 0, 0, 0)
     }
 
-    const lossA = LossFunction(WorkspaceToBetaDistribution(workspaceAData), WorkspaceToBetaDistribution(workspaceBData)),
-        lossB = LossFunction(WorkspaceToBetaDistribution(workspaceBData), WorkspaceToBetaDistribution(workspaceAData)),
-        kldivergence = KLDivergence(workspaceAData["OrderSessions"], workspaceAData["NoOrderSessions"], workspaceBData["OrderSessions"], workspaceBData["NoOrderSessions"])
+    const lossA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceAData), WorkspaceToBetaDistribution(workspaceBData)),
+        lossB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceBData), WorkspaceToBetaDistribution(workspaceAData)),
+        kldivergence = KLDivergence(workspaceAData, workspaceBData)
 
     const winner = ChooseWinner(workspaceAData, workspaceBData, boundError()) || 'not yet decided'
     return EvaluationResponse(winner, lossA, lossB, kldivergence)
