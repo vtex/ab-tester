@@ -31,7 +31,6 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult> {
     }
     const beginning = data.timeStart
     const tResult = await Evaluate(account, beginning, 'master', 'abtesting', ctx)
-    console.log(tResult)
     return tResult
 
 }

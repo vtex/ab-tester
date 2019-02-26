@@ -2,7 +2,7 @@ import axios from 'axios'
 import { ChooseWinner, LossFunction } from '../mathTools/decision-rule'
 import { boundError } from '../mathTools/statistics/bound-error'
 import { KLDivergence } from '../mathTools/statistics/kullback-leibler'
-import { Workspaces } from '@vtex/api';
+import { WorkspaceToBetaDistribution } from '../abTest/workspace-to-distribution'
 
 const baseURL = 'http://api.vtex.com/api/storedash/'
 const metricsStoredashURL = '/metrics/storedash/SessionCube?from='
@@ -14,15 +14,17 @@ export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB,
     const workspaceAData = await GetSessionsFromStoreDash(endPoint, workspaceA, ctx),
         workspaceBData = await GetSessionsFromStoreDash(endPoint, workspaceB, ctx)
 
+    console.log(workspaceAData)
+    console.log(workspaceBData)
     if (workspaceAData["sessions"] == 0 || workspaceBData["sessions"] == 0) {
         return EvaluationResponse('A/B Test not initialized for one of the workspaces or it does not already has visitors.', 0, 0, 0)
     }
 
-    const lossA = LossFunction(workspaceAData["OrderSessions"], workspaceAData["NoOrderSessions"], workspaceBData["OrderSessions"], workspaceBData["NoOrderSessions"]),
-        lossB = LossFunction(workspaceBData["OrderSessions"], workspaceBData["NoOrderSessions"], workspaceAData["OrderSessions"], workspaceAData["NoOrderSessions"]),
+    const lossA = LossFunction(WorkspaceToBetaDistribution(workspaceAData), WorkspaceToBetaDistribution(workspaceBData)),
+        lossB = LossFunction(WorkspaceToBetaDistribution(workspaceBData), WorkspaceToBetaDistribution(workspaceAData)),
         kldivergence = KLDivergence(workspaceAData["OrderSessions"], workspaceAData["NoOrderSessions"], workspaceBData["OrderSessions"], workspaceBData["NoOrderSessions"])
 
-    const winner = ChooseWinner(workspaceAData["OrderSessions"], workspaceAData["NoOrderSessions"], workspaceBData["OrderSessions"], workspaceBData["NoOrderSessions"], boundError()) || 'not yet decided'
+    const winner = ChooseWinner(workspaceAData, workspaceBData, boundError()) || 'not yet decided'
     return EvaluationResponse(winner, lossA, lossB, kldivergence)
 }
 
@@ -36,7 +38,9 @@ export async function GetSessionsFromStoreDash(endPoint, workspace, ctx: Colossu
                 noOrders += metric["sum"]
                 total += metric["sum"]
             }
-            total += metric["sum"]
+            else {
+                total += metric["sum"]
+            }
         }
     }
     return WorkspaceData(workspace, total, noOrders)
@@ -52,7 +56,6 @@ export async function getDataFromStoreDash(endPoint, ctx: ColossusContext): Prom
                 }
             })
             .then(response => {
-                console.log(response.data)
                 resolve(response.data);
             })
             .catch(error => {

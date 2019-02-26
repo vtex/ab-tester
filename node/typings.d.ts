@@ -1,7 +1,7 @@
 import { Context as KoaContext } from 'koa'
 import { IOContext, ErrorLog } from '@vtex/api'
 import { Resources } from './resources/index'
-declare global{
+declare global {
   export interface ColossusContext extends KoaContext {
     vtex: IOContext
     resources: Resources
@@ -22,5 +22,9 @@ declare global{
     ExpectedLossChoosingA: number
     ExpectedLossChoosingB: number
     KullbackLeibler: number
+  }
+  export interface BetaDistribution{
+    parameterA: number
+    parameterB: number
   }
 }
