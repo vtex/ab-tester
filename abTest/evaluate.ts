@@ -1,31 +1,28 @@
-import axios from 'axios'
 import { ChooseWinner, LossFunctionChossingVariantOne } from '../mathTools/decision-rule';
 import { boundError } from '../mathTools/statistics/bound-error'
 import { KLDivergence } from '../mathTools/statistics/kullback-leibler'
 import { WorkspaceToBetaDistribution } from '../abTest/workspace-to-distribution'
 import { getDataFromStoreDash, StoreDashRequestURL} from './requestMetrics/storedash'
 
-export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB, ctx: ColossusContext): Promise<TestResult> {
-    const endPoint = StoreDashRequestURL(account, ABTestBeginning)
+export async function Evaluate(account, aBTestBeginning, workspaceA, workspaceB, ctx: ColossusContext): Promise<TestResult> {
+    const endPoint = StoreDashRequestURL(account, aBTestBeginning)
 
-    const workspaceAData = await GetSessionsFromStoreDash(endPoint, workspaceA, ctx),
-        workspaceBData = await GetSessionsFromStoreDash(endPoint, workspaceB, ctx)
+    const workspaceAData = await GetWorkspaceData(endPoint, workspaceA, ctx),
+        workspaceBData = await GetWorkspaceData(endPoint, workspaceB, ctx)
 
-    console.log(workspaceAData)
-    console.log(workspaceBData)
     if (workspaceAData["sessions"] == 0 || workspaceBData["sessions"] == 0) {
         return EvaluationResponse('A/B Test not initialized for one of the workspaces or it does not already has visitors.', 0, 0, 0)
     }
 
     const lossA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceAData), WorkspaceToBetaDistribution(workspaceBData)),
         lossB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceBData), WorkspaceToBetaDistribution(workspaceAData)),
-        kldivergence = KLDivergence(workspaceAData, workspaceBData)
+        kldivergence = KLDivergence(WorkspaceToBetaDistribution(workspaceAData), WorkspaceToBetaDistribution(workspaceBData))
 
     const winner = ChooseWinner(workspaceAData, workspaceBData, boundError()) || 'not yet decided'
     return EvaluationResponse(winner, lossA, lossB, kldivergence)
 }
 
-export async function GetSessionsFromStoreDash(endPoint, workspace, ctx: ColossusContext) {
+export async function GetWorkspaceData(endPoint, workspace, ctx: ColossusContext) {
     var metrics = await getDataFromStoreDash(endPoint, ctx)
     var total = 0,
         noOrders = 0

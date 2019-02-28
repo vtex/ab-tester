@@ -1,4 +1,4 @@
 export const WorkspaceToBetaDistribution = (Workspace: WorkspaceData): BetaDistribution => ({
-    parameterA: Workspace["OrderSessions"],
-    parameterB: Workspace["NoOrderSessions"]
+    parameterA: Workspace["OrderSessions"] + 1,
+    parameterB: Workspace["NoOrderSessions"] + 1
 })

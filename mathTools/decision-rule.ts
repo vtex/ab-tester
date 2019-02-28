@@ -23,10 +23,10 @@ export function LossFunctionChossingVariantOne(Beta1: BetaDistribution, Beta2: B
         We sum 1 to the variables because the Beta function Beta(alpha, beta) consider the situation of
         alpha-1 successes and beta-1 failures.
     */
-    const a = Beta2["parameterA"] + 1,
-        b = Beta2["parameterB"] + 1,
-        c = Beta1["parameterA"] + 1,
-        d = Beta1["parameterB"] + 1
+    const a = Beta2["parameterA"],
+        b = Beta2["parameterB"],
+        c = Beta1["parameterA"],
+        d = Beta1["parameterB"]
 
     const logCoefficient1 = logBeta(a + 1, b) - logBeta(a, b),
         logCoefficient2 = logBeta(c + 1, d) - logBeta(c, d)

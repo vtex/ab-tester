@@ -1,12 +1,12 @@
 import { logBeta } from '../beta-function'
 import { digamma } from '../digamma-function'
 
-export function KLDivergence(workspaceA: WorkspaceData, workspaceB: WorkspaceData)
+export function KLDivergence(Beta1: BetaDistribution, Beta2: BetaDistribution)
 {
-    const a = workspaceA["OrderSessions"] + 1,
-        b = workspaceA["NoOrderSessions"] + 1,
-        c = workspaceB["OrderSessions"] + 1,
-        d = workspaceB["NoOrderSessions"] + 1
+    const a = Beta1["parameterA"],
+        b = Beta1["parameterB"],
+        c = Beta2["parameterA"],
+        d = Beta2["parameterB"]
     var total = -logBeta(a, b) + logBeta(c, d),
         total = a + b,
         lambda1 = digamma(a) - digamma(total),
