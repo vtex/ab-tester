@@ -3,10 +3,7 @@ import { ChooseWinner, LossFunctionChossingVariantOne } from '../mathTools/decis
 import { boundError } from '../mathTools/statistics/bound-error'
 import { KLDivergence } from '../mathTools/statistics/kullback-leibler'
 import { WorkspaceToBetaDistribution } from '../abTest/workspace-to-distribution'
-
-const baseURL = 'http://api.vtex.com/api/storedash/'
-const metricsStoredashURL = '/metrics/storedash/SessionCube?from='
-const aggregationURL = '&to=now&operation=sum&aggregateBy=workspace,data.orders'
+import { getDataFromStoreDash, StoreDashRequestURL} from './requestMetrics/storedash'
 
 export async function Evaluate(account, ABTestBeginning, workspaceA, workspaceB, ctx: ColossusContext): Promise<TestResult> {
     const endPoint = StoreDashRequestURL(account, ABTestBeginning)
@@ -45,27 +42,6 @@ export async function GetSessionsFromStoreDash(endPoint, workspace, ctx: Colossu
     }
     return WorkspaceData(workspace, total, noOrders)
 }
-
-export async function getDataFromStoreDash(endPoint, ctx: ColossusContext): Promise<JSON[]> {
-    return new Promise<JSON[]>((resolve, _reject) => {
-        axios.get(endPoint,
-            {
-                headers: {
-                    'Proxy-Authorization': ctx.vtex.authToken,
-                    'VtexIdclientAutCookie': ctx.vtex.authToken
-                }
-            })
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    })
-}
-
-export const StoreDashRequestURL = (account, ABTestBeginning): string => (
-    baseURL + account + metricsStoredashURL + ABTestBeginning + aggregationURL)
 
 export const WorkspaceData = (Workspace, TotalSessions, NoOrderSessions): WorkspaceData => ({
     Workspace: Workspace,

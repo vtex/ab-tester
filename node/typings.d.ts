@@ -1,5 +1,5 @@
 import { Context as KoaContext } from 'koa'
-import { IOContext, ErrorLog } from '@vtex/api'
+import { IOContext } from '@vtex/api'
 import { Resources } from './resources/index'
 declare global {
   export interface ColossusContext extends KoaContext {
