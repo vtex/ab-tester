@@ -1,5 +1,5 @@
 import { map } from 'ramda'
-import { initializeAbTest, abTestStatus } from '../abTest/abtest-manager'
+import { initializeAbTest, abTestStatus } from '../abTest/abtest-manager';
 import { Resources } from './resources/index'
 
 const testManager = (handler: any) => async (ctx: ColossusContext) => {

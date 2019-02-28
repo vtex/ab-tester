@@ -4,7 +4,7 @@ export const initializeAbTest = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
   initialize(ctx).then(success => console.log(success))
-                 .catch(err => console.log(err))
+    .catch(err => console.log(err))
 
   ctx.status = 200
   ctx.body = 'A/B Test initialized'

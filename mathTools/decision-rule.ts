@@ -9,7 +9,7 @@ import { WorkspaceToBetaDistribution } from '../abTest/workspace-to-distribution
 *   and then exponatiating.
 */
 
-export function ProbabilityOfVariantOneBeatVriantTwo(a, b, c, d) {
+export function ProbabilityOfOneBeatTwo(a, b, c, d) {
     var result = 1
 
     for (var j = 0; j < c; j++) {
@@ -31,12 +31,12 @@ export function LossFunctionChossingVariantOne(Beta1: BetaDistribution, Beta2: B
     const logCoefficient1 = logBeta(a + 1, b) - logBeta(a, b),
         logCoefficient2 = logBeta(c + 1, d) - logBeta(c, d)
 
-    return Math.exp(logCoefficient1) * ProbabilityOfVariantOneBeatVriantTwo(a + 1, b, c, d) - Math.exp(logCoefficient2) * ProbabilityOfVariantOneBeatVriantTwo(a, b, c + 1, d)
+    return Math.exp(logCoefficient1) * ProbabilityOfOneBeatTwo(a + 1, b, c, d) - Math.exp(logCoefficient2) * ProbabilityOfOneBeatTwo(a, b, c + 1, d)
 }
 
 export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, epsilon) {
     const chooseA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon,
-        chooseB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon
+        chooseB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceB), WorkspaceToBetaDistribution(WorkspaceA)) < epsilon
 
     if (chooseA && chooseB) {
         return 'draw'
