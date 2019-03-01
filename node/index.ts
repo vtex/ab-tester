@@ -39,8 +39,8 @@ export default {
     }
   },
   routes:
-    map(testManager, {
+    map(testManager, [
       initializeAbTest,
       abTestStatus
-    })
+    ])
 }

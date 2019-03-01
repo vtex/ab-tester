@@ -3,7 +3,7 @@ import { initializeABtest as initialize, ABTestStatus } from '../TestCase'
 export const initializeAbTest = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
-  initialize(ctx).then(success => console.log(success))
+  await initialize(ctx).then(success => console.log(success))
     .catch(err => console.log(err))
 
   ctx.status = 200
