@@ -1,6 +1,5 @@
 import { Evaluate } from './abTest/evaluate'
 
-const account = 'boticario'
 const bucket = 'ABTest'
 const fileName = 'currentABTest.json'
 
@@ -18,7 +17,7 @@ export async function initializeABtest(ctx: ColossusContext): Promise<void> {
 }
 
 export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult> {
-    const { resources: { vbase } } = ctx
+    const { vtex: { account }, resources: { vbase } } = ctx
 
     const data = await vbase.get(bucket, fileName)
     if (!data) {
