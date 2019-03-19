@@ -1,16 +1,16 @@
-import { ChooseWinner, LossFunctionChossingVariantOne } from '../mathTools/decision-rule';
-import { boundError } from '../mathTools/statistics/bound-error'
-import { KLDivergence } from '../mathTools/statistics/kullback-leibler'
-import { WorkspaceToBetaDistribution } from '../abTest/workspace-to-distribution'
-import { getDataFromStoreDash, StoreDashRequestURL} from './requestMetrics/storedash'
+import { ChooseWinner, LossFunctionChossingVariantOne } from '../../mathTools/decision-rule';
+import { BoundError } from '../../mathTools/statistics/samples-restrictions'
+import { KLDivergence } from '../../mathTools/statistics/kullback-leibler'
+import { WorkspaceToBetaDistribution } from './workspace-to-distribution'
+import { getDataFromStoreDash, StoreDashRequestURL } from '../clients/storedash'
 
-export async function Evaluate(account, aBTestBeginning, workspaceA, workspaceB, ctx: ColossusContext): Promise<TestResult> {
+export async function Evaluate(account: string, aBTestBeginning: string, workspaceA: string, workspaceB: string, ctx: ColossusContext): Promise<TestResult> {
     const endPoint = StoreDashRequestURL(account, aBTestBeginning)
 
     const workspaceAData = await GetWorkspaceData(endPoint, workspaceA, ctx),
         workspaceBData = await GetWorkspaceData(endPoint, workspaceB, ctx)
 
-    if (workspaceAData["sessions"] == 0 || workspaceBData["sessions"] == 0) {
+    if (workspaceAData["Sessions"] == 0 || workspaceBData["Sessions"] == 0) {
         return EvaluationResponse('A/B Test not initialized for one of the workspaces or it does not already has visitors.', 0, 0, 0)
     }
 
@@ -18,22 +18,22 @@ export async function Evaluate(account, aBTestBeginning, workspaceA, workspaceB,
         lossB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceBData), WorkspaceToBetaDistribution(workspaceAData)),
         kldivergence = KLDivergence(WorkspaceToBetaDistribution(workspaceAData), WorkspaceToBetaDistribution(workspaceBData))
 
-    const winner = ChooseWinner(workspaceAData, workspaceBData, boundError()) || 'not yet decided'
+    const winner = ChooseWinner(workspaceAData, workspaceBData, BoundError) || 'not yet decided'
     return EvaluationResponse(winner, lossA, lossB, kldivergence)
 }
 
-export async function GetWorkspaceData(endPoint, workspace, ctx: ColossusContext) {
+export async function GetWorkspaceData(endPoint: string, workspace: string, ctx: ColossusContext) {
     var metrics = await getDataFromStoreDash(endPoint, ctx)
     var total = 0,
         noOrders = 0
     for (var metric of metrics) {
         if (metric["workspace"] == workspace) {
-            if (metric["data.orders"] == 0) {
-                noOrders += metric["sum"]
-                total += metric["sum"]
+            if (metric["data.orderPlaced"] == 'false') {
+                noOrders += metric["count"]
+                total += metric["count"]
             }
             else {
-                total += metric["sum"]
+                total += metric["count"]
             }
         }
     }

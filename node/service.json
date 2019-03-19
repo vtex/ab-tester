@@ -2,8 +2,8 @@
     "stack": "nodejs",
     "memory": 128,
     "routes": {
-      "initializeAbTest": {
-        "path": "/_v/private/abtesting/initialize",
+      "saveBeginningAbTest": {
+        "path": "/_v/private/abtesting/savebeginning",
         "public": false
       },
       "abTestStatus": {

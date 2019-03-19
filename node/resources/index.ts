@@ -1,4 +1,4 @@
-import VBase from '../vbase'
+import VBase from '../clients/vbase'
 
 export class Resources {
     public vbase: VBase

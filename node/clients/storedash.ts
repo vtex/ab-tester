@@ -1,10 +1,9 @@
 import axios from 'axios'
 
 const baseURL = 'http://api.vtex.com/api/storedash/'
-const metricsStoredashURL = '/metrics/storedash/SessionCube?from='
-const aggregationURL = '&to=now&operation=sum&aggregateBy=workspace,data.orders'
+const metricsStoredashPath = '/metrics/storedash/sessioncube'
 
-export async function getDataFromStoreDash(endPoint, ctx: ColossusContext): Promise<JSON[]> {
+export async function getDataFromStoreDash(endPoint: string, ctx: ColossusContext): Promise<JSON[]> {
     return new Promise<JSON[]>((resolve, _reject) => {
         axios.get(endPoint,
             {
@@ -22,5 +21,8 @@ export async function getDataFromStoreDash(endPoint, ctx: ColossusContext): Prom
     })
 }
 
-export const StoreDashRequestURL = (account, ABTestBeginning): string => (
-    baseURL + account + metricsStoredashURL + ABTestBeginning + aggregationURL)
+export const AggregationQuery = (from: string): string => (
+    '?from=' + from + '&to=now&operation=sum&fields=count&aggregateBy=workspace,data.orderPlaced')
+
+export const StoreDashRequestURL = (account: string, ABTestBeginning: string): string => (
+    baseURL + account + metricsStoredashPath + AggregationQuery(ABTestBeginning))

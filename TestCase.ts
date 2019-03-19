@@ -1,4 +1,4 @@
-import { Evaluate } from './abTest/evaluate'
+import { Evaluate } from './node/abTest/evaluate'
 
 const bucket = 'ABTest'
 const fileName = 'currentABTest.json'

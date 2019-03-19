@@ -1,5 +1,8 @@
 import { logBeta } from './beta-function'
-import { WorkspaceToBetaDistribution } from '../abTest/workspace-to-distribution'
+import { WorkspaceToBetaDistribution } from '../node/abTest/workspace-to-distribution'
+import { BoundError, SamplesRestriction } from './statistics/samples-restrictions';
+
+const BoundProbability = 0.05
 
 /*
 *   The reason for using the function logBeta is that we're dealing with very large numbers and the
@@ -19,10 +22,6 @@ export function ProbabilityOfOneBeatTwo(a, b, c, d) {
 }
 
 export function LossFunctionChossingVariantOne(Beta1: BetaDistribution, Beta2: BetaDistribution) {
-    /*
-        We sum 1 to the variables because the Beta function Beta(alpha, beta) consider the situation of
-        alpha-1 successes and beta-1 failures.
-    */
     const a = Beta2["parameterA"],
         b = Beta2["parameterB"],
         c = Beta1["parameterA"],
@@ -34,10 +33,13 @@ export function LossFunctionChossingVariantOne(Beta1: BetaDistribution, Beta2: B
     return Math.exp(logCoefficient1) * ProbabilityOfOneBeatTwo(a + 1, b, c, d) - Math.exp(logCoefficient2) * ProbabilityOfOneBeatTwo(a, b, c + 1, d)
 }
 
-export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, epsilon) {
+export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, epsilon: number) {
     const chooseA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon,
         chooseB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceB), WorkspaceToBetaDistribution(WorkspaceA)) < epsilon
 
+    if (!SamplesRestriction(WorkspaceA, WorkspaceB, BoundError, BoundProbability)) {
+        return null
+    }
     if (chooseA && chooseB) {
         return 'draw'
     }

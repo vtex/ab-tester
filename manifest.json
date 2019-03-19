@@ -15,7 +15,7 @@
   "policies": [
     {
       "name": "outbound-access",
-      "attrs": 
+      "attrs":
       {
         "host": "api.vtex.com",
         "path": "/api/storedash/{{account}}/metrics/*"
