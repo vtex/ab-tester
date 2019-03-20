@@ -25,7 +25,7 @@
       "name": "vbase-read-write"
     },
     {
-      "name": "read-write-workspace"
+      "name": "read-write-any-workspace"
     },
     {
       "name": "view_metrics"
