@@ -1,5 +1,7 @@
 import { ABWorkspaces } from './workspaces'
 
+const DefaultABTestParameters: ABTestParameters = { "a": 0, "b": 0 }
+
 export async function ListWorkspaces(account: string, ctx: ColossusContext): Promise<ABWorkspaceMetadata[]> {
     const masterContext = ctx.vtex
     masterContext.workspace = 'master'
@@ -29,6 +31,6 @@ export async function FindWorkspace(account: string, workspaceName: string, ctx:
 }
 
 export function MinimumABTestParameter(workspace: ABWorkspaceMetadata) {
-    const params = workspace["abTestParameters"]
-    return Math.min(params["a"], params["b"])
+    const params = workspace["abTestParameters"] || DefaultABTestParameters
+    return Math.min(params.a, params.b)
 }
