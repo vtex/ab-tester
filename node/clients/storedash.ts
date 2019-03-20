@@ -21,7 +21,7 @@ export async function getDataFromStoreDash(endPoint: string, ctx: ColossusContex
     })
 }
 
-export async function GetWorkspaceData(endPoint: string, workspace: string, ctx: ColossusContext) {
+export async function GetWorkspaceData(endPoint: string, workspace: string, ctx: ColossusContext): Promise<WorkspaceData> {
     const metrics = await getDataFromStoreDash(endPoint, ctx)
     var total = 0,
         orderSessions = 0

@@ -38,7 +38,9 @@ export async function GetAndUpdateWorkspaceData(account: string, aBTestBeginning
     const endPoint = StoreDashRequestURL(account, aBTestBeginning)
 
     let workspaceData = await GetWorkspaceData(endPoint, workspace, ctx)
-    await UpdateABTestParams(account, workspaceData, ctx)
+    if (workspaceData.Sessions != 0) {
+        await UpdateABTestParams(account, workspaceData, ctx)
+    }
 
     return workspaceData
 }
