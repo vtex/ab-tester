@@ -26,8 +26,10 @@ export async function TestWorkspaces(account: string, aBTestBeginning: string, c
     const masterWorkspace = await GetAndUpdateWorkspaceData(account, aBTestBeginning, 'master', ctx)
     const testingWorkspaces = await TestingWorkspaces(account, ctx)
     for (var workspace of testingWorkspaces) {
-        workspaceData = await GetAndUpdateWorkspaceData(account, aBTestBeginning, workspace.name, ctx)
-        Results.push(await Evaluate(account, masterWorkspace, workspaceData, ctx))
+        if (workspace.name != masterWorkspace.Workspace) {
+            workspaceData = await GetAndUpdateWorkspaceData(account, aBTestBeginning, workspace.name, ctx)
+            Results.push(await Evaluate(account, masterWorkspace, workspaceData, ctx))
+        }
     }
     return Results
 }

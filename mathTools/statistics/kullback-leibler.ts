@@ -8,9 +8,9 @@ export function KLDivergence(Beta1: BetaDistribution, Beta2: BetaDistribution)
         c = Beta2["parameterA"],
         d = Beta2["parameterB"]
     var total = -logBeta(a, b) + logBeta(c, d),
-        total = a + b,
-        lambda1 = digamma(a) - digamma(total),
-        lambda2 = digamma(b) - digamma(total)
+        sum = a + b,
+        lambda1 = digamma(a) - digamma(sum),
+        lambda2 = digamma(b) - digamma(sum)
 
     total += ((a - c) * lambda1) + ((b - d) * lambda2)
 
