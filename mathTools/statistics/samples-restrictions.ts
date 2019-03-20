@@ -1,4 +1,4 @@
-export const BoundError = 1e-6
+export const BoundError = 1e-4
 
 /*
 *  The next function is based on convergence rate for Thompson Sampling, which is proved
