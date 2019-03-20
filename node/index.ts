@@ -1,5 +1,5 @@
 import { map } from 'ramda'
-import { saveBeginningAbTest, abTestStatus } from './abTest/abtest-manager';
+import { initializeAbTestForWorkspace, abTestStatus } from './abTest/manager';
 import { Resources } from './resources/index'
 
 const testManager = (handler: any) => async (ctx: ColossusContext) => {
@@ -40,7 +40,7 @@ export default {
   },
   routes:
     map(testManager, {
-      saveBeginningAbTest,
+      initializeAbTestForWorkspace,
       abTestStatus
     })
 }

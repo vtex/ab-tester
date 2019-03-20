@@ -1,6 +1,6 @@
-import { initializeABtest as initialize, ABTestStatus } from '../../TestCase'
+import { initializeAbTestForWorkspace as initialize, ABTestStatus } from '../../TestCase'
 
-export const saveBeginningAbTest = async (ctx: ColossusContext) => {
+export const initializeAbTestForWorkspace = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
   await initialize(ctx).then(success => console.log(success))

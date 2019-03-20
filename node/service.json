@@ -1,20 +1,20 @@
 {
-    "stack": "nodejs",
-    "memory": 128,
-    "routes": {
-      "saveBeginningAbTest": {
-        "path": "/_v/private/abtesting/savebeginning",
-        "public": false
-      },
-      "abTestStatus": {
-        "path": "/_v/private/abtesting/status",
-        "public": false
-      }
+  "stack": "nodejs",
+  "memory": 128,
+  "routes": {
+    "initializeAbTestForWorkspace": {
+      "path": "/_v/private/abtesting/initialize/:workspace",
+      "public": false
     },
-    "events": {
-      "onAppsLinked": {
-        "sender": "apps",
-        "keys": ["linked"]
-      }
+    "abTestStatus": {
+      "path": "/_v/private/abtesting/status",
+      "public": false
+    }
+  },
+  "events": {
+    "onAppsLinked": {
+      "sender": "apps",
+      "keys": ["linked"]
     }
   }
+}

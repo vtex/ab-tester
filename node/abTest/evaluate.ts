@@ -1,14 +1,12 @@
 import { ChooseWinner, LossFunctionChossingVariantOne } from '../../mathTools/decision-rule';
 import { BoundError } from '../../mathTools/statistics/samples-restrictions'
 import { KLDivergence } from '../../mathTools/statistics/kullback-leibler'
-import { WorkspaceToBetaDistribution } from './workspace-to-distribution'
-import { getDataFromStoreDash, StoreDashRequestURL } from '../clients/storedash'
+import { WorkspaceToBetaDistribution } from '../abTest/workspace-to-distribution'
+import { TestingWorkspaces } from '../workspace/list'
+import { GetAndUpdateWorkspaceData } from '../workspace/modify'
 
-export async function Evaluate(account: string, aBTestBeginning: string, workspaceA: string, workspaceB: string, ctx: ColossusContext): Promise<TestResult> {
-    const endPoint = StoreDashRequestURL(account, aBTestBeginning)
-
-    const workspaceAData = await GetWorkspaceData(endPoint, workspaceA, ctx),
-        workspaceBData = await GetWorkspaceData(endPoint, workspaceB, ctx)
+export async function Evaluate(account: string, workspaceAData: WorkspaceData, workspaceBData: WorkspaceData, ctx: ColossusContext): Promise<TestResult> {
+    console.log(await TestingWorkspaces(account, ctx))
 
     if (workspaceAData["Sessions"] == 0 || workspaceBData["Sessions"] == 0) {
         return EvaluationResponse('A/B Test not initialized for one of the workspaces or it does not already has visitors.', 0, 0, 0)
@@ -22,32 +20,19 @@ export async function Evaluate(account: string, aBTestBeginning: string, workspa
     return EvaluationResponse(winner, lossA, lossB, kldivergence)
 }
 
-export async function GetWorkspaceData(endPoint: string, workspace: string, ctx: ColossusContext) {
-    var metrics = await getDataFromStoreDash(endPoint, ctx)
-    var total = 0,
-        noOrders = 0
-    for (var metric of metrics) {
-        if (metric["workspace"] == workspace) {
-            if (metric["data.orderPlaced"] == 'false') {
-                noOrders += metric["count"]
-                total += metric["count"]
-            }
-            else {
-                total += metric["count"]
-            }
-        }
+export async function TestWorkspaces(account: string, aBTestBeginning: string, ctx: ColossusContext): Promise<TestResult[]> {
+    let Results: TestResult[] = []
+    let workspaceData: WorkspaceData = null
+    const masterWorkspace = await GetAndUpdateWorkspaceData(account, aBTestBeginning, 'master', ctx)
+    const testingWorkspaces = await TestingWorkspaces(account, ctx)
+    for (var workspace of testingWorkspaces) {
+        workspaceData = await GetAndUpdateWorkspaceData(account, aBTestBeginning, workspace.name, ctx)
+        Results.push(await Evaluate(account, masterWorkspace, workspaceData, ctx))
     }
-    return WorkspaceData(workspace, total, noOrders)
+    return Results
 }
 
-export const WorkspaceData = (Workspace, TotalSessions, NoOrderSessions): WorkspaceData => ({
-    Workspace: Workspace,
-    Sessions: TotalSessions,
-    OrderSessions: (TotalSessions - NoOrderSessions),
-    NoOrderSessions: NoOrderSessions
-})
-
-export const EvaluationResponse = (winner, lossA, lossB, KullbackLeibler): TestResult => ({
+export const EvaluationResponse = (winner: string, lossA: number, lossB: number, KullbackLeibler: number): TestResult => ({
     Winner: winner,
     ExpectedLossChoosingA: lossA,
     ExpectedLossChoosingB: lossB,

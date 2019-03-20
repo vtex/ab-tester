@@ -11,6 +11,10 @@ declare global {
     Id: string
     timeStart: string
   }
+  export interface BetaDistribution{
+    parameterA: number
+    parameterB: number
+  }
   export interface WorkspaceData {
     Workspace: string
     Sessions: number
@@ -23,8 +27,14 @@ declare global {
     ExpectedLossChoosingB: number
     KullbackLeibler: number
   }
-  export interface BetaDistribution{
-    parameterA: number
-    parameterB: number
+  export interface ABTestParameters {
+    a: number
+    b: number
+  }
+  export interface ABWorkspaceMetadata {
+    name: string
+    weight: number
+    abTestParameters: ABTestParameters
+    production: boolean
   }
 }
