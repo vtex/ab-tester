@@ -2,8 +2,6 @@ import { logBeta } from './beta-function'
 import { WorkspaceToBetaDistribution } from '../node/abTest/workspace-to-distribution'
 import { BoundError, SamplesRestriction } from './statistics/samples-restrictions';
 
-const BoundProbability = 0.05
-
 /*
 *   The reason for using the function logBeta is that we're dealing with very large numbers and the
 *   Beta with parameters that big will be infiinity and we wont have a determined value for the fraction
@@ -33,11 +31,11 @@ export function LossFunctionChossingVariantOne(Beta1: BetaDistribution, Beta2: B
     return Math.exp(logCoefficient1) * ProbabilityOfOneBeatTwo(a + 1, b, c, d) - Math.exp(logCoefficient2) * ProbabilityOfOneBeatTwo(a, b, c + 1, d)
 }
 
-export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, epsilon: number) {
+export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, epsilon: number, delta: number) {
     const chooseA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon,
         chooseB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceB), WorkspaceToBetaDistribution(WorkspaceA)) < epsilon
 
-    if (!SamplesRestriction(WorkspaceA, WorkspaceB, BoundError, BoundProbability)) {
+    if (!SamplesRestriction(WorkspaceA, WorkspaceB, BoundError, delta)) {
         return null
     }
     if (chooseA && chooseB) {

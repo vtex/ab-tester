@@ -2,8 +2,12 @@
   "stack": "nodejs",
   "memory": 128,
   "routes": {
+    "ttcAbTestForWorkspace": {
+      "path": "/_v/private/abtesting/time/:probability",
+      "public": false
+    },
     "initializeAbTestForWorkspace": {
-      "path": "/_v/private/abtesting/initialize/:workspace",
+      "path": "/_v/private/abtesting/initialize/:workspace/:probability",
       "public": false
     },
     "abTestStatus": {

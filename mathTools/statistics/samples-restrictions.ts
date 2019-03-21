@@ -7,7 +7,7 @@ export const BoundError = 1e-4
 *  A brief explanation can be found in https://arxiv.org/pdf/1702.00001.pdf section 3.1
 */
 
-export function NumberOfSamples(BoundError, BoundProbability) {
+export function NumberOfSamples(BoundError: number, BoundProbability: number): number {
     return - Math.log(BoundProbability) / Math.pow(BoundError, 2)
 }
 
