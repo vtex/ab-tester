@@ -22,9 +22,11 @@ declare global {
     NoOrderSessions: number
   }
   export interface TestResult {
+    ComparedWorkspace: string
     Winner: string
     ExpectedLossChoosingA: number
     ExpectedLossChoosingB: number
+    ProbabilityAlternativeBeatMaster: number
     KullbackLeibler: number
   }
   export interface ABTestParameters {

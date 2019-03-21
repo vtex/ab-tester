@@ -44,9 +44,11 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
     const data = await vbase.get(bucket, fileName)
     if (!data) {
         return [{
+            ComparedWorkspace: 'none',
             Winner: 'Test not initialized',
             ExpectedLossChoosingA: 0,
             ExpectedLossChoosingB: 0,
+            ProbabilityAlternativeBeatMaster: 0,
             KullbackLeibler: 0
         }]
     }

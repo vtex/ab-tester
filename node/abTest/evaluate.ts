@@ -1,4 +1,4 @@
-import { ChooseWinner, LossFunctionChossingVariantOne } from '../../mathTools/decision-rule';
+import { ChooseWinner, LossFunctionChossingVariantOne, ProbabilityOfOneBeatTwo } from '../../mathTools/decision-rule';
 import { BoundError } from '../../mathTools/statistics/samples-restrictions'
 import { KLDivergence } from '../../mathTools/statistics/kullback-leibler'
 import { WorkspaceToBetaDistribution } from '../abTest/workspace-to-distribution'
@@ -9,15 +9,17 @@ export async function Evaluate(account: string, workspaceAData: WorkspaceData, w
     console.log(await TestingWorkspaces(account, ctx))
 
     if (workspaceAData["Sessions"] == 0 || workspaceBData["Sessions"] == 0) {
-        return EvaluationResponse('A/B Test not initialized for one of the workspaces or it does not already has visitors.', 0, 0, 0)
+        return EvaluationResponse(workspaceBData.Workspace, 'A/B Test not initialized for one of the workspaces or it does not already has visitors.', 0, 0, 0, 0)
     }
 
     const lossA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceAData), WorkspaceToBetaDistribution(workspaceBData)),
         lossB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceBData), WorkspaceToBetaDistribution(workspaceAData)),
+        probabilityOneBeatTwo = ProbabilityOfOneBeatTwo(WorkspaceToBetaDistribution(workspaceBData).parameterA, WorkspaceToBetaDistribution(workspaceBData).parameterB, WorkspaceToBetaDistribution(workspaceAData).parameterA, WorkspaceToBetaDistribution(workspaceAData).parameterB),
         kldivergence = KLDivergence(WorkspaceToBetaDistribution(workspaceAData), WorkspaceToBetaDistribution(workspaceBData))
 
+
     const winner = ChooseWinner(workspaceAData, workspaceBData, BoundError) || 'not yet decided'
-    return EvaluationResponse(winner, lossA, lossB, kldivergence)
+    return EvaluationResponse(workspaceBData.Workspace, winner, lossA, lossB, probabilityOneBeatTwo, kldivergence)
 }
 
 export async function TestWorkspaces(account: string, aBTestBeginning: string, ctx: ColossusContext): Promise<TestResult[]> {
@@ -34,9 +36,11 @@ export async function TestWorkspaces(account: string, aBTestBeginning: string, c
     return Results
 }
 
-export const EvaluationResponse = (winner: string, lossA: number, lossB: number, KullbackLeibler: number): TestResult => ({
+export const EvaluationResponse = (workspace: string, winner: string, lossA: number, lossB: number, probabilityOneBeatTwo: number, KullbackLeibler: number): TestResult => ({
+    ComparedWorkspace: workspace,
     Winner: winner,
     ExpectedLossChoosingA: lossA,
     ExpectedLossChoosingB: lossB,
+    ProbabilityAlternativeBeatMaster: probabilityOneBeatTwo,
     KullbackLeibler: KullbackLeibler
 })
