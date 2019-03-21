@@ -22,6 +22,7 @@ declare global {
     NoOrderSessions: number
   }
   export interface TestResult {
+    ABTestBeginning: string
     WorkspaceA: string
     WorkspaceB: string
     Winner: string

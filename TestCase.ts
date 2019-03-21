@@ -2,7 +2,7 @@ import { TestWorkspaces } from './node/abTest/evaluate'
 import { FindWorkspace, TestingWorkspaces } from './node/workspace/list'
 import { InitializeABTestMaster, InitializeABTestParams } from './node/workspace/modify'
 import { firstOrDefault } from './node/utils/firstOrDefault'
-import {TTCAbTest} from './node/abTest/time-to-complete'
+import { TimeToCompleteAbTest } from './node/abTest/time-to-complete'
 
 const bucket = 'ABTest'
 const fileName = 'currentABTest.json'
@@ -12,7 +12,7 @@ const testId = '0001'
 
 export async function TTCAbTestForWorkspace(ctx: ColossusContext): Promise<number> {
     const { vtex: { account, route: { params: { probability } } } } = ctx
-    return await TTCAbTest(account, Number(probability), ctx)
+    return await TimeToCompleteAbTest(account, Number(probability), ctx)
 }
 
 export async function initializeABtest(probability: number, ctx: ColossusContext): Promise<void> {
@@ -51,9 +51,10 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
     const data = await vbase.get(bucket, fileName)
     if (!data) {
         return [{
+            ABTestBeginning: 'Test not initialized',
             WorkspaceA: 'none',
             WorkspaceB: 'none',
-            Winner: 'Test not initialized',
+            Winner: 'none',
             ExpectedLossChoosingA: 0,
             ConversionA: 0,
             ExpectedLossChoosingB: 0,

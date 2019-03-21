@@ -3,11 +3,11 @@ import { initializeAbTestForWorkspace as initialize, ABTestStatus, TTCAbTestForW
 export const ttcAbTestForWorkspace = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
-  await ttcForWorkspace(ctx).then(success => console.log(success))
+  const time = await ttcForWorkspace(ctx).then(success => console.log(success))
     .catch(err => console.log(err))
 
   ctx.status = 200
-  ctx.body = 'Required probability chosen for A/B Test.'
+  ctx.body = 'Expected time: ' + String(time)
 }
 
 export const initializeAbTestForWorkspace = async (ctx: ColossusContext) => {
