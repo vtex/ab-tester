@@ -29,7 +29,7 @@ export async function initializeABtest(probability: number, ctx: ColossusContext
 export async function initializeAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
     const { vtex: { account, route: { params: { probability, workspace } } } } = ctx
 
-    const testingWorkspaces = await TestingWorkspaces(account, ctx)
+    var testingWorkspaces = await TestingWorkspaces(account, ctx)
     if (!testingWorkspaces) {
         await InitializeABTestMaster(account, ctx)
     }
@@ -73,7 +73,7 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
 export async function finishAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
     const { vtex: { account, route: { params: { workspace } } } } = ctx
 
-    const testingWorkspaces = await TestingWorkspaces(account, ctx)
+    var testingWorkspaces = await TestingWorkspaces(account, ctx)
     if (testingWorkspaces.length == 2) {
         await FinishABTestMaster(account, ctx)
     }
