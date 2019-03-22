@@ -1,4 +1,4 @@
-import { initializeAbTestForWorkspace as initialize, ABTestStatus, TTCAbTestForWorkspace as ttcForWorkspace } from '../../TestCase'
+import { initializeAbTestForWorkspace as initialize, ABTestStatus, TTCAbTestForWorkspace as ttcForWorkspace, finishAbTestForWorkspace as finish } from '../../TestCase'
 
 export const ttcAbTestForWorkspace = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
@@ -32,9 +32,9 @@ export const abTestStatus = async (ctx: ColossusContext) => {
 export const finishAbTestForWorkspace = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
-  await initialize(ctx).then(success => console.log(success))
+  await finish(ctx).then(success => console.log(success))
     .catch(err => console.log(err))
 
   ctx.status = 200
-  ctx.body = 'A/B Test beginning saved successfully'
+  ctx.body = 'A/B Test finished'
 }

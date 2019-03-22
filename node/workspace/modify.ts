@@ -1,6 +1,6 @@
 import { ABWorkspaces } from './workspaces'
 import { GetWorkspaceData, StoreDashRequestURL } from '../clients/storedash'
-//import { TestingWorkspaces } from './list'
+import { DefaultABTestParameters } from './list'
 
 const InitialABTestParameters: ABTestParameters = { "a": 1, "b": 1 }
 
@@ -11,7 +11,6 @@ export async function getWorkspacesFromMasterContext(ctx: ColossusContext) {
 }
 
 export async function InitializeABTestMaster(account: string, ctx: ColossusContext) {
-
     const masterWorkspaces = await getWorkspacesFromMasterContext(ctx)
     const abWorkspace = await masterWorkspaces.get(account, 'master')
 
@@ -19,7 +18,6 @@ export async function InitializeABTestMaster(account: string, ctx: ColossusConte
 }
 
 export async function InitializeABTestParams(account: string, workspace: string, ctx: ColossusContext) {
-
     const masterWorkspaces = await getWorkspacesFromMasterContext(ctx)
     const abWorkspace = await masterWorkspaces.get(account, workspace)
 
@@ -31,6 +29,20 @@ export async function UpdateABTestParams(account: string, workspaceData: Workspa
     const abWorkspace = await masterWorkspaces.get(account, workspaceData.Workspace)
 
     await masterWorkspaces.set(account, abWorkspace.name, ToWorkspaceMetadada(workspaceData, abWorkspace.weight, abWorkspace.production))
+}
+
+export async function FinishABTestMaster(account: string, ctx: ColossusContext) {
+    const masterWorkspaces = await getWorkspacesFromMasterContext(ctx)
+    const abWorkspace = await masterWorkspaces.get(account, 'master')
+
+    await masterWorkspaces.set(account, abWorkspace.name, DefaultWorkspaceMetadata(abWorkspace))
+}
+
+export async function FinishABTestParams(account: string, workspace: string, ctx: ColossusContext) {
+    const masterWorkspaces = await getWorkspacesFromMasterContext(ctx)
+    const abWorkspace = await masterWorkspaces.get(account, workspace)
+
+    await masterWorkspaces.set(account, abWorkspace.name, DefaultWorkspaceMetadata(abWorkspace))
 }
 
 //TODO: return an array
@@ -68,6 +80,16 @@ export function InitialWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWork
         name: Workspace.name,
         weight: Workspace.weight,
         abTestParameters: InitialABTestParameters,
+        production: Workspace.production
+    }
+    return abWorkspaceMetadata
+}
+
+export function DefaultWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWorkspaceMetadata {
+    let abWorkspaceMetadata: ABWorkspaceMetadata = {
+        name: Workspace.name,
+        weight: Workspace.weight,
+        abTestParameters: DefaultABTestParameters,
         production: Workspace.production
     }
     return abWorkspaceMetadata

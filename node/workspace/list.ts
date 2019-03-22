@@ -1,6 +1,6 @@
 import { ABWorkspaces } from './workspaces'
 
-const DefaultABTestParameters: ABTestParameters = { "a": 0, "b": 0 }
+export const DefaultABTestParameters: ABTestParameters = { "a": 0, "b": 0 }
 
 export async function ListWorkspaces(account: string, ctx: ColossusContext): Promise<ABWorkspaceMetadata[]> {
     const masterContext = ctx.vtex

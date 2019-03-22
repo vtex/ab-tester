@@ -1,6 +1,6 @@
 import { TestWorkspaces } from './node/abTest/evaluate'
 import { FindWorkspace, TestingWorkspaces } from './node/workspace/list'
-import { InitializeABTestMaster, InitializeABTestParams } from './node/workspace/modify'
+import { InitializeABTestMaster, InitializeABTestParams, FinishABTestMaster, FinishABTestParams } from './node/workspace/modify'
 import { firstOrDefault } from './node/utils/firstOrDefault'
 import { TimeToCompleteAbTest } from './node/abTest/time-to-complete'
 
@@ -26,7 +26,7 @@ export async function initializeABtest(probability: number, ctx: ColossusContext
     } as ABTestData)
 }
 
-export async function initializeAbTestForWorkspace(ctx: ColossusContext) {
+export async function initializeAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
     const { vtex: { account, route: { params: { probability, workspace } } } } = ctx
 
     const testingWorkspaces = await TestingWorkspaces(account, ctx)
@@ -68,4 +68,21 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
     const tResult = await TestWorkspaces(account, beginning, probability, ctx)
     return tResult
 
+}
+
+export async function finishAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
+    const { vtex: { account, route: { params: { workspace } } } } = ctx
+
+    const testingWorkspaces = await TestingWorkspaces(account, ctx)
+    if (testingWorkspaces.length == 2) {
+        await FinishABTestMaster(account, ctx)
+    }
+
+    const workspaceName = firstOrDefault(workspace)
+    if (!FindWorkspace(account, workspaceName, ctx)) {
+        ctx.body = `workspace "${workspace}" doesn't exists.`,
+            ctx.status = 401
+    }
+
+    await FinishABTestParams(account, workspaceName, ctx)
 }

@@ -13,6 +13,10 @@
     "abTestStatus": {
       "path": "/_v/private/abtesting/status",
       "public": false
+    },
+    "finishAbTestForWorkspace": {
+      "path": "/_v/private/abtesting/finish/:workspace",
+      "public": false
     }
   },
   "events": {

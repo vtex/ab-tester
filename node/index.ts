@@ -1,5 +1,5 @@
 import { map } from 'ramda'
-import { ttcAbTestForWorkspace, initializeAbTestForWorkspace, abTestStatus } from './abTest/manager';
+import { ttcAbTestForWorkspace, initializeAbTestForWorkspace, abTestStatus, finishAbTestForWorkspace } from './abTest/manager';
 import { Resources } from './resources/index'
 
 const testManager = (handler: any) => async (ctx: ColossusContext) => {
@@ -42,6 +42,7 @@ export default {
     map(testManager, {
       ttcAbTestForWorkspace,
       initializeAbTestForWorkspace,
-      abTestStatus
+      abTestStatus,
+      finishAbTestForWorkspace
     })
 }
