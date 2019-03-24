@@ -1,4 +1,4 @@
-import { TestWorkspaces } from './node/abTest/evaluate'
+import { TestWorkspaces } from './node/abTest/test-workspaces'
 import { FindWorkspace, TestingWorkspaces } from './node/workspace/list'
 import { InitializeABTestMaster, InitializeABTestParams, FinishABTestMaster, FinishABTestParams } from './node/workspace/modify'
 import { firstOrDefault } from './node/utils/firstOrDefault'

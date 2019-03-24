@@ -1,8 +1,6 @@
 import { ABWorkspaces } from './workspaces'
-import { GetWorkspaceData, StoreDashRequestURL } from '../clients/storedash'
-import { DefaultABTestParameters } from './list'
-
-const InitialABTestParameters: ABTestParameters = { "a": 1, "b": 1 }
+import { StoreDashRequestURL, GetWorkspacesData } from '../clients/storedash'
+import { DefaultWorkspaceMetadata, InitialWorkspaceMetadata } from '../utils/workspace-meta-data'
 
 export async function getWorkspacesFromMasterContext(ctx: ColossusContext) {
     const masterContext = ctx.vtex
@@ -27,7 +25,6 @@ export async function InitializeABTestParams(account: string, workspace: string,
 export async function UpdateABTestParams(account: string, workspaceData: WorkspaceData, ctx: ColossusContext) {
     const masterWorkspaces = await getWorkspacesFromMasterContext(ctx)
     const abWorkspace = await masterWorkspaces.get(account, workspaceData.Workspace)
-
     await masterWorkspaces.set(account, abWorkspace.name, ToWorkspaceMetadada(workspaceData, abWorkspace.weight, abWorkspace.production))
 }
 
@@ -45,16 +42,22 @@ export async function FinishABTestParams(account: string, workspace: string, ctx
     await masterWorkspaces.set(account, abWorkspace.name, DefaultWorkspaceMetadata(abWorkspace))
 }
 
-//TODO: return an array
-export async function GetAndUpdateWorkspaceData(account: string, aBTestBeginning: string, workspace: string, ctx: ColossusContext): Promise<WorkspaceData> {
+export async function GetAndUpdateWorkspacesData(account: string, aBTestBeginning: string, workspaces: string[], ctx: ColossusContext): Promise<WorkspaceData[]> {
     const endPoint = StoreDashRequestURL(account, aBTestBeginning)
+    const workspacesData = await GetWorkspacesData(endPoint, ctx)
+    console.log(workspacesData)
+    let testingWorkspacesData: WorkspaceData[] = []
 
-    let workspaceData = await GetWorkspaceData(endPoint, workspace, ctx)
-    if (workspaceData.OrderSessions != 0) {
-        await UpdateABTestParams(account, workspaceData, ctx)
+    for (var workspaceData of workspacesData) {
+        if (workspaces.includes(workspaceData.Workspace)) {
+            if (workspaceData.OrderSessions >= 1) {
+                await UpdateABTestParams(account, workspaceData, ctx)
+            }
+            testingWorkspacesData.push(workspaceData)
+        }
     }
 
-    return workspaceData
+    return testingWorkspacesData
 }
 
 export function ToWorkspaceMetadada(workspaceData: WorkspaceData, weight: number, production: boolean): ABWorkspaceMetadata {
@@ -73,24 +76,4 @@ export function ToABTestParameters(workspaceData: WorkspaceData): ABTestParamete
         b: workspaceData.NoOrderSessions
     }
     return parameters
-}
-
-export function InitialWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWorkspaceMetadata {
-    let abWorkspaceMetadata: ABWorkspaceMetadata = {
-        name: Workspace.name,
-        weight: Workspace.weight,
-        abTestParameters: InitialABTestParameters,
-        production: Workspace.production
-    }
-    return abWorkspaceMetadata
-}
-
-export function DefaultWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWorkspaceMetadata {
-    let abWorkspaceMetadata: ABWorkspaceMetadata = {
-        name: Workspace.name,
-        weight: Workspace.weight,
-        abTestParameters: DefaultABTestParameters,
-        production: Workspace.production
-    }
-    return abWorkspaceMetadata
 }

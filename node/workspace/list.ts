@@ -1,6 +1,5 @@
 import { ABWorkspaces } from './workspaces'
-
-export const DefaultABTestParameters: ABTestParameters = { "a": 0, "b": 0 }
+import { MinimumABTestParameter } from '../utils/minimum-parameters'
 
 export async function ListWorkspaces(account: string, ctx: ColossusContext): Promise<ABWorkspaceMetadata[]> {
     const masterContext = ctx.vtex
@@ -9,12 +8,12 @@ export async function ListWorkspaces(account: string, ctx: ColossusContext): Pro
     return await masterWorkspace.list(account)
 }
 
-export async function TestingWorkspaces(account: string, ctx: ColossusContext): Promise<ABWorkspaceMetadata[]> {
+export async function TestingWorkspaces(account: string, ctx: ColossusContext): Promise<string[]> {
     const workspaces = await ListWorkspaces(account, ctx)
-    let testingWorkspaces : ABWorkspaceMetadata[] = []
+    let testingWorkspaces: string[] = []
     for (var workspace of workspaces) {
         if (MinimumABTestParameter(workspace) >= 1) {
-            testingWorkspaces.push(workspace)
+            testingWorkspaces.push(workspace.name)
         }
     }
     return testingWorkspaces
@@ -30,7 +29,3 @@ export async function FindWorkspace(account: string, workspaceName: string, ctx:
     return false
 }
 
-export function MinimumABTestParameter(workspace: ABWorkspaceMetadata) {
-    const params = workspace["abTestParameters"] || DefaultABTestParameters
-    return Math.min(params.a, params.b)
-}

@@ -21,17 +21,13 @@ export async function getDataFromStoreDash(endPoint: string, ctx: ColossusContex
     })
 }
 
-export async function GetWorkspaceData(endPoint: string, workspace: string, ctx: ColossusContext): Promise<WorkspaceData> {
+export async function GetWorkspacesData(endPoint: string, ctx: ColossusContext): Promise<WorkspaceData[]> {
     const metrics = await getDataFromStoreDash(endPoint, ctx)
-    var total = 0,
-        orderSessions = 0
+    var workspacesData: WorkspaceData[] = []
     for (var metric of metrics) {
-        if (metric["workspace"] == workspace) {
-            orderSessions += metric["data.sessionsOrdered"]
-            total += metric["data.sessions"]
-        }
+        workspacesData.push(WorkspaceData(metric["workspace"], metric["data.sessions"], metric["data.sessionsOrdered"]))
     }
-    return WorkspaceData(workspace, total, orderSessions)
+    return workspacesData
 }
 
 export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSessions: number): WorkspaceData => ({
