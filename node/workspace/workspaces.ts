@@ -9,11 +9,11 @@ const routes = {
 }
 
 export class ABWorkspaces extends Workspaces {
-  public list = (account: string) => {
+  public list = (account: string): Promise<ABWorkspaceMetadata[]> => {
     return this.http.get<ABWorkspaceMetadata[]>(routes.Account(account), {metric: 'workspaces-list'})
   }
 
-  public get = (account: string, workspace: string) => {
+  public get = (account: string, workspace: string): Promise<ABWorkspaceMetadata> => {
     return this.http.get<ABWorkspaceMetadata>(routes.Workspace(account, workspace), {metric: 'workspaces-get'})
   }
 

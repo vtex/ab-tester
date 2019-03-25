@@ -10,6 +10,7 @@ declare global {
   export interface ABTestData {
     Id: string
     timeStart: string
+    probability: number
   }
   export interface BetaDistribution{
     parameterA: number

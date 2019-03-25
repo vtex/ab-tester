@@ -7,10 +7,10 @@ import { TimeToCompleteAbTest } from './node/abTest/time-to-complete'
 const bucket = 'ABTest'
 const fileName = 'currentABTest.json'
 
-// TODO: `Id` should be determined in a general way based on account and workspaces
+// TODO: `testId` should be determined in a general way based on account and workspaces
 const testId = '0001'
 
-export async function TTCAbTestForWorkspace(ctx: ColossusContext): Promise<number> {
+export async function TTCAbTest(ctx: ColossusContext): Promise<number> {
     const { vtex: { account, route: { params: { probability } } } } = ctx
     return await TimeToCompleteAbTest(account, Number(probability), ctx)
 }
@@ -36,7 +36,7 @@ export async function initializeAbTestForWorkspace(ctx: ColossusContext): Promis
 
     const workspaceName = firstOrDefault(workspace)
     if (!FindWorkspace(account, workspaceName, ctx)) {
-        ctx.body = `workspace "${workspace}" doesn't exists.`,
+        ctx.body = `workspace "${workspaceName}" doesn't exists.`,
             ctx.status = 401
     }
 
@@ -67,7 +67,6 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
     const probability = data.probability
     const tResult = await TestWorkspaces(account, beginning, probability, ctx)
     return tResult
-
 }
 
 export async function finishAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
