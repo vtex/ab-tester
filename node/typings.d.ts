@@ -8,6 +8,11 @@ declare global {
     resources: Resources
   }
 
+  export interface StoreDashResponse {
+    workspace: string
+    'data.sessions': number
+    'data.sessionsOrdered': number
+  }
   export interface ABTestData {
     Id: string
     timeStart: string

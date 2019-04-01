@@ -28,7 +28,8 @@ export async function GetWorkspacesData(endPoint: string, ctx: ColossusContext):
     const metrics = await getDataFromStoreDash(endPoint, ctx)
     const workspacesData: WorkspaceData[] = []
     for (const metric of metrics) {
-        workspacesData.push(WorkspaceData(String(metric['workspace']), Number(metric['data.sessions']), Number(metric['data.sessionsOrdered'])))
+        let m: StoreDashResponse = metric as unknown as StoreDashResponse
+        workspacesData.push(WorkspaceData(m['workspace'], m['data.sessions'], m['data.sessionsOrdered']))
     }
     return workspacesData
 }
