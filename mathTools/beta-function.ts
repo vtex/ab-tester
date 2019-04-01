@@ -2,7 +2,7 @@ import { gamma, logGamma } from './gamma-function'
 
 const BIGGEST_POSITIVE_NUMBER = 170
 
-export function beta(x, y) {
+export function beta(x: number, y: number): number {
   if (x < 0 || y < 0) {
     throw RangeError('Arguments must be positive.')
   }
@@ -21,7 +21,7 @@ export function beta(x, y) {
   }
 }
 
-export function logBeta(x, y) {
+export function logBeta(x: number, y: number): number {
   if (x < 0 || y < 0) {
     throw RangeError('Arguments must be positive.')
   }

@@ -6,6 +6,13 @@ export const WorkspaceToBetaDistribution = (Workspace: WorkspaceData): ABTestPar
     b: Workspace.NoOrderSessions + 1
 })
 
+export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSessions: number): WorkspaceData => ({
+    Workspace: Workspace,
+    Sessions: TotalSessions,
+    OrderSessions: OrderSessions,
+    NoOrderSessions: (TotalSessions - OrderSessions)
+})
+
 export function InitialWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWorkspaceMetadata {
     let abWorkspaceMetadata: ABWorkspaceMetadata = {
         name: Workspace.name,

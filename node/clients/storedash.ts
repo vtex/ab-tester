@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { WorkspaceData } from '../utils/workspace'
 import { LoggerClient as Logger } from './logger'
 
 const baseURL = 'http://api.vtex.com/api/storedash/'
@@ -25,19 +26,12 @@ export async function getDataFromStoreDash(endPoint: string, ctx: ColossusContex
 
 export async function GetWorkspacesData(endPoint: string, ctx: ColossusContext): Promise<WorkspaceData[]> {
     const metrics = await getDataFromStoreDash(endPoint, ctx)
-    var workspacesData: WorkspaceData[] = []
-    for (var metric of metrics) {
-        workspacesData.push(WorkspaceData(metric["workspace"], metric["data.sessions"], metric["data.sessionsOrdered"]))
+    const workspacesData: WorkspaceData[] = []
+    for (const metric of metrics) {
+        workspacesData.push(WorkspaceData(metric['workspace'], metric['data.sessions'], metric['data.sessionsOrdered']))
     }
     return workspacesData
 }
-
-export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSessions: number): WorkspaceData => ({
-    Workspace: Workspace,
-    Sessions: TotalSessions,
-    OrderSessions: OrderSessions,
-    NoOrderSessions: (TotalSessions - OrderSessions)
-})
 
 export const AggregationQuery = (from: string): string => (
     '?from=' + from + '&to=now&operation=sum&fields=data.sessions,data.sessionsOrdered&aggregateBy=workspace')

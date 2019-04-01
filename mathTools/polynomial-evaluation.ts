@@ -1,4 +1,4 @@
-export function evalpoly(P: number[], x) {
+export function evalpoly(P: number[], x: number): number {
     var num = 0
     var degree = P.length
 
@@ -18,7 +18,7 @@ export function evalpoly(P: number[], x) {
     return num
 }
 
-export function evalrational(P: number[], Q: number[], x) {
+export function evalrational(P: number[], Q: number[], x: number): number {
     var num = evalpoly(P, x),
         den = evalpoly(Q, x)
 

@@ -10,7 +10,7 @@ import { BoundError, SamplesRestriction } from './statistics/samplesRestrictions
 *   and then exponatiating.
 */
 
-export function ProbabilityOfOneBeatTwo(a, b, c, d) {
+export function ProbabilityOfOneBeatTwo(a: number, b: number, c: number, d: number) {
     var result = 1
 
     for (var j = 0; j < c; j++) {

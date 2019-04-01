@@ -58,7 +58,7 @@ const PI = 3.14159265358979323846264338327950288419716939937510
 * The algorithm can be found in
 * https://www.ams.org/journals/mcom/1973-27-121/S0025-5718-1973-0326986-3/
 */
-export function digammaRationalApprox(x) {
+export function digammaRationalApprox(x: number): number {
     var r = evalrational(P, Q, x - 1),
         root = root1 + root2 + root3,
         g = x
@@ -70,7 +70,7 @@ export function digammaRationalApprox(x) {
 * FUNCTION: digammaAsymptoticApprox( x )
 *	Evaluate the digamma function via asymptotic expansion.
 */
-export function digammaAsymptoticApprox(x) {
+export function digammaAsymptoticApprox(x: number): number {
     var y;
     var z;
     x -= 1;
@@ -81,7 +81,7 @@ export function digammaAsymptoticApprox(x) {
 
 // DIGAMMA //
 
-export function digamma(x) {
+export function digamma(x: number): number {
     var rem, tmp
     if (x !== x || x === 0) {
         return NaN;

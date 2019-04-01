@@ -24,7 +24,7 @@ var Q_COFF = [
   -1.15132259675553483497211E+5
 ];
 
-export function gamma(x) {
+export function gamma(x: number): number {
   if (x <= 0.0) {
     throw new RangeError('Argument must be positive.');
 	}
@@ -89,7 +89,7 @@ var C_COFF = [
 
 var HALF_LOG_TWO_PI = 0.91893853320467274178032973640562;
 
-export function logGamma(x) {
+export function logGamma(x: number): number {
   if (x <= 0.0) {
     throw new RangeError('Argument must be positive.')
 	}
