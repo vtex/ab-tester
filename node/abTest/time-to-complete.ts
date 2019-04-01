@@ -1,5 +1,5 @@
 import { GetWorkspacesData, StoreDashRequestURL } from '../clients/storedash'
-import { BoundError, NumberOfSamples } from '../../mathTools/statistics/samples-restrictions'
+import { BoundError, NumberOfSamples } from '../../mathTools/statistics/samplesRestrictions'
 
 export async function TimeToCompleteAbTest(account: string, probability: number, ctx: ColossusContext): Promise<number> {
     const workspacesData = await GetWorkspacesData(StoreDashRequestURL(account, 'now-7d'), ctx)

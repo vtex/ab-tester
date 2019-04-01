@@ -2,6 +2,7 @@ import { Context as KoaContext } from 'koa'
 import { IOContext } from '@vtex/api'
 import { Resources } from './resources/index'
 declare global {
+  type LogLevel = 'info' | 'error' | 'warning' | 'debug'
   export interface ColossusContext extends KoaContext {
     vtex: IOContext
     resources: Resources
@@ -11,10 +12,6 @@ declare global {
     Id: string
     timeStart: string
     probability: number
-  }
-  export interface BetaDistribution{
-    parameterA: number
-    parameterB: number
   }
   export interface WorkspaceData {
     Workspace: string

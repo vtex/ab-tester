@@ -10,7 +10,7 @@
     "smartcheckout"
   ],
   "builders": {
-    "node": "3.x"
+    "node": "4.x"
   },
   "policies": [
     {

@@ -1,7 +1,7 @@
-export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceAData: WorkspaceData, workspaceBData: WorkspaceData): TestResult => ({
+export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceAName: string, workspaceBName: string): TestResult => ({
     ABTestBeginning: abTestBeginning,
-    WorkspaceA: workspaceAData.Workspace,
-    WorkspaceB: workspaceBData.Workspace,
+    WorkspaceA: workspaceAName,
+    WorkspaceB: workspaceBName,
     Winner: 'A/B Test not initialized for one of the workspaces or it does not already has visitors.',
     ExpectedLossChoosingA: 0,
     ConversionA: 0,
@@ -17,9 +17,9 @@ export const EvaluationResponse = (abTestBeginning: string, workspaceAData: Work
     WorkspaceB: workspaceBData.Workspace,
     Winner: winner,
     ExpectedLossChoosingA: lossA,
-    ConversionA: workspaceAData.OrderSessions/workspaceAData.Sessions,
+    ConversionA: workspaceAData.OrderSessions / workspaceAData.Sessions,
     ExpectedLossChoosingB: lossB,
-    ConversionB: workspaceBData.OrderSessions/workspaceBData.Sessions,
+    ConversionB: workspaceBData.OrderSessions / workspaceBData.Sessions,
     ProbabilityAlternativeBeatMaster: probabilityOneBeatTwo,
     KullbackLeibler: KullbackLeibler
 })

@@ -7,7 +7,7 @@
       "public": false
     },
     "initializeAbTestForWorkspace": {
-      "path": "/_v/private/abtesting/initialize/:workspace/:probability",
+      "path": "/_v/private/abtesting/initialize/:initializingWorkspace/:probability",
       "public": false
     },
     "abTestStatus": {
@@ -15,7 +15,7 @@
       "public": false
     },
     "finishAbTestForWorkspace": {
-      "path": "/_v/private/abtesting/finish/:workspace",
+      "path": "/_v/private/abtesting/finish/:finishingWorkspace",
       "public": false
     }
   },

@@ -15,9 +15,13 @@ export default class VBase {
     this.client = new BaseClient(opts)
   }
 
-  get = async (bucket, path) => {
-    let file = await this.client.getFile(bucket, path)
-    return JSON.parse(file.data.toString())
+  get = async (bucket: string, path: string) => {
+    try {
+      let file = await this.client.getFile(bucket, path)
+      return JSON.parse(file.data.toString())
+    } catch (ex) {
+      throw new Error(`Get request for key ${path} in bucket ${bucket} failed!`)
+    }
   }
 
   save = async (bucket: string, path: string, data: any) => {

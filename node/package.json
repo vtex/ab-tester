@@ -2,18 +2,18 @@
   "name": "vtex.ab-tester",
   "version": "0.0.1",
   "dependencies": {
-    "@vtex/api": "^0.37.1",
     "axios": "^0.18.0",
     "ramda": "^0.25.0"
   },
   "devDependencies": {
+    "@vtex/api": "^3.0.10",
     "@types/axios": "^0.14.0",
     "@types/koa": "^2.0.39",
     "@types/node": "8.x",
     "@types/ramda": "types/npm-ramda#dist",
     "tslint": "^5.8.0",
     "tslint-config-vtex": "^2.0.0",
-    "typescript": "^2.4.2"
+    "typescript": "^3.1.6"
   },
   "scripts": {
     "lint": "tsc --noEmit && tslint -c tslint.json './**/*.ts'"

@@ -1,4 +1,7 @@
-import { initializeAbTestForWorkspace as initialize, ABTestStatus as status, TTCAbTest as timeToComplete, finishAbTestForWorkspace as finish } from '../../TestCase'
+import { TTCAbTest as timeToComplete } from './commands/timeToComplete'
+import { InitializeAbTestForWorkspace as initialize } from './commands/initialize'
+import { ABTestStatus as status } from './commands/status'
+import { FinishAbTestForWorkspace as finish } from './commands/finish'
 
 export const timeToCompleteAbTest = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')

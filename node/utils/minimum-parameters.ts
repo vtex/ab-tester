@@ -1,4 +1,4 @@
-import { DefaultABTestParameters } from '../utils/workspace-meta-data'
+import { DefaultABTestParameters } from '../utils/workspace'
 
 export function MinimumABTestParameter(workspace: ABWorkspaceMetadata) {
     const params = workspace["abTestParameters"] || DefaultABTestParameters

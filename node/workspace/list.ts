@@ -18,14 +18,3 @@ export async function TestingWorkspaces(account: string, ctx: ColossusContext): 
     }
     return testingWorkspaces
 }
-
-export async function FindWorkspace(account: string, workspaceName: string, ctx: ColossusContext): Promise<boolean> {
-    const workspaces = await ListWorkspaces(account, ctx)
-    for (var workspace of workspaces) {
-        if (workspace.name == workspaceName) {
-            return true
-        }
-    }
-    return false
-}
-

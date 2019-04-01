@@ -1,6 +1,6 @@
 import { logBeta } from './beta-function'
-import { WorkspaceToBetaDistribution } from '../node/abTest/workspace-to-distribution'
-import { BoundError, SamplesRestriction } from './statistics/samples-restrictions';
+import { WorkspaceToBetaDistribution } from '../node/utils/workspace'
+import { BoundError, SamplesRestriction } from './statistics/samplesRestrictions';
 
 /*
 *   The reason for using the function logBeta is that we're dealing with very large numbers and the
@@ -19,11 +19,11 @@ export function ProbabilityOfOneBeatTwo(a, b, c, d) {
     return result
 }
 
-export function LossFunctionChossingVariantOne(Beta1: BetaDistribution, Beta2: BetaDistribution) {
-    const a = Beta2["parameterA"],
-        b = Beta2["parameterB"],
-        c = Beta1["parameterA"],
-        d = Beta1["parameterB"]
+export function LossFunctionChossingVariantOne(Beta1: ABTestParameters, Beta2: ABTestParameters) {
+    const a = Beta2.a,
+        b = Beta2.b,
+        c = Beta1.a,
+        d = Beta1.b
 
     const logCoefficient1 = logBeta(a + 1, b) - logBeta(a, b),
         logCoefficient2 = logBeta(c + 1, d) - logBeta(c, d)

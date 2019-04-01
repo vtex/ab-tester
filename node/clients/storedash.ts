@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { LoggerClient as Logger } from './logger'
 
 const baseURL = 'http://api.vtex.com/api/storedash/'
 const metricStoredashPath = '/metrics/storedash/navigationcube'
@@ -15,8 +16,9 @@ export async function getDataFromStoreDash(endPoint: string, ctx: ColossusContex
             .then(response => {
                 resolve(response.data);
             })
-            .catch(error => {
-                console.log(error)
+            .catch(err => {
+                const logger = new Logger(ctx, {})
+                logger.sendLog(err, { status: ctx.status, message: err.message })
             })
     })
 }
