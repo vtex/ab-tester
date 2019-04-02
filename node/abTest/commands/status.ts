@@ -1,6 +1,6 @@
-import { TestWorkspaces } from '../test-workspaces'
-import { DefaultEvaluationResponse } from '../../utils/evaluation-response'
 import { LoggerClient as Logger } from '../../clients/logger'
+import { DefaultEvaluationResponse } from '../../utils/evaluation-response'
+import { TestWorkspaces } from '../test-workspaces'
 
 const bucket = 'ABTest'
 const fileName = 'currentABTest.json'

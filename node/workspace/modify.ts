@@ -1,6 +1,7 @@
+import { InitialStageProbability, IsInitialStage } from '../abTest/initialStage'
+import { GetWorkspacesData, StoreDashRequestURL } from '../clients/storedash'
+import { DefaultWorkspaceMetadata, InitialWorkspaceMetadata, WorkspaceData } from '../utils/workspace'
 import { ABWorkspaces } from './workspaces'
-import { StoreDashRequestURL, GetWorkspacesData } from '../clients/storedash'
-import { DefaultWorkspaceMetadata, InitialWorkspaceMetadata } from '../utils/workspace'
 
 async function getWorkspacesFromMasterContext(ctx: ColossusContext) {
     const masterContext = ctx.vtex
@@ -31,11 +32,16 @@ export async function FinishABTestParams(account: string, workspace: string, ctx
 export async function GetAndUpdateWorkspacesData(account: string, aBTestBeginning: string, workspaces: string[], ctx: ColossusContext): Promise<WorkspaceData[]> {
     const endPoint = StoreDashRequestURL(account, aBTestBeginning)
     const workspacesData = await GetWorkspacesData(endPoint, ctx)
-    let testingWorkspacesData: WorkspaceData[] = []
+    const testingWorkspacesData: WorkspaceData[] = []
 
-    for (var workspaceData of workspacesData) {
+    for (const workspaceData of workspacesData) {
         if (workspaces.includes(workspaceData.Workspace)) {
-            if (workspaceData.OrderSessions >= 1) {
+            if (IsInitialStage(account, workspaceData, ctx)) {
+                const initialSessions = await InitialStageProbability(account, workspaceData.Sessions, ctx)
+                const initialStageWorkspaceData = WorkspaceData(workspaceData.Workspace, initialSessions + 1, initialSessions)
+                await UpdateABTestParams(account, initialStageWorkspaceData, ctx)
+            }
+            else {
                 await UpdateABTestParams(account, workspaceData, ctx)
             }
             testingWorkspacesData.push(workspaceData)
@@ -50,13 +56,13 @@ const ToWorkspaceMetadada = (workspaceData: WorkspaceData, weight: number, produ
         name: workspaceData.Workspace,
         weight: weight,
         production: production,
-        abTestParameters: ToABTestParameters(workspaceData)
+        abTestParameters: ToABTestParameters(workspaceData),
     }
 }
 
 const ToABTestParameters = (workspaceData: WorkspaceData): ABTestParameters => {
     return {
         a: workspaceData.OrderSessions,
-        b: workspaceData.NoOrderSessions
+        b: workspaceData.NoOrderSessions,
     }
 }
