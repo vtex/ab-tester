@@ -1,12 +1,12 @@
-import { TTCAbTest as timeToComplete } from './commands/timeToComplete'
-import { InitializeAbTestForWorkspace as initialize } from './commands/initialize'
-import { ABTestStatus as status } from './commands/status'
-import { FinishAbTestForWorkspace as finish } from './commands/finish'
+import { getWithRetriesHelper as finish } from './commands/finish'
+import { getWithRetriesHelper as initialize } from './commands/initialize'
+import { getWithRetriesHelper as status } from './commands/status'
+import { getWithRetriesHelper as timeToComplete } from './commands/timeToComplete'
 
 export const timeToCompleteAbTest = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
-  const time = await timeToComplete(ctx)
+  const time = await timeToComplete(3, ctx)
 
   ctx.status = 200
   ctx.body = time
@@ -15,7 +15,7 @@ export const timeToCompleteAbTest = async (ctx: ColossusContext) => {
 export const initializeAbTestForWorkspace = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
-  await initialize(ctx)
+  await initialize(3, ctx)
 
   ctx.status = 200
   ctx.body = 'A/B Test beginning saved successfully'
@@ -24,7 +24,7 @@ export const initializeAbTestForWorkspace = async (ctx: ColossusContext) => {
 export const abTestStatus = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
-  const ResultAB = await status(ctx)
+  const ResultAB = await status(3, ctx)
 
   ctx.status = 200
   ctx.body = ResultAB
@@ -33,7 +33,7 @@ export const abTestStatus = async (ctx: ColossusContext) => {
 export const finishAbTestForWorkspace = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
-  await finish(ctx)
+  await finish(3, ctx)
 
   ctx.status = 200
   ctx.body = 'A/B Test finished'

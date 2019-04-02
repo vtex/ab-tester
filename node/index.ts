@@ -1,8 +1,8 @@
-import { map } from 'ramda'
 import { Service } from '@vtex/api'
-import { timeToCompleteAbTest, initializeAbTestForWorkspace, abTestStatus, finishAbTestForWorkspace } from './abTest/manager';
-import { Resources } from './resources/index'
+import { map } from 'ramda'
+import { abTestStatus,  finishAbTestForWorkspace, initializeAbTestForWorkspace, timeToCompleteAbTest } from './abTest/manager'
 import { LoggerClient as Logger } from './clients/logger'
+import { Resources } from './resources/index'
 
 const testManager = (handler: any) => async (ctx: ColossusContext) => {
   ctx.resources = new Resources(ctx)
@@ -41,13 +41,13 @@ export default new Service({
   events: {
     onAppsLinked: async (ctx: ColossusContext) => {
       console.log(`onAppsLinked body: ${ctx.body}`)
-    }
+    },
   },
   routes:
     map(testManager, {
-      timeToCompleteAbTest,
-      initializeAbTestForWorkspace,
       abTestStatus,
-      finishAbTestForWorkspace
-    })
+      finishAbTestForWorkspace,
+      initializeAbTestForWorkspace,
+      timeToCompleteAbTest,
+    }),
 })
