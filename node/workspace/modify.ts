@@ -32,7 +32,6 @@ export async function FinishABTestParams(account: string, workspace: string, ctx
 export async function GetAndUpdateWorkspacesData(account: string, aBTestBeginning: string, workspaces: string[], ctx: ColossusContext): Promise<WorkspaceData[]> {
     const endPoint = StoreDashRequestURL(account, aBTestBeginning)
     const workspacesData = await GetWorkspacesData(endPoint, ctx)
-    console.log(endPoint)
     const testingWorkspacesData: WorkspaceData[] = []
 
     for (const workspaceData of workspacesData) {
