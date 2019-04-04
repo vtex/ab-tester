@@ -13,8 +13,12 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
     if (!data) {
       return [DefaultEvaluationResponse('Test not initialized', 'none', 'none')]
     }
-    const beginning = data.dateOfBeginning
-    const probability = data.probability
+    let beginning = data.dateOfBeginning
+    let probability = data.probability
+    if(beginning === undefined) {
+      beginning = new Date()
+      probability = 0.999
+    }
 
     return await TestWorkspaces(account, beginning, probability, ctx) || []
   } catch (err) {
