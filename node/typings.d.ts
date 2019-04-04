@@ -15,7 +15,7 @@ declare global {
   }
   export interface ABTestData {
     Id: string
-    timeStart: string
+    dateOfBeginning: string
     probability: number
   }
   export interface WorkspaceData {

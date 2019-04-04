@@ -13,10 +13,10 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
     if (!data) {
       return [DefaultEvaluationResponse('Test not initialized', 'none', 'none')]
     }
-    const beginning = data.timeStart
+    const beginning = data.dateOfBeginning
     const probability = data.probability
 
-    return await TestWorkspaces(account, beginning, probability, ctx)
+    return await TestWorkspaces(account, beginning, probability, ctx) || []
   } catch (err) {
     const logger = new Logger(ctx, {})
     logger.sendLog(err, { status: ctx.status, message: err.message })

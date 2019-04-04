@@ -1,6 +1,6 @@
-import { InitialStageProbability, IsInitialStage } from '../abTest/initialStage'
+import { IsInitialStage } from '../abTest/initialStage'
 import { GetWorkspacesData, StoreDashRequestURL } from '../clients/storedash'
-import { DefaultWorkspaceMetadata, InitialWorkspaceMetadata, WorkspaceData } from '../utils/workspace'
+import { DefaultWorkspaceMetadata, InitialWorkspaceMetadata } from '../utils/workspace'
 import { ABWorkspaces } from './workspaces'
 
 async function getWorkspacesFromMasterContext(ctx: ColossusContext) {
@@ -32,16 +32,12 @@ export async function FinishABTestParams(account: string, workspace: string, ctx
 export async function GetAndUpdateWorkspacesData(account: string, aBTestBeginning: string, workspaces: string[], ctx: ColossusContext): Promise<WorkspaceData[]> {
     const endPoint = StoreDashRequestURL(account, aBTestBeginning)
     const workspacesData = await GetWorkspacesData(endPoint, ctx)
+    console.log(endPoint)
     const testingWorkspacesData: WorkspaceData[] = []
 
     for (const workspaceData of workspacesData) {
         if (workspaces.includes(workspaceData.Workspace)) {
-            if (IsInitialStage(account, workspaceData, ctx)) {
-                const initialSessions = await InitialStageProbability(account, workspaceData.Sessions, ctx)
-                const initialStageWorkspaceData = WorkspaceData(workspaceData.Workspace, initialSessions + 1, initialSessions)
-                await UpdateABTestParams(account, initialStageWorkspaceData, ctx)
-            }
-            else {
+            if (!(await IsInitialStage(account, workspaceData, ctx))) {
                 await UpdateABTestParams(account, workspaceData, ctx)
             }
             testingWorkspacesData.push(workspaceData)
@@ -53,10 +49,10 @@ export async function GetAndUpdateWorkspacesData(account: string, aBTestBeginnin
 
 const ToWorkspaceMetadada = (workspaceData: WorkspaceData, weight: number, production: boolean): ABWorkspaceMetadata => {
     return {
-        name: workspaceData.Workspace,
-        weight: weight,
-        production: production,
         abTestParameters: ToABTestParameters(workspaceData),
+        name: workspaceData.Workspace,
+        production: (production),
+        weight: (weight),
     }
 }
 

@@ -7,42 +7,50 @@ export const WorkspaceToBetaDistribution = (Workspace: WorkspaceData): ABTestPar
 })
 
 export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSessions: number): WorkspaceData => ({
-    Workspace: Workspace,
-    Sessions: TotalSessions,
-    OrderSessions: OrderSessions,
     NoOrderSessions: (TotalSessions - OrderSessions),
+    OrderSessions: (OrderSessions),
+    Sessions: TotalSessions,
+    Workspace: `${Workspace}`,
 })
 
 export function InitialWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWorkspaceMetadata {
     const abWorkspaceMetadata: ABWorkspaceMetadata = {
-        name: Workspace.name,
-        weight: Workspace.weight,
         abTestParameters: InitialABTestParameters,
+        name: Workspace.name,
         production: Workspace.production,
+        weight: Workspace.weight,
     }
     return abWorkspaceMetadata
 }
 
 export function DefaultWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWorkspaceMetadata {
     const abWorkspaceMetadata: ABWorkspaceMetadata = {
-        name: Workspace.name,
-        weight: Workspace.weight,
         abTestParameters: DefaultABTestParameters,
+        name: Workspace.name,
         production: Workspace.production,
+        weight: Workspace.weight,
     }
     return abWorkspaceMetadata
 }
 
 export function GetWorkspaceData(workspacesData: WorkspaceData[], workspace: string): WorkspaceData {
+    if (workspacesData === null) {
+        return {
+            NoOrderSessions: 0,
+            OrderSessions: 0,
+            Sessions: 0,
+            Workspace: workspace,
+        }
+    }
     for (const workspaceData of workspacesData) {
         if (workspaceData.Workspace === workspace) {
             return workspaceData
         }
     }
     return {
-        Workspace: workspace,
-        Sessions: 0,
-        OrderSessions: 0,
         NoOrderSessions: 0,
+        OrderSessions: 0,
+        Sessions: 0,
+        Workspace: workspace,
     }
 }

@@ -13,7 +13,6 @@ const testManager = (handler: any) => async (ctx: ColossusContext) => {
 
     if (err.code && err.message && err.status) {
       logger.sendLog(err, { status: ctx.status, message: err.message })
-      ctx.status = err.status
       ctx.body = {
         code: err.code,
         message: err.message,
@@ -22,7 +21,6 @@ const testManager = (handler: any) => async (ctx: ColossusContext) => {
     }
 
     if (err.response) {
-      ctx.status = err.response.status
       ctx.body = ctx.status === 404 ? 'Not Found' : err.response.data
       logger.sendLog(err, { status: ctx.status, message: err.response.data })
       console.log(
