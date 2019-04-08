@@ -28,6 +28,8 @@ declare global {
     ABTestBeginning: string
     WorkspaceA: string
     WorkspaceB: string
+    WorkspaceASessions: number
+    WorkspaceBSessions: number
     Winner: string
     ExpectedLossChoosingA: number
     ConversionA: number
