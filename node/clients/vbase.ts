@@ -9,22 +9,22 @@ const jsonStream = (arg: any) => {
 }
 
 export default class VBase {
-  client: BaseClient
+  private client: BaseClient
 
   constructor(opts: any) {
     this.client = new BaseClient(opts)
   }
 
-  get = async (bucket: string, path: string) => {
+  public get = async (bucket: string, path: string) => {
     try {
-      let file = await this.client.getFile(bucket, path)
+      const file = await this.client.getFile(bucket, path)
       return JSON.parse(file.data.toString())
     } catch (ex) {
       throw new Error(`Get request for key ${path} in bucket ${bucket} failed!`)
     }
   }
 
-  save = async (bucket: string, path: string, data: any) => {
+  public save = async (bucket: string, path: string, data: any) => {
     try {
       await this.client.saveFile(bucket, path, jsonStream(data))
     } catch (ex) {
