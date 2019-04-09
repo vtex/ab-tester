@@ -1,3 +1,4 @@
+import { HttpClient, InstanceOptions } from '@vtex/api'
 import { LoggerClient as Logger } from '../../clients/logger'
 import { HoursSince } from '../../utils/hoursSince'
 import { TestingWorkspaces } from '../../workspace/list'
@@ -36,4 +37,16 @@ export const keep = async (ctx: ColossusContext) => {
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+export class Routes {
+  private http: HttpClient
+
+  constructor(ctx: ColossusContext, opts: InstanceOptions) {
+    this.http = HttpClient.forWorkspace('ab-tester', ctx.vtex, opts)
+  }
+
+  public getUserRoutes = (): Promise<void> => {
+    return this.http.get<void>(`/_v/private/abtesting/keep?__v=${process.env.VTEX_APP_VERSION}`)
+  }
 }
