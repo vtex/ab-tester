@@ -11,11 +11,11 @@ export async function getDataFromStoreDash(endPoint: string, ctx: ColossusContex
             {
                 headers: {
                     'Proxy-Authorization': ctx.vtex.authToken,
-                    'VtexIdclientAutCookie': ctx.vtex.authToken
-                }
+                    'VtexIdclientAutCookie': ctx.vtex.authToken,
+                },
             })
             .then(response => {
-                resolve(response.data);
+                resolve(response.data)
             })
             .catch(err => {
                 const logger = new Logger(ctx, {})
@@ -28,7 +28,7 @@ export async function GetWorkspacesData(endPoint: string, ctx: ColossusContext):
     const metrics = await getDataFromStoreDash(endPoint, ctx)
     const workspacesData: WorkspaceData[] = []
     for (const metric of metrics) {
-        let m: StoreDashResponse = metric as unknown as StoreDashResponse
+        const m: StoreDashResponse = metric as unknown as StoreDashResponse
         workspacesData.push(WorkspaceData(m['workspace'], m['data.sessions'], m['data.sessionsOrdered']))
     }
     return workspacesData

@@ -1,5 +1,6 @@
 import { getWithRetriesHelper as finish } from './commands/finish'
 import { getWithRetriesHelper as initialize } from './commands/initialize'
+import { keep } from './commands/keepUpdating'
 import { getWithRetriesHelper as status } from './commands/status'
 import { getWithRetriesHelper as timeToComplete } from './commands/timeToComplete'
 
@@ -28,6 +29,15 @@ export const abTestStatus = async (ctx: ColossusContext) => {
 
   ctx.status = 200
   ctx.body = ResultAB
+}
+
+export const keepStatus = async (ctx: ColossusContext) => {
+  ctx.set('Cache-Control', 'no-cache')
+
+  ctx.status = 200
+  ctx.body = 'Keeping A/B Test updtated'
+
+  await keep(ctx)
 }
 
 export const finishAbTestForWorkspace = async (ctx: ColossusContext) => {

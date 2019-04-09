@@ -1,6 +1,6 @@
 import { Service } from '@vtex/api'
 import { map } from 'ramda'
-import { abTestStatus,  finishAbTestForWorkspace, initializeAbTestForWorkspace, timeToCompleteAbTest } from './abTest/manager'
+import { abTestStatus,  finishAbTestForWorkspace, initializeAbTestForWorkspace, keepStatus, timeToCompleteAbTest } from './abTest/manager'
 import { LoggerClient as Logger } from './clients/logger'
 import { Resources } from './resources/index'
 
@@ -46,6 +46,7 @@ export default new Service({
       abTestStatus,
       finishAbTestForWorkspace,
       initializeAbTestForWorkspace,
+      keepStatus,
       timeToCompleteAbTest,
     }),
 })
