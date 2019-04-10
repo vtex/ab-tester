@@ -31,7 +31,7 @@ export async function UpdateStatus(ctx: ColossusContext): Promise<void> {
 export const keep = async (ctx: ColossusContext) => {
   const route = new Routes(ctx, {})
   await UpdateStatus(ctx)
-  await delay(6 * SECONDS_TO_MILISECONDS)
+  await delay(3 * SECONDS_TO_MILISECONDS)
   await route.getUserRoutes()
 }
 

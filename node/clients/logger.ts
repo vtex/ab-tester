@@ -11,7 +11,7 @@ export class LoggerClient {
 
   public sendLog = (level: LogLevel, message: string | {}): Promise<void> => {
     const { vtex: { account, userAgent } } = this.ctx
-    console.warn(`Try this query at Splunk to retrieve error log: 'index=colossus key=log_error subject=${userAgent} account=${account} workspace=${this.ctx.header["x-vtex-workspace"]}'`)
+    console.warn(`Try this query at Splunk to retrieve error log: 'index=colossus key=log_error subject=${userAgent} account=${account} workspace=${this.ctx.header['x-vtex-workspace']}'`)
     const data = (typeof message === 'string' || message instanceof String)
       ? { message }
       : message

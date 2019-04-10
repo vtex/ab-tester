@@ -1,0 +1,14 @@
+[
+    {
+      "name": "ab-testing",
+      "description": "Allows access to execute commands relative to A/B Test",
+      "statements": [
+        {
+          "actions": ["get"],
+          "effect": "allow",
+          "resource":
+            "vrn:vtex.ab-tester:{{region}}:{{account}}:{{workspace}}:/_v/private/abtesting/*"
+        }
+      ]
+    }
+  ]
