@@ -37,8 +37,8 @@ const testManager = (handler: any) => async (ctx: ColossusContext) => {
 
 export default new Service({
   events: {
-    onAppsLinked: async (ctx: ColossusContext) => {
-      console.log(`onAppsLinked body: ${ctx.body}`)
+    keepUpdating: async (ctx: ColossusContext) => {
+      await keepStatus(ctx)
     },
   },
   routes:

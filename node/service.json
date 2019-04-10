@@ -24,9 +24,9 @@
     }
   },
   "events": {
-    "onAppsLinked": {
-      "sender": "apps",
-      "keys": ["linked"]
+    "keepUpdating": {
+      "sender": "vtex.ab-tester",
+      "keys": ["keep"]
     }
   }
 }
