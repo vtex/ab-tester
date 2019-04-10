@@ -29,10 +29,10 @@ export async function UpdateStatus(ctx: ColossusContext): Promise<void> {
 }
 
 export const keep = async (ctx: ColossusContext) => {
-  for (let i = 0; i < 1000; i++) {
-    await UpdateStatus(ctx)
-    await delay(10 * SECONDS_TO_MILISECONDS)
-  }
+  const route = new Routes(ctx, {})
+  await UpdateStatus(ctx)
+  await delay(6 * SECONDS_TO_MILISECONDS)
+  await route.getUserRoutes()
 }
 
 function delay(ms: number) {
