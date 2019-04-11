@@ -35,7 +35,7 @@ export const keepStatus = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
   ctx.status = 200
-  ctx.body = 'Keeping A/B Test updtated'
+  ctx.body = 'Keeping A/B Test updated'
 
   await keep(ctx)
 }

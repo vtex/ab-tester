@@ -1,14 +1,13 @@
+import { IOContext } from '@vtex/api'
 import { MinimumABTestParameter } from '../utils/minimum-parameters'
 import { ABWorkspaces } from './workspaces'
 
-export async function ListWorkspaces(account: string, ctx: ColossusContext): Promise<ABWorkspaceMetadata[]> {
-    const masterContext = ctx.vtex
-    masterContext.workspace = 'master'
-    const masterWorkspace = await new ABWorkspaces(masterContext)
+async function ListWorkspaces(account: string, ctx: IOContext): Promise<ABWorkspaceMetadata[]> {
+    const masterWorkspace = await new ABWorkspaces(ctx)
     return await masterWorkspace.list(account)
 }
 
-export async function TestingWorkspaces(account: string, ctx: ColossusContext): Promise<string[]> {
+export async function TestingWorkspaces(account: string, ctx: IOContext): Promise<string[]> {
     const workspaces = await ListWorkspaces(account, ctx)
     const testingWorkspaces: string[] = []
     for (const workspace of workspaces) {

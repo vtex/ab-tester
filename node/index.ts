@@ -1,15 +1,16 @@
 import { Service } from '@vtex/api'
 import { map } from 'ramda'
-import { abTestStatus,  finishAbTestForWorkspace, initializeAbTestForWorkspace, keepStatus, timeToCompleteAbTest } from './abTest/manager'
+import { getWithRetriesHelper as UpdateStatusOnEvent } from './abTest/commands/keepUpdating'
+import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, keepStatus, timeToCompleteAbTest } from './abTest/manager'
 import { LoggerClient as Logger } from './clients/logger'
 import { Resources } from './resources/index'
 
 const testManager = (handler: any) => async (ctx: ColossusContext) => {
-  ctx.resources = new Resources(ctx)
+  ctx.resources = new Resources(ctx.vtex)
   try {
     await handler(ctx)
   } catch (err) {
-    const logger = new Logger(ctx, {})
+    const logger = new Logger(ctx.vtex, {})
 
     if (err.code && err.message && err.status) {
       logger.sendLog(err, { status: ctx.status, message: err.message })
@@ -37,8 +38,9 @@ const testManager = (handler: any) => async (ctx: ColossusContext) => {
 
 export default new Service({
   events: {
-    keepUpdating: async (ctx: ColossusContext) => {
-      await keepStatus(ctx)
+    keepUpdating: async (ctx: EventsContext) => {
+      ctx.resources = new Resources(ctx)
+      await UpdateStatusOnEvent(3, ctx)
     },
   },
   routes:

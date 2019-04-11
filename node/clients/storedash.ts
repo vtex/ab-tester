@@ -1,3 +1,4 @@
+import { IOContext } from '@vtex/api'
 import axios from 'axios'
 import { WorkspaceData } from '../utils/workspace'
 import { LoggerClient as Logger } from './logger'
@@ -5,13 +6,13 @@ import { LoggerClient as Logger } from './logger'
 const baseURL = 'http://api.vtex.com/api/storedash/'
 const metricStoredashPath = '/metrics/storedash/navigationcube'
 
-export async function getDataFromStoreDash(endPoint: string, ctx: ColossusContext): Promise<JSON[]> {
+async function getDataFromStoreDash(endPoint: string, ctx: IOContext): Promise<JSON[]> {
     return new Promise<JSON[]>((resolve, _reject) => {
         axios.get(endPoint,
             {
                 headers: {
-                    'Proxy-Authorization': ctx.vtex.authToken,
-                    'VtexIdclientAutCookie': ctx.vtex.authToken,
+                    'Proxy-Authorization': ctx.authToken,
+                    'VtexIdclientAutCookie': ctx.authToken,
                 },
             })
             .then(response => {
@@ -19,12 +20,12 @@ export async function getDataFromStoreDash(endPoint: string, ctx: ColossusContex
             })
             .catch(err => {
                 const logger = new Logger(ctx, {})
-                logger.sendLog(err, { status: ctx.status, message: err.message })
+                logger.sendLog(err, { status: err.status, message: err.message })
             })
     })
 }
 
-export async function GetWorkspacesData(endPoint: string, ctx: ColossusContext): Promise<WorkspaceData[]> {
+export async function GetWorkspacesData(endPoint: string, ctx: IOContext): Promise<WorkspaceData[]> {
     const metrics = await getDataFromStoreDash(endPoint, ctx)
     const workspacesData: WorkspaceData[] = []
     for (const metric of metrics) {

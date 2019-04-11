@@ -22,7 +22,7 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
 
     return await TestWorkspaces(account, beginning, probability, ctx) || []
   } catch (err) {
-    const logger = new Logger(ctx, {})
+    const logger = new Logger(ctx.vtex, {})
     logger.sendLog(err, { status: ctx.status, message: err.message })
     throw new Error(err)
   }

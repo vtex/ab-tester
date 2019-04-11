@@ -7,16 +7,16 @@ export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<vo
   const { vtex: { account, route: { params: { finishingWorkspace } } } } = ctx
   const workspaceName = firstOrDefault(finishingWorkspace)
   try {
-    await FinishABTestParams(account, workspaceName, ctx)
-    const testingWorkspaces = await TestingWorkspaces(account, ctx)
+    await FinishABTestParams(account, workspaceName, ctx.vtex)
+    const testingWorkspaces = await TestingWorkspaces(account, ctx.vtex)
     if (testingWorkspaces === ['master']) {
-      await FinishABTestParams(account, 'master', ctx)
+      await FinishABTestParams(account, 'master', ctx.vtex)
     }
   } catch (err) {
     if (err.status === 404) {
       err.message = 'Workspace not found'
     }
-    const logger = new Logger(ctx, {})
+    const logger = new Logger(ctx.vtex, {})
     logger.sendLog(err, { status: ctx.status, message: err.message })
     throw new Error(err)
   }

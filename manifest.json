@@ -9,16 +9,22 @@
   "registries": [
     "smartcheckout"
   ],
+  "dependencies": {},
   "builders": {
     "node": "4.x"
   },
-  "policies": [
-    {
+  "policies": [{
       "name": "outbound-access",
-      "attrs":
-      {
+      "attrs": {
         "host": "api.vtex.com",
         "path": "/api/storedash/{{account}}/metrics/*"
+      }
+    },
+    {
+      "name": "colossus-listen-event-any-keys",
+      "attrs": {
+        "sender": "vtex.ab-tester",
+        "subject": ""
       }
     },
     {
@@ -32,6 +38,12 @@
     },
     {
       "name": "promote-workspace"
+    },
+    {
+      "name": "colossus-write-logs"
+    },
+    {
+      "name": "colossus-fire-event"
     }
   ],
   "scripts": {

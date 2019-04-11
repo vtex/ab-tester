@@ -7,9 +7,9 @@ import { Evaluate } from './evaluate'
 const MasterWorkspaceName = 'master'
 
 export async function TestWorkspaces(account: string, abTestBeginning: string, probability: number, ctx: ColossusContext): Promise<TestResult[]> {
-    const testingWorkspaces = await TestingWorkspaces(account, ctx)
+    const testingWorkspaces = await TestingWorkspaces(account, ctx.vtex)
     const beginningQuery = HoursSince(abTestBeginning)
-    const workspacesData = await GetAndUpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx)
+    const workspacesData = await GetAndUpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx.vtex)
 
     const masterWorkspace = await GetWorkspaceData(workspacesData, MasterWorkspaceName)
     const Results: TestResult[] = []
