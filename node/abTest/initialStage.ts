@@ -1,5 +1,5 @@
 import { IOContext } from '@vtex/api'
-import { AverageDaySessions } from './time-to-complete'
+import { AverageDaySessions } from './timeToComplete'
 
 const TIME_STEP_FACTOR = (1 / 24)
 

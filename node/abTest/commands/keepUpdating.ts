@@ -35,7 +35,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
     await delay(10 * MINUTES_TO_MILISECONDS)
     await GetAndUpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx)
     console.log(ctx.workspace)
-    events.sendEvent('', 'keep')
+    events.sendEvent('', 'keep_updating')
   } catch (err) {
     const logger = new Logger(ctx, {})
     logger.sendLog(err, { status: err.status, message: err.message })

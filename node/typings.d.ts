@@ -26,6 +26,11 @@ declare global {
     Sessions: number
     OrderSessions: number
     NoOrderSessions: number
+    Conversion: number
+  }
+  export interface WorkspaceCompleteData {
+    Last24Hours: WorkspaceData
+    SinceBeginning: WorkspaceData
   }
   export interface TestResult {
     ABTestBeginning: string
@@ -33,11 +38,15 @@ declare global {
     WorkspaceB: string
     WorkspaceASessions: number
     WorkspaceBSessions: number
+    WorkspaceASessionsLast24Hours: number
+    WorkspaceBSessionsLast24Hours: number
     Winner: string
     ExpectedLossChoosingA: number
     ConversionA: number
+    ConversionALast24Hours: number
     ExpectedLossChoosingB: number
     ConversionB: number
+    ConversionBLast24Hours: number
     ProbabilityAlternativeBeatMaster: number
     KullbackLeibler: number
   }

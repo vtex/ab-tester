@@ -1,5 +1,5 @@
 import { LoggerClient as Logger } from '../../clients/logger'
-import { TimeToCompleteAbTest } from '../time-to-complete'
+import { TimeToCompleteAbTest } from '../timeToComplete'
 
 export async function TTCAbTest(ctx: ColossusContext): Promise<number> {
     const { vtex: { account, route: { params: { probability } } } } = ctx

@@ -7,6 +7,7 @@ export const WorkspaceToBetaDistribution = (Workspace: WorkspaceData): ABTestPar
 })
 
 export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSessions: number): WorkspaceData => ({
+    Conversion: (TotalSessions > 0 ? OrderSessions / TotalSessions : 0),
     NoOrderSessions: (TotalSessions - OrderSessions),
     OrderSessions: (OrderSessions),
     Sessions: TotalSessions,
@@ -35,22 +36,37 @@ export function DefaultWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWork
 
 export function GetWorkspaceData(workspacesData: WorkspaceData[], workspace: string): WorkspaceData {
     if (workspacesData === null) {
-        return {
-            NoOrderSessions: 0,
-            OrderSessions: 0,
-            Sessions: 0,
-            Workspace: workspace,
-        }
+        return ErrorWorkspaceData(workspace)
     }
     for (const workspaceData of workspacesData) {
         if (workspaceData.Workspace === workspace) {
             return workspaceData
         }
     }
-    return {
-        NoOrderSessions: 0,
-        OrderSessions: 0,
-        Sessions: 0,
-        Workspace: workspace,
-    }
+    return ErrorWorkspaceData(workspace)
 }
+
+export function GetWorkspaceCompleteData(workspacesData: WorkspaceCompleteData[], workspace: string): WorkspaceCompleteData {
+    if (workspacesData === null) {
+        return ErrorWorkspaceCompleteData(workspace)
+    }
+    for (const workspaceData of workspacesData) {
+        if (workspaceData.SinceBeginning.Workspace === workspace) {
+            return workspaceData
+        }
+    }
+    return ErrorWorkspaceCompleteData(workspace)
+}
+
+const ErrorWorkspaceData = (workspace: string): WorkspaceData => ({
+    Conversion: 0,
+    NoOrderSessions: 0,
+    OrderSessions: 0,
+    Sessions: 0,
+    Workspace: workspace,
+})
+
+const ErrorWorkspaceCompleteData = (workspace: string): WorkspaceCompleteData => ({
+    Last24Hours: ErrorWorkspaceData(workspace),
+    SinceBeginning: ErrorWorkspaceData(workspace),
+})
