@@ -27,18 +27,3 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
     throw new Error(err)
   }
 }
-
-export async function getWithRetriesHelper(retries: number, ctx: ColossusContext) {
-  let error = null
-  while (retries--) {
-    try {
-      return await ABTestStatus(ctx)
-    } catch (err) {
-      err.response ?
-        console.error(`Error ${err.response.status} on getting A/B Test status, ${retries} retries left`) :
-        console.error(`Error on getting A/B Test status, ${retries} retries left`)
-      error = err
-    }
-  }
-  throw error
-}

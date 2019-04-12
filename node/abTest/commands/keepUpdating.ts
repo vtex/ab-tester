@@ -6,21 +6,13 @@ import { GetAndUpdateWorkspacesData } from '../../workspace/modify'
 const bucket = 'ABTest'
 const fileName = 'currentABTest.json'
 const SECONDS_TO_MILISECONDS = 1000
+const MINUTES_TO_MILISECONDS = 60 * 1000
 
-export async function UpdateStatus(ctx: ColossusContext): Promise<void> {
-  const { vtex: { account }, resources: { events, vbase } } = ctx
+async function SendEventForUpdate(ctx: ColossusContext): Promise<void> {
+  const { resources: { events } } = ctx
 
   try {
-    const data = await vbase.get(bucket, fileName)
-    let beginning = data.dateOfBeginning
-    if (beginning === undefined) {
-      beginning = new Date()
-    }
-
-    const testingWorkspaces = await TestingWorkspaces(account, ctx.vtex)
-    const beginningQuery = HoursSince(beginning)
-    await GetAndUpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx.vtex)
-    events.sendEvent('', 'keep')
+    events.sendEvent('', 'keep_updating')
   } catch (err) {
     const logger = new Logger(ctx.vtex, {})
     logger.sendLog(err, { status: ctx.status, message: err.message })
@@ -40,7 +32,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
 
     const testingWorkspaces = await TestingWorkspaces(account, ctx)
     const beginningQuery = HoursSince(beginning)
-    await delay(5 * SECONDS_TO_MILISECONDS)
+    await delay(10 * MINUTES_TO_MILISECONDS)
     await GetAndUpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx)
     console.log(ctx.workspace)
     events.sendEvent('', 'keep')
@@ -53,7 +45,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
 
 export const keep = async (ctx: ColossusContext) => {
   await delay(5 * SECONDS_TO_MILISECONDS)
-  await UpdateStatus(ctx)
+  await SendEventForUpdate(ctx)
 }
 
 function delay(ms: number) {

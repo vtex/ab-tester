@@ -11,18 +11,3 @@ export async function TTCAbTest(ctx: ColossusContext): Promise<number> {
         throw new Error(err)
     }
 }
-
-export async function getWithRetriesHelper(retries: number, ctx: ColossusContext) {
-    let error = null
-    while (retries--) {
-        try {
-            return await TTCAbTest(ctx)
-        } catch (err) {
-            err.response ?
-                console.error(`Error ${err.response.status} on getting TTC of A/B Test, ${retries} retries left`) :
-                console.error(`Error on getting TTC of A/B Test, ${retries} retries left`)
-            error = err
-        }
-    }
-    throw error
-}

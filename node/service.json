@@ -26,7 +26,7 @@
   "events": {
     "keepUpdating": {
       "sender": "vtex.ab-tester",
-      "keys": ["keep"]
+      "keys": ["keep_updating"]
     }
   }
 }
