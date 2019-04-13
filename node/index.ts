@@ -1,7 +1,6 @@
 import { Service } from '@vtex/api'
 import { map } from 'ramda'
-import { getWithRetriesHelper as UpdateStatusOnEvent } from './abTest/commands/keepUpdating'
-import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, keepStatus, timeToCompleteAbTest } from './abTest/manager'
+import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters } from './abTest/manager'
 import { LoggerClient as Logger } from './clients/logger'
 import { Resources } from './resources/index'
 
@@ -39,8 +38,7 @@ const testManager = (handler: any) => async (ctx: ColossusContext) => {
 export default new Service({
   events: {
     keepUpdating: async (ctx: EventsContext) => {
-      ctx.resources = new Resources(ctx)
-      await UpdateStatusOnEvent(3, ctx)
+      updateParameters(ctx)
     },
   },
   routes:
@@ -48,7 +46,6 @@ export default new Service({
       abTestStatus,
       finishAbTestForWorkspace,
       initializeAbTestForWorkspace,
-      keepStatus,
       timeToCompleteAbTest,
     }),
 })

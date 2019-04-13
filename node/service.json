@@ -17,10 +17,6 @@
     "finishAbTestForWorkspace": {
       "path": "/_v/private/abtesting/finish/:finishingWorkspace",
       "public": false
-    },
-    "keepStatus": {
-      "path": "/_v/private/abtesting/keep",
-      "public": false
     }
   },
   "events": {

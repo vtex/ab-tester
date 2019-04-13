@@ -1,9 +1,9 @@
 import { getWithRetriesHelper } from '../utils/getWithRetries'
 import { FinishAbTestForWorkspace as finish } from './commands/finish'
 import { InitializeAbTestForWorkspace as initialize } from './commands/initialize'
-import { keep } from './commands/keepUpdating'
 import { ABTestStatus as status } from './commands/status'
 import { TTCAbTest as timeToComplete } from './commands/timeToComplete'
+import { UpdateStatusOnEvent as update } from './commands/update'
 
 export const timeToCompleteAbTest = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
@@ -32,15 +32,6 @@ export const abTestStatus = async (ctx: ColossusContext) => {
   ctx.body = ResultAB
 }
 
-export const keepStatus = async (ctx: ColossusContext) => {
-  ctx.set('Cache-Control', 'no-cache')
-
-  ctx.status = 200
-  ctx.body = 'Keeping A/B Test updated'
-
-  await keep(ctx)
-}
-
 export const finishAbTestForWorkspace = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
@@ -48,4 +39,8 @@ export const finishAbTestForWorkspace = async (ctx: ColossusContext) => {
 
   ctx.status = 200
   ctx.body = 'A/B Test finished'
+}
+
+export const updateParameters = async (ctx: EventsContext) => {
+  await update(ctx)
 }
