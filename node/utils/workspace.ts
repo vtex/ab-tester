@@ -14,6 +14,29 @@ export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSes
     Workspace: `${Workspace}`,
 })
 
+const ErrorWorkspaceData = (workspace: string): WorkspaceData => ({
+    Conversion: 0,
+    NoOrderSessions: 0,
+    OrderSessions: 0,
+    Sessions: 0,
+    Workspace: workspace,
+})
+
+const ErrorWorkspaceCompleteData = (workspace: string): WorkspaceCompleteData => ({
+    Last24Hours: ErrorWorkspaceData(workspace),
+    SinceBeginning: ErrorWorkspaceData(workspace),
+})
+
+export const FilteredWorkspacesData = (workspacesData: WorkspaceData[], testingWorkspaces: string[]): WorkspaceData[] => {
+    const filteredWorkspaces: WorkspaceData[] = []
+    for (const workspaceData of workspacesData) {
+        if (testingWorkspaces.includes(workspaceData.Workspace)) {
+            filteredWorkspaces.push(workspaceData)
+        }
+    }
+    return filteredWorkspaces
+}
+
 export function InitialWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWorkspaceMetadata {
     const abWorkspaceMetadata: ABWorkspaceMetadata = {
         abTestParameters: InitialABTestParameters,
@@ -57,16 +80,3 @@ export function GetWorkspaceCompleteData(workspacesData: WorkspaceCompleteData[]
     }
     return ErrorWorkspaceCompleteData(workspace)
 }
-
-const ErrorWorkspaceData = (workspace: string): WorkspaceData => ({
-    Conversion: 0,
-    NoOrderSessions: 0,
-    OrderSessions: 0,
-    Sessions: 0,
-    Workspace: workspace,
-})
-
-const ErrorWorkspaceCompleteData = (workspace: string): WorkspaceCompleteData => ({
-    Last24Hours: ErrorWorkspaceData(workspace),
-    SinceBeginning: ErrorWorkspaceData(workspace),
-})

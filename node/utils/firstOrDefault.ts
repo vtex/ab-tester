@@ -1,5 +1,5 @@
 export const firstOrDefault = (header: string | string[] | undefined): string => {
-  if (header == undefined) {
+  if (header === undefined) {
     return ''
   }
   if (typeof header === 'string') {

@@ -1,7 +1,7 @@
 import { LoggerClient as Logger } from '../../clients/logger'
 import { HoursSince } from '../../utils/hoursSince'
 import { TestingWorkspaces } from '../../workspace/list'
-import { GetAndUpdateWorkspacesData } from '../../workspace/modify'
+import { UpdateWorkspacesData } from '../../workspace/modify'
 
 const bucket = 'ABTest'
 const fileName = 'currentABTest.json'
@@ -18,7 +18,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
 
     const testingWorkspaces = await TestingWorkspaces(account, ctx)
     const beginningQuery = HoursSince(beginning)
-    await GetAndUpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx)
+    await UpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx)
     console.log(ctx.workspace)
   } catch (err) {
     const logger = new Logger(ctx, {})

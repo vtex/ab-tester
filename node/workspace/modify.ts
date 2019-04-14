@@ -1,7 +1,7 @@
 import { IOContext } from '@vtex/api'
 import { IsInitialStage } from '../abTest/initialStage'
 import { GetWorkspacesData, StoreDashRequestURL } from '../clients/storedash'
-import { DefaultWorkspaceMetadata, InitialWorkspaceMetadata } from '../utils/workspace'
+import { DefaultWorkspaceMetadata, FilteredWorkspacesData, InitialWorkspaceMetadata } from '../utils/workspace'
 import { ABWorkspaces } from './workspaces'
 
 async function getWorkspaces(ctx: IOContext) {
@@ -28,21 +28,16 @@ export async function FinishABTestParams(account: string, workspace: string, ctx
     await masterWorkspaces.set(account, abWorkspace.name, DefaultWorkspaceMetadata(abWorkspace))
 }
 
-export async function GetAndUpdateWorkspacesData(account: string, aBTestBeginning: string, workspaces: string[], ctx: IOContext): Promise<WorkspaceData[]> {
+export async function UpdateWorkspacesData(account: string, aBTestBeginning: string, workspaces: string[], ctx: IOContext): Promise<void> {
     const endPoint = StoreDashRequestURL(account, aBTestBeginning)
     const workspacesData = await GetWorkspacesData(endPoint, ctx)
-    const testingWorkspacesData: WorkspaceData[] = []
+    const testingWorkspaces = FilteredWorkspacesData(workspacesData, workspaces)
 
-    for (const workspaceData of workspacesData) {
-        if (workspaces.includes(workspaceData.Workspace)) {
-            if (!(await IsInitialStage(account, workspaceData, ctx))) {
-                await UpdateABTestParams(account, workspaceData, ctx)
-            }
-            testingWorkspacesData.push(workspaceData)
+    if (!(await IsInitialStage(account, workspacesData, ctx))) {
+        for (const workspaceData of testingWorkspaces) {
+            await UpdateABTestParams(account, workspaceData, ctx)
         }
     }
-
-    return testingWorkspacesData
 }
 
 const ToWorkspaceMetadada = (workspaceData: WorkspaceData, weight: number, production: boolean): ABWorkspaceMetadata => {
