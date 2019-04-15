@@ -1,5 +1,6 @@
 import { IOContext } from '@vtex/api'
 import { GetWorkspacesData, StoreDashRequestURL } from '../clients/storedash'
+import { DefaultEvaluationResponse } from '../utils/evaluation-response'
 import { HoursSince } from '../utils/hoursSince'
 import { FilteredWorkspacesData, GetWorkspaceCompleteData } from '../utils/workspace'
 import { TestingWorkspaces } from '../workspace/list'
@@ -13,14 +14,23 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, p
     const testingWorkspaces = await TestingWorkspaces(account, ctx.vtex)
     const beginningQuery = HoursSince(abTestBeginning)
     const workspacesData = await FilterWorkspacesData(account, beginningQuery, testingWorkspaces, ctx.vtex)
-    await UpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx.vtex)
-    const workspacesCompleteData = await BuildCompleteData(account, ctx, workspacesData)
-
-    const masterWorkspace = await GetWorkspaceCompleteData(workspacesCompleteData, MasterWorkspaceName)
     const Results: TestResult[] = []
-    for (const workspaceData of workspacesCompleteData) {
-        if (workspaceData.SinceBeginning.Workspace !== masterWorkspace.SinceBeginning.Workspace) {
-            Results.push(await Evaluate(abTestBeginning, masterWorkspace, workspaceData, probability))
+    if (workspacesData !== []) {
+        await UpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx.vtex)
+        const workspacesCompleteData = await BuildCompleteData(account, ctx, workspacesData)
+
+        const masterWorkspace = await GetWorkspaceCompleteData(workspacesCompleteData, MasterWorkspaceName)
+        for (const workspaceData of workspacesCompleteData) {
+            if (workspaceData.SinceBeginning.Workspace !== masterWorkspace.SinceBeginning.Workspace) {
+                Results.push(await Evaluate(abTestBeginning, masterWorkspace, workspaceData, probability))
+            }
+        }
+    }
+    else {
+        for (const workspaceName of testingWorkspaces) {
+            if (workspaceName !== 'master') {
+                Results.push(DefaultEvaluationResponse(abTestBeginning, 'master', workspaceName))
+            }
         }
     }
     return Results
