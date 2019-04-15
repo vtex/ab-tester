@@ -15,7 +15,7 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, p
     const beginningQuery = HoursSince(abTestBeginning)
     const workspacesData = await FilterWorkspacesData(account, beginningQuery, testingWorkspaces, ctx.vtex)
     const Results: TestResult[] = []
-    if (workspacesData !== []) {
+    if (workspacesData.length > 0) {
         await UpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx.vtex)
         const workspacesCompleteData = await BuildCompleteData(account, ctx, workspacesData)
 
@@ -33,6 +33,7 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, p
             }
         }
     }
+    // console.log(testingWorkspaces)
     return Results
 }
 

@@ -9,7 +9,7 @@ export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<vo
   try {
     await FinishABTestParams(account, workspaceName, ctx.vtex)
     const testingWorkspaces = await TestingWorkspaces(account, ctx.vtex)
-    if (testingWorkspaces === ['master']) {
+    if (testingWorkspaces.length <= 1) {
       await FinishABTestParams(account, 'master', ctx.vtex)
     }
   } catch (err) {
