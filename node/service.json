@@ -20,9 +20,9 @@
     }
   },
   "events": {
-    "keepUpdating": {
-      "sender": "vtex.ab-tester",
-      "keys": ["update_abtesting"]
+    "periodicUpdate": {
+      "sender": "colossus",
+      "keys": ["pulse"]
     }
   }
 }
