@@ -38,6 +38,7 @@ const testManager = (handler: any) => async (ctx: ColossusContext) => {
 export default new Service({
   events: {
     periodicUpdate: async (ctx: EventsContext) => {
+      ctx.resources = new Resources(ctx)
       updateParameters(ctx)
     },
   },
