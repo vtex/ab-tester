@@ -10,16 +10,17 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
   const { account, resources: { vbase } } = ctx
 
   try {
-    const data = await vbase.get(bucket, fileName)
-    let beginning = data.dateOfBeginning
-    if (beginning === undefined) {
-      beginning = new Date()
-    }
-
     const testingWorkspaces = await TestingWorkspaces(account, ctx)
-    const beginningQuery = HoursSince(beginning)
-    await UpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx)
-    console.log(ctx.workspace)
+    if (testingWorkspaces.length > 0) {
+      const data = await vbase.get(bucket, fileName)
+      let beginning = data.dateOfBeginning
+      if (beginning === undefined) {
+        beginning = new Date()
+      }
+
+      const beginningQuery = HoursSince(beginning)
+      await UpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx)
+    }
   } catch (err) {
     const logger = new Logger(ctx, {})
     logger.sendLog(err, { status: err.status, message: err.message })
