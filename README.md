@@ -19,3 +19,9 @@ Inside `math-tools` are mathematical functions necessary to evaluate the partial
 ## Use
 
 Install the app and then use the following commands on vtex cli:
+ 
+`vtex workspace abtest start`: Start A/B testing the current workspace against master.
+
+`vtex workspace abtest status`: Prints info about currently running A/B tests.
+
+`vtex workspace abtest finish`: Prints the latest info about running A/B tests and stops A/B testing in the current workspace.
