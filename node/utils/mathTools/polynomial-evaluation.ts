@@ -1,10 +1,10 @@
 export function evalpoly(P: number[], x: number): number {
-    var num = 0
-    var degree = P.length
+    let num = 0
+    let degree = P.length
 
     if (degree < 2 || x === 0) {
         if (degree === 0) {
-            return 0;
+            return 0
         }
         return P[0]
     }
@@ -19,8 +19,8 @@ export function evalpoly(P: number[], x: number): number {
 }
 
 export function evalrational(P: number[], Q: number[], x: number): number {
-    var num = evalpoly(P, x),
-        den = evalpoly(Q, x)
+    const num = evalpoly(P, x)
+    const den = evalpoly(Q, x)
 
     return num / den
 }

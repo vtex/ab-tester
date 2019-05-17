@@ -40,3 +40,9 @@ export const AggregationQuery = (from: string): string => (
 
 export const StoreDashRequestURL = (account: string, ABTestBeginning: string): string => (
     baseURL + account + metricStoredashPath + AggregationQuery(ABTestBeginning))
+
+interface StoreDashResponse {
+    workspace: string
+    'data.sessions': number
+    'data.sessionsOrdered': number
+}

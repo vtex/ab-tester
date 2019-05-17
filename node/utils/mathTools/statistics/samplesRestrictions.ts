@@ -7,8 +7,8 @@ export const BoundError = 2e-4
 *  A brief explanation can be found in https://arxiv.org/pdf/1702.00001.pdf section 3.1
 */
 
-export function NumberOfSamples(BoundError: number, BoundProbability: number): number {
-    return - Math.log(BoundProbability) / Math.pow(BoundError, 2) / 36
+export function NumberOfSamples(boundError: number, BoundProbability: number): number {
+    return - Math.log(BoundProbability) / Math.pow(boundError, 2) / 36
 }
 
 export const SamplesRestriction = (WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, boundError: number, boundProbability: number): boolean => {

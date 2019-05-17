@@ -1,8 +1,11 @@
 const MINUTE_TO_MILISEC =  60 * 1000
 
-export function HoursSince(inputDate: string): string {
+export const MinutesSinceQuery = (inputDate: string): string => {
+    return `now-${Math.floor(TimeDifferenceInMinutes(inputDate))}m`
+}
+
+export const TimeDifferenceInMinutes = (inputDate: string): number => {
     const now = new Date()
     const date = new Date(inputDate)
-    const diff = (now.getTime() - date.getTime()) / MINUTE_TO_MILISEC
-    return `now-${Math.floor(diff)}m`
+    return (now.getTime() - date.getTime()) / MINUTE_TO_MILISEC
 }

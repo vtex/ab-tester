@@ -1,5 +1,5 @@
 import { IOContext } from '@vtex/api'
-import { MinimumABTestParameter } from '../utils/minimum-parameters'
+import { MinimumABTestParameter } from '../utils/workspace'
 import { ABWorkspaces } from './workspaces'
 
 async function ListWorkspaces(account: string, ctx: IOContext): Promise<ABWorkspaceMetadata[]> {

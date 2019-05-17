@@ -1,5 +1,5 @@
 import { LoggerClient as Logger } from '../../clients/logger'
-import { HoursSince } from '../../utils/hoursSince'
+import { MinutesSinceQuery } from '../../utils/hoursSince'
 import { TestingWorkspaces } from '../../workspace/list'
 import { UpdateWorkspacesData } from '../../workspace/modify'
 
@@ -18,7 +18,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
         beginning = new Date()
       }
 
-      const beginningQuery = HoursSince(beginning)
+      const beginningQuery = MinutesSinceQuery(beginning)
       await UpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx)
     }
   } catch (err) {

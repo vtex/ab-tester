@@ -1,6 +1,12 @@
 import { VBase as BaseClient } from '@vtex/api'
 import { Readable } from 'stream'
 
+const bucketName = 'ABTest'
+const fileName = 'currentABTest.json'
+
+// TODO: `testId` should be determined in a general way based on account and workspaces
+const testId = '0001'
+
 const jsonStream = (arg: any) => {
   const readable = new Readable()
   readable.push(JSON.stringify(arg))
@@ -30,5 +36,18 @@ export default class VBase {
     } catch (ex) {
       throw new Error(`Save request for key ${path} in bucket ${bucket} failed!`)
     }
+  }
+
+  public initializeABtest = async (probability: number): Promise<void> => {
+    const beginning = new Date().toISOString().substr(0, 16)
+    return await this.save(bucketName, fileName, {
+      Id: testId,
+      dateOfBeginning: beginning,
+      probability: (probability),
+    } as ABTestData)
+  }
+
+  public finishABtest = async (): Promise<void> => {
+    await this.client.deleteFile(bucketName, fileName)
   }
 }

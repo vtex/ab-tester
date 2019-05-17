@@ -10,12 +10,6 @@ declare global {
   export interface EventsContext extends IOContext {
     resources: Resources
   }
-
-  export interface StoreDashResponse {
-    workspace: string
-    'data.sessions': number
-    'data.sessionsOrdered': number
-  }
   export interface ABTestData {
     Id: string
     dateOfBeginning: string
@@ -48,7 +42,6 @@ declare global {
     ConversionB: number
     ConversionBLast24Hours: number
     ProbabilityAlternativeBeatMaster: number
-    KullbackLeibler: number
   }
   export interface ABTestParameters {
     a: number

@@ -2,10 +2,9 @@ import { LoggerClient as Logger } from '../../clients/logger'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import { TestingWorkspaces } from '../../workspace/list'
 import { InitializeABTestParams } from '../../workspace/modify'
-import { initializeABtest } from '../saveBeginning'
 
 export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
-    const { vtex: { account, route: { params: { probability, initializingWorkspace } } } } = ctx
+    const { vtex: { account, route: { params: { probability, initializingWorkspace } } }, resources: { vbase } } = ctx
     const workspaceName = firstOrDefault(initializingWorkspace)
     try {
         const testingWorkspaces = await TestingWorkspaces(account, ctx.vtex)
@@ -13,7 +12,7 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
             await InitializeABTestParams(account, 'master', ctx.vtex)
         }
         await InitializeABTestParams(account, workspaceName, ctx.vtex)
-        await initializeABtest(1 - Number(probability), ctx)
+        await vbase.initializeABtest(1 - Number(probability))
     } catch (err) {
         if (err.status === 404) {
             err.message = 'Workspace not found'

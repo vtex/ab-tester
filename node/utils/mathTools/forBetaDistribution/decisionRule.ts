@@ -1,6 +1,6 @@
-import { logBeta } from './beta-function'
-import { WorkspaceToBetaDistribution } from '../node/utils/workspace'
-import { BoundError, SamplesRestriction } from './statistics/samplesRestrictions';
+import { WorkspaceToBetaDistribution } from '../../workspace'
+import { logBeta } from '../beta-function'
+import { BoundError, SamplesRestriction } from '../statistics/samplesRestrictions'
 
 /*
 *   The reason for using the function logBeta is that we're dealing with very large numbers and the
@@ -11,29 +11,29 @@ import { BoundError, SamplesRestriction } from './statistics/samplesRestrictions
 */
 
 export function ProbabilityOfOneBeatTwo(a: number, b: number, c: number, d: number) {
-    var result = 1
+    let result = 1
 
-    for (var j = 0; j < c; j++) {
+    for (let j = 0; j < c; j++) {
         result -= Math.exp(logBeta(a + j, b + d) - logBeta(1 + j, d) - logBeta(a, b) - Math.log(d + j))
     }
     return result
 }
 
 export function LossFunctionChossingVariantOne(Beta1: ABTestParameters, Beta2: ABTestParameters) {
-    const a = Beta2.a,
-        b = Beta2.b,
-        c = Beta1.a,
-        d = Beta1.b
+    const a = Beta2.a
+    const b = Beta2.b
+    const c = Beta1.a
+    const d = Beta1.b
 
-    const logCoefficient1 = logBeta(a + 1, b) - logBeta(a, b),
-        logCoefficient2 = logBeta(c + 1, d) - logBeta(c, d)
+    const logCoefficient1 = logBeta(a + 1, b) - logBeta(a, b)
+    const logCoefficient2 = logBeta(c + 1, d) - logBeta(c, d)
 
     return Math.exp(logCoefficient1) * ProbabilityOfOneBeatTwo(a + 1, b, c, d) - Math.exp(logCoefficient2) * ProbabilityOfOneBeatTwo(a, b, c + 1, d)
 }
 
 export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, epsilon: number, delta: number) {
-    const chooseA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon,
-        chooseB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceB), WorkspaceToBetaDistribution(WorkspaceA)) < epsilon
+    const chooseA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon
+    const chooseB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceB), WorkspaceToBetaDistribution(WorkspaceA)) < epsilon
 
     if (!SamplesRestriction(WorkspaceA, WorkspaceB, BoundError, delta)) {
         return null
@@ -42,10 +42,10 @@ export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceDat
         return 'draw'
     }
     else if (chooseA) {
-        return WorkspaceA["Workspace"]
+        return WorkspaceA.Workspace
     }
     else if (chooseB) {
-        return WorkspaceB["Workspace"]
+        return WorkspaceB.Workspace
     }
     else {
         return null

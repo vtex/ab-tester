@@ -8,8 +8,12 @@ export function beta(x: number, y: number): number {
   }
 
   // Special cases
-  else if (x === 0 && y === 0) return NaN
-  else if (x === 0 || y === 0) return Infinity
+  else if (x === 0 && y === 0) {
+    return NaN
+  }
+  else if (x === 0 || y === 0) {
+    return Infinity
+  }
 
   // make sure x + y doesn't exceed the upper limit of usable values
   else if (x + y > BIGGEST_POSITIVE_NUMBER) {
@@ -27,8 +31,12 @@ export function logBeta(x: number, y: number): number {
   }
 
   // Some special cases
-  else if (x === 0 && y === 0) return NaN
-  else if (x === 0 || y === 0) return Infinity
+  else if (x === 0 && y === 0) {
+    return NaN
+  }
+  else if (x === 0 || y === 0) {
+    return Infinity
+  }
 
   else {
     return logGamma(x) + logGamma(y) - logGamma(x + y)

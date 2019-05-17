@@ -57,6 +57,19 @@ export function DefaultWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWork
     return abWorkspaceMetadata
 }
 
+export function MinimumABTestParameter(workspace: ABWorkspaceMetadata) {
+    const params = workspace.abTestParameters || DefaultABTestParameters
+    return Math.min(params.a, params.b)
+}
+
+export const totalSessions = (workspacesData: WorkspaceData[]): number => {
+    let total = 0
+    for(const workspaceData of workspacesData) {
+        total += workspaceData.Sessions
+    }
+    return total
+}
+
 export function GetWorkspaceData(workspacesData: WorkspaceData[], workspace: string): WorkspaceData {
     if (workspacesData === null) {
         return ErrorWorkspaceData(workspace)
@@ -79,4 +92,20 @@ export function GetWorkspaceCompleteData(workspacesData: WorkspaceCompleteData[]
         }
     }
     return ErrorWorkspaceCompleteData(workspace)
+}
+
+export const ToWorkspaceMetadada = (workspaceData: WorkspaceData, weight: number, production: boolean): ABWorkspaceMetadata => {
+    return {
+        abTestParameters: ToABTestParameters(workspaceData),
+        name: workspaceData.Workspace,
+        production: (production),
+        weight: (weight),
+    }
+}
+
+const ToABTestParameters = (workspaceData: WorkspaceData): ABTestParameters => {
+    return {
+        a: workspaceData.OrderSessions + 1,
+        b: workspaceData.NoOrderSessions + 1,
+    }
 }

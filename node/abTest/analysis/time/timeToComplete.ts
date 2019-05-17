@@ -1,6 +1,6 @@
 import { IOContext } from '@vtex/api'
-import { BoundError, NumberOfSamples } from '../../mathTools/statistics/samplesRestrictions'
-import { GetWorkspacesData, StoreDashRequestURL } from '../clients/storedash'
+import { GetWorkspacesData, StoreDashRequestURL } from '../../../clients/storedash'
+import { BoundError, NumberOfSamples } from '../../../utils/mathTools/statistics/samplesRestrictions'
 
 export async function TimeToCompleteAbTest(account: string, probability: number, ctx: ColossusContext): Promise<number> {
     const averageSessions = await AverageDaySessions(account, ctx.vtex)
