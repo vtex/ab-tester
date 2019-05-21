@@ -1,7 +1,7 @@
 import { RandomBeta } from './mathTools/statistics/betaSampling'
 import { WorkspaceToBetaDistribution } from './workspace'
 
-const BoundDeviation = 5e-1
+const BoundDeviation = 1e-1
 
 export function RandomRestart(workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData): boolean {
     const betaVariateAOld = RandomBeta(WorkspaceToBetaDistribution(workspaceAData.SinceBeginning))
