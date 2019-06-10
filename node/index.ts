@@ -1,6 +1,6 @@
 import { Service } from '@vtex/api'
 import { map } from 'ramda'
-import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters } from './abTest/manager'
+import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters } from './abTest/controller'
 import { LoggerClient as Logger } from './clients/logger'
 import { Resources } from './resources/index'
 

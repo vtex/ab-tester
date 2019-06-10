@@ -1,4 +1,4 @@
-import { InstanceOptions, IOContext, Logger } from '@vtex/api'
+import { InstanceOptions, IOContext, Logger, LogLevel } from '@vtex/api'
 
 const noSubject = '-'
 

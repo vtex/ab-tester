@@ -1,25 +1,27 @@
 import { LoggerClient as Logger } from '../../clients/logger'
+import TestingWorkspaces from '../../typings/testingWorkspace'
 import { MinutesSinceQuery } from '../../utils/hoursSince'
-import { TestingWorkspaces } from '../../workspace/list'
 import { UpdateWorkspacesData } from '../../workspace/modify'
+import { UpdateParameters } from '../updateParameters'
 
 const bucket = 'ABTest'
 const fileName = 'currentABTest.json'
 
 export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
-  const { account, resources: { vbase } } = ctx
-
+  const { account, resources: { router, storedash, vbase } } = ctx
   try {
-    const testingWorkspaces = await TestingWorkspaces(account, ctx)
-    if (testingWorkspaces.length > 0) {
+    const testingWorkspaces = new TestingWorkspaces(await router.getWorkspaces(account))
+    if (testingWorkspaces.Length() > 0) {
       const data = await vbase.get(bucket, fileName)
       let beginning = data.dateOfBeginning
       if (beginning === undefined) {
         beginning = new Date()
       }
 
-      const beginningQuery = MinutesSinceQuery(beginning)
-      await UpdateWorkspacesData(account, beginningQuery, testingWorkspaces, ctx)
+      const beginningString = MinutesSinceQuery(beginning)
+      const workspacesData = await storedash.getWorkspacesData(beginningString)
+      await UpdateParameters(account, beginningString, workspacesData, testingWorkspaces, router, storedash)
+      await UpdateWorkspacesData(account, beginningString, testingWorkspaces.WorkspacesNames(), ctx, router, storedash)
     }
   } catch (err) {
     const logger = new Logger(ctx, {})

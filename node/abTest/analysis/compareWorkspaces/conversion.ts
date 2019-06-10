@@ -10,7 +10,9 @@ export async function Evaluate(abTestBeginning: string, workspaceAData: Workspac
 
     const lossA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceAData.SinceBeginning), WorkspaceToBetaDistribution(workspaceBData.SinceBeginning))
     const lossB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceBData.SinceBeginning), WorkspaceToBetaDistribution(workspaceAData.SinceBeginning))
-    const probabilityTwoBeatOne = ProbabilityOfOneBeatTwo(WorkspaceToBetaDistribution(workspaceBData.SinceBeginning).a, WorkspaceToBetaDistribution(workspaceBData.SinceBeginning).b, WorkspaceToBetaDistribution(workspaceAData.SinceBeginning).a, WorkspaceToBetaDistribution(workspaceAData.SinceBeginning).b)
+    const betaDistributionA = WorkspaceToBetaDistribution(workspaceAData.SinceBeginning)
+    const betaDistributionB = WorkspaceToBetaDistribution(workspaceBData.SinceBeginning)
+    const probabilityTwoBeatOne = ProbabilityOfOneBeatTwo(betaDistributionB.a, betaDistributionB.b, betaDistributionA.a, betaDistributionA.b)
     const winner = ChooseWinner(workspaceAData.SinceBeginning, workspaceBData.SinceBeginning, BoundError, probability) || 'Not yet decided'
 
     return EvaluationResponse(abTestBeginning, workspaceAData, workspaceBData, winner, lossA, lossB, probabilityTwoBeatOne)

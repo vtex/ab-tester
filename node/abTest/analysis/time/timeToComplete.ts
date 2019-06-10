@@ -1,17 +1,15 @@
-import { IOContext } from '@vtex/api'
-import { GetWorkspacesData, StoreDashRequestURL } from '../../../clients/storedash'
+import Storedash from '../../../clients/storedash'
 import { BoundError, NumberOfSamples } from '../../../utils/mathTools/statistics/samplesRestrictions'
 
-export async function TimeToCompleteAbTest(account: string, probability: number, ctx: ColossusContext): Promise<number> {
-    const averageSessions = await AverageDaySessions(account, ctx.vtex)
+export async function TimeToCompleteAbTest(probability: number, storedash: Storedash): Promise<number> {
+    const averageSessions = await AverageDaySessions(storedash)
     let timeToComplete = NumberOfSamples(BoundError, probability) / averageSessions
     timeToComplete = Math.floor(timeToComplete) + 1
-
     return timeToComplete
 }
 
-export async function AverageDaySessions(account: string, ctx: IOContext): Promise<number> {
-    const workspacesData = await GetWorkspacesData(StoreDashRequestURL(account, 'now-7d'), ctx)
+export async function AverageDaySessions(storedash: Storedash): Promise<number> {
+    const workspacesData = await storedash.getWorkspacesData('now-7d')
     let totalSessions = 0
     for (const workspaceData of workspacesData) {
         totalSessions += workspaceData.Sessions / 7

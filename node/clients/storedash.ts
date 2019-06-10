@@ -1,45 +1,35 @@
-import { IOContext } from '@vtex/api'
-import axios from 'axios'
+import { ExternalClient, IOContext } from '@vtex/api'
 import { WorkspaceData } from '../utils/workspace'
-import { LoggerClient as Logger } from './logger'
 
-const baseURL = 'http://api.vtex.com/api/storedash/'
-const metricStoredashPath = '/metrics/storedash/navigationcube'
+const baseURL = (account: string) => `http://api.vtex.com/api/storedash/${account}/metrics/storedash`
 
-async function getDataFromStoreDash(endPoint: string, ctx: IOContext): Promise<JSON[]> {
-    return new Promise<JSON[]>((resolve, _reject) => {
-        axios.get(endPoint,
-            {
-                headers: {
-                    'Proxy-Authorization': ctx.authToken,
-                    'VtexIdclientAutCookie': ctx.authToken,
-                },
-            })
-            .then(response => {
-                resolve(response.data)
-            })
-            .catch(err => {
-                const logger = new Logger(ctx, {})
-                logger.sendLog(err, { status: err.status, message: err.message })
-            })
-    })
-}
-
-export async function GetWorkspacesData(endPoint: string, ctx: IOContext): Promise<WorkspaceData[]> {
-    const metrics = await getDataFromStoreDash(endPoint, ctx)
-    const workspacesData: WorkspaceData[] = []
-    for (const metric of metrics) {
-        const m: StoreDashResponse = metric as unknown as StoreDashResponse
-        workspacesData.push(WorkspaceData(m.workspace, m['data.sessions'], m['data.sessionsOrdered']))
+export default class Storedash extends ExternalClient {
+    constructor(ctx: IOContext) {
+        super(baseURL(ctx.account), ctx, {
+            headers: {
+                'Proxy-Authorization': ctx.authToken,
+                VtexIdclientAutCookie: ctx.authToken,
+            },
+        })
     }
-    return workspacesData
+
+    public getStoredashData = (from: string) => {
+        return this.http.get<StoreDashResponse[]>('navigationcube' + AggregationQuery(from), { metric: 'storedash-get' })
+    }
+
+    public getWorkspacesData = async (from: string): Promise<WorkspaceData[]> => {
+        const metrics = await this.getStoredashData(from)
+        const workspacesData: WorkspaceData[] = []
+        for (const metric of metrics) {
+            const m: StoreDashResponse = metric as unknown as StoreDashResponse
+            workspacesData.push(WorkspaceData(m.workspace, m['data.sessions'], m['data.sessionsOrdered']))
+        }
+        return workspacesData
+    }
 }
 
-export const AggregationQuery = (from: string): string => (
+const AggregationQuery = (from: string): string => (
     '?from=' + from + '&to=now&operation=sum&fields=data.sessions,data.sessionsOrdered&aggregateBy=workspace')
-
-export const StoreDashRequestURL = (account: string, ABTestBeginning: string): string => (
-    baseURL + account + metricStoredashPath + AggregationQuery(ABTestBeginning))
 
 interface StoreDashResponse {
     workspace: string

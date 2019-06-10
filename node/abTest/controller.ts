@@ -17,7 +17,7 @@ export const timeToCompleteAbTest = async (ctx: ColossusContext) => {
 export const initializeAbTestForWorkspace = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
-  await await getWithRetriesHelper(initialize)(3, ctx)
+  await getWithRetriesHelper(initialize)(3, ctx)
 
   ctx.status = 200
   ctx.body = 'A/B Test beginning saved successfully'
@@ -35,7 +35,7 @@ export const abTestStatus = async (ctx: ColossusContext) => {
 export const finishAbTestForWorkspace = async (ctx: ColossusContext) => {
   ctx.set('Cache-Control', 'no-cache')
 
-  await await getWithRetriesHelper(finish)(3, ctx)
+  await getWithRetriesHelper(finish)(3, ctx)
 
   ctx.status = 200
   ctx.body = 'A/B Test finished'

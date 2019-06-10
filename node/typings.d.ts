@@ -1,5 +1,5 @@
 import { Context as KoaContext } from 'koa'
-import { IOContext, Events } from '@vtex/api';
+import { IOContext, Events } from '@vtex/api'
 import { Resources } from './resources/index'
 declare global {
   type LogLevel = 'info' | 'error' | 'warning' | 'debug'
@@ -7,14 +7,16 @@ declare global {
     vtex: IOContext
     resources: Resources
   }
+
   export interface EventsContext extends IOContext {
     resources: Resources
   }
-  export interface ABTestData {
-    Id: string
+
+  export interface VBaseABTestData {
     dateOfBeginning: string
     probability: number
   }
+
   export interface WorkspaceData {
     Workspace: string
     Sessions: number
@@ -22,10 +24,12 @@ declare global {
     NoOrderSessions: number
     Conversion: number
   }
+
   export interface WorkspaceCompleteData {
     Last24Hours: WorkspaceData
     SinceBeginning: WorkspaceData
   }
+
   export interface TestResult {
     ABTestBeginning: string
     WorkspaceA: string
@@ -43,10 +47,12 @@ declare global {
     ConversionBLast24Hours: number
     ProbabilityAlternativeBeatMaster: number
   }
+
   export interface ABTestParameters {
     a: number
     b: number
   }
+
   export interface ABWorkspaceMetadata {
     name: string
     weight: number

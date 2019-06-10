@@ -22,11 +22,6 @@ const ErrorWorkspaceData = (workspace: string): WorkspaceData => ({
     Workspace: workspace,
 })
 
-const ErrorWorkspaceCompleteData = (workspace: string): WorkspaceCompleteData => ({
-    Last24Hours: ErrorWorkspaceData(workspace),
-    SinceBeginning: ErrorWorkspaceData(workspace),
-})
-
 export const FilteredWorkspacesData = (workspacesData: WorkspaceData[], testingWorkspaces: string[]): WorkspaceData[] => {
     const filteredWorkspaces: WorkspaceData[] = []
     for (const workspaceData of workspacesData) {
@@ -57,14 +52,9 @@ export function DefaultWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWork
     return abWorkspaceMetadata
 }
 
-export function MinimumABTestParameter(workspace: ABWorkspaceMetadata) {
-    const params = workspace.abTestParameters || DefaultABTestParameters
-    return Math.min(params.a, params.b)
-}
-
 export const totalSessions = (workspacesData: WorkspaceData[]): number => {
     let total = 0
-    for(const workspaceData of workspacesData) {
+    for (const workspaceData of workspacesData) {
         total += workspaceData.Sessions
     }
     return total
@@ -82,30 +72,22 @@ export function GetWorkspaceData(workspacesData: WorkspaceData[], workspace: str
     return ErrorWorkspaceData(workspace)
 }
 
-export function GetWorkspaceCompleteData(workspacesData: WorkspaceCompleteData[], workspace: string): WorkspaceCompleteData {
-    if (workspacesData === null) {
-        return ErrorWorkspaceCompleteData(workspace)
-    }
-    for (const workspaceData of workspacesData) {
-        if (workspaceData.SinceBeginning.Workspace === workspace) {
-            return workspaceData
-        }
-    }
-    return ErrorWorkspaceCompleteData(workspace)
-}
-
 export const ToWorkspaceMetadada = (workspaceData: WorkspaceData, weight: number, production: boolean): ABWorkspaceMetadata => {
     return {
-        abTestParameters: ToABTestParameters(workspaceData),
+        abTestParameters: WorkspaceToBetaDistribution(workspaceData),
         name: workspaceData.Workspace,
         production: (production),
         weight: (weight),
     }
 }
 
-const ToABTestParameters = (workspaceData: WorkspaceData): ABTestParameters => {
-    return {
-        a: workspaceData.OrderSessions + 1,
-        b: workspaceData.NoOrderSessions + 1,
+export const InitialParameters = (workspaces: ABTestWorkspace[]): ABTestParametersMetadata[] => {
+    const parameters: ABTestParametersMetadata[] = []
+    for (const workspace of workspaces) {
+        parameters.push({
+            abTestParameters: InitialABTestParameters,
+            workspace: (workspace.name),
+        })
     }
+    return parameters
 }
