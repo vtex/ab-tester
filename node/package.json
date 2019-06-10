@@ -1,6 +1,6 @@
 {
   "name": "vtex.ab-tester",
-  "version": "0.7.3",
+  "version": "0.8.1",
   "dependencies": {
     "axios": "^0.18.0",
     "ramda": "^0.25.0"
