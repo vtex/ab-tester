@@ -1,9 +1,9 @@
 {
   "name": "vtex.ab-tester",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "dependencies": {
-    "axios": "^0.18.0",
-    "ramda": "^0.25.0"
+    "ramda": "^0.25.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

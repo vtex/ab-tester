@@ -46,6 +46,7 @@ declare global {
     ConversionB: number
     ConversionBLast24Hours: number
     ProbabilityAlternativeBeatMaster: number
+    PValue: number
   }
 
   export interface ABTestParameters {

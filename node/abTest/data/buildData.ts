@@ -10,7 +10,7 @@ export async function BuildCompleteData(account: string, abTestBeginning: string
     const workspaceCompleteData = new Map()
     for (const workspaceNewData of workspacesNewData) {
         if(testingWorkspaces.Includes(workspaceNewData.Workspace)) {
-            workspaceCompleteData[workspaceNewData.Workspace] = CompleteData(GetWorkspaceData(workspacesData, workspaceNewData.Workspace), workspaceNewData)
+            workspaceCompleteData.set(workspaceNewData.Workspace, CompleteData(GetWorkspaceData(workspacesData, workspaceNewData.Workspace), workspaceNewData))
         }
     }
     return workspaceCompleteData

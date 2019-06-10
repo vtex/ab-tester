@@ -1,4 +1,4 @@
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import { LoggerClient as Logger } from '../../clients/logger'
 import Router from '../../clients/router'
 import TestingParameters from '../../typings/testingParameters'

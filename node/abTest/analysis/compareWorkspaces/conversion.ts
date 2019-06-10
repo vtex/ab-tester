@@ -1,6 +1,6 @@
 import { DefaultEvaluationResponse, EvaluationResponse } from '../../../utils/evaluation-response'
 import { ChooseWinner, LossFunctionChossingVariantOne, ProbabilityOfOneBeatTwo } from '../../../utils/mathTools/forBetaDistribution/decisionRule'
-import { BoundError } from '../../../utils/mathTools/statistics/samplesRestrictions'
+import { BoundError, pValue } from '../../../utils/mathTools/statistics/samplesRestrictions'
 import { WorkspaceToBetaDistribution } from '../../../utils/workspace'
 
 export async function Evaluate(abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, probability: number): Promise<TestResult> {
@@ -13,7 +13,8 @@ export async function Evaluate(abTestBeginning: string, workspaceAData: Workspac
     const betaDistributionA = WorkspaceToBetaDistribution(workspaceAData.SinceBeginning)
     const betaDistributionB = WorkspaceToBetaDistribution(workspaceBData.SinceBeginning)
     const probabilityTwoBeatOne = ProbabilityOfOneBeatTwo(betaDistributionB.a, betaDistributionB.b, betaDistributionA.a, betaDistributionA.b)
+    const statiscs = pValue(betaDistributionA, betaDistributionB)
     const winner = ChooseWinner(workspaceAData.SinceBeginning, workspaceBData.SinceBeginning, BoundError, probability) || 'Not yet decided'
 
-    return EvaluationResponse(abTestBeginning, workspaceAData, workspaceBData, winner, lossA, lossB, probabilityTwoBeatOne)
+    return EvaluationResponse(abTestBeginning, workspaceAData, workspaceBData, winner, lossA, lossB, probabilityTwoBeatOne, statiscs)
 }
