@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuid } from 'uuid'
 import { LoggerClient as Logger } from '../../clients/logger'
 import Router from '../../clients/router'
 import TestingParameters from '../../typings/testingParameters'
@@ -17,7 +17,7 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
             await InitializeABTestParams(account, 'master', ctx.vtex)
             testingWorkspaces.Add('master')
             workspaceMetadata = {
-                Id: uuidv4(),
+                Id: uuid(),
                 workspaces: testingWorkspaces.ToArray(),
             }
         }
