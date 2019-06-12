@@ -1,6 +1,6 @@
 {
   "name": "vtex.ab-tester",
-  "version": "0.9.0",
+  "version": "0.9.3",
   "dependencies": {
     "ramda": "^0.25.0",
     "uuid": "^3.3.2"
