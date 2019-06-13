@@ -1,10 +1,10 @@
 import { Service } from '@vtex/api'
 import { map } from 'ramda'
-import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters } from './abTest/controller'
+import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, LegacyInitializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters } from './abTest/controller'
 import { LoggerClient as Logger } from './clients/logger'
 import { Resources } from './resources/index'
 
-const testManager = (handler: any) => async (ctx: ColossusContext) => {
+const tester = (handler: any) => async (ctx: ColossusContext) => {
   ctx.resources = new Resources(ctx.vtex)
   try {
     await handler(ctx)
@@ -43,7 +43,8 @@ export default new Service({
     },
   },
   routes:
-    map(testManager, {
+    map(tester, {
+      LegacyInitializeAbTestForWorkspace,
       abTestStatus,
       finishAbTestForWorkspace,
       initializeAbTestForWorkspace,

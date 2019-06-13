@@ -7,7 +7,7 @@ import { firstOrDefault } from '../../utils/firstOrDefault'
 import { InitializeABTestParams } from '../../workspace/modify'
 
 export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
-    const { vtex: { account, route: { params: { probability, initializingWorkspace } } }, resources: { router, vbase } } = ctx
+    const { vtex: { account, route: { params: { initializingWorkspace } } }, resources: { router, vbase } } = ctx
     const workspaceName = firstOrDefault(initializingWorkspace)
     try {
         let workspaceMetadata = await router.getWorkspaces(account)
@@ -28,7 +28,7 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
         await router.setParameters(account, testingParameters.ToArray())
 
         await InitializeABTestParams(account, workspaceName, ctx.vtex)
-        await vbase.initializeABtest(1 - Number(probability))
+        await vbase.initializeABtest()
     } catch (err) {
         if (err.status === 404) {
             err.message = 'Workspace not found'

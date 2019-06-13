@@ -13,10 +13,6 @@ export function NumberOfSamples(boundError: number, BoundProbability: number): n
     return - Math.log(BoundProbability) / Math.pow(boundError, 2) / 36
 }
 
-export const SamplesRestriction = (WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, boundError: number, boundProbability: number): boolean => {
-    return WorkspaceA.Sessions + WorkspaceB.Sessions > NumberOfSamples(boundError, boundProbability)
-}
-
 export const pValue = (control: ABTestParameters, alternative: ABTestParameters): number => {
     const alternativeConversion = (alternative.a - 1) / (alternative.a + alternative.b - 2)
     return customBetaProbability(alternativeConversion, control.a, control.b)

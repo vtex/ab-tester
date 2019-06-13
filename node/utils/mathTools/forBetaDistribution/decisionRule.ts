@@ -1,6 +1,8 @@
 import { WorkspaceToBetaDistribution } from '../../workspace'
 import { logBeta } from '../beta-function'
-import { BoundError, SamplesRestriction } from '../statistics/samplesRestrictions'
+import { pValue } from '../statistics/samplesRestrictions'
+
+const Confidence = 0.95
 
 /*
 *   The reason for using the function logBeta is that we're dealing with very large numbers and the
@@ -31,20 +33,23 @@ export function LossFunctionChossingVariantOne(Beta1: ABTestParameters, Beta2: A
     return Math.exp(logCoefficient1) * ProbabilityOfOneBeatTwo(a + 1, b, c, d) - Math.exp(logCoefficient2) * ProbabilityOfOneBeatTwo(a, b, c + 1, d)
 }
 
-export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, epsilon: number, delta: number) {
-    const chooseA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceA), WorkspaceToBetaDistribution(WorkspaceB)) < epsilon
-    const chooseB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(WorkspaceB), WorkspaceToBetaDistribution(WorkspaceA)) < epsilon
+export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, epsilon: number) {
+    const betaA = WorkspaceToBetaDistribution(WorkspaceA)
+    const betaB = WorkspaceToBetaDistribution(WorkspaceB)
+    const pvalue = pValue(betaA, betaB)
 
-    if (!SamplesRestriction(WorkspaceA, WorkspaceB, BoundError, delta)) {
-        return null
-    }
-    if (chooseA && chooseB) {
+    const chooseA = LossFunctionChossingVariantOne(betaA, betaB) < epsilon
+    const chooseB = LossFunctionChossingVariantOne(betaB, betaA) < epsilon
+    const draw = pvalue > Confidence
+    const distinct = pvalue < 1 - Confidence
+
+    if (chooseA && chooseB && draw) {
         return 'draw'
     }
-    else if (chooseA) {
+    else if (chooseA && distinct) {
         return WorkspaceA.Workspace
     }
-    else if (chooseB) {
+    else if (chooseB && distinct) {
         return WorkspaceB.Workspace
     }
     else {

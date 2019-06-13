@@ -18,13 +18,11 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
       return [DefaultEvaluationResponse('Test not initialized', 'none', 'none')]
     }
     let beginning = data.dateOfBeginning
-    let probability = data.probability
     if (beginning === undefined) {
       beginning = new Date()
-      probability = 0.999
     }
 
-    return await TestWorkspaces(account, beginning, probability, ctx) || []
+    return await TestWorkspaces(account, beginning, ctx) || []
   } catch (err) {
     const logger = new Logger(ctx.vtex, {})
     logger.sendLog(err, { status: ctx.status, message: err.message })

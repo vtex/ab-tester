@@ -6,8 +6,12 @@
       "path": "/_v/private/abtesting/time/:probability",
       "public": false
     },
-    "initializeAbTestForWorkspace": {
+    "LegacyInitializeAbTestForWorkspace": {
       "path": "/_v/private/abtesting/initialize/:initializingWorkspace/:probability",
+      "public": false
+    },
+    "initializeAbTestForWorkspace": {
+      "path": "/_v/private/abtesting/initialize/:initializingWorkspace",
       "public": false
     },
     "abTestStatus": {

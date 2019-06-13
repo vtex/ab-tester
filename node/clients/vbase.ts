@@ -35,15 +35,18 @@ export default class VBase {
     }
   }
 
-  public initializeABtest = async (probability: number): Promise<void> => {
+  public initializeABtest = async (): Promise<void> => {
     const beginning = new Date().toISOString().substr(0, 16)
     return await this.save(bucketName, fileName, {
       dateOfBeginning: beginning,
-      probability: (probability),
     } as VBaseABTestData)
   }
 
   public finishABtest = async (): Promise<void> => {
     await this.client.deleteFile(bucketName, fileName)
   }
+}
+
+interface VBaseABTestData {
+  dateOfBeginning: string
 }

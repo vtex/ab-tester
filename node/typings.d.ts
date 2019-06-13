@@ -12,11 +12,6 @@ declare global {
     resources: Resources
   }
 
-  export interface VBaseABTestData {
-    dateOfBeginning: string
-    probability: number
-  }
-
   export interface WorkspaceData {
     Workspace: string
     Sessions: number
