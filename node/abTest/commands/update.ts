@@ -10,7 +10,8 @@ const fileName = 'currentABTest.json'
 export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
   const { account, resources: { router, storedash, vbase } } = ctx
   try {
-    const testingWorkspaces = new TestingWorkspaces(await router.getWorkspaces(account))
+    const workspacesMetadata = await router.getWorkspaces(account)
+    const testingWorkspaces = new TestingWorkspaces(workspacesMetadata)
     if (testingWorkspaces.Length() > 0) {
       const data = await vbase.get(bucket, fileName)
       let beginning = data.dateOfBeginning
@@ -20,7 +21,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
 
       const beginningString = MinutesSinceQuery(beginning)
       const workspacesData = await storedash.getWorkspacesData(beginningString)
-      await UpdateParameters(account, beginningString, workspacesData, testingWorkspaces, router, storedash)
+      await UpdateParameters(account, beginningString, workspacesData, testingWorkspaces, workspacesMetadata.Id, router, storedash)
       await UpdateWorkspacesData(account, beginningString, testingWorkspaces.WorkspacesNames(), ctx, router, storedash)
     }
   } catch (err) {

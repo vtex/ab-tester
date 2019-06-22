@@ -1,3 +1,4 @@
+import { TSMap } from 'typescript-map'
 import { v4 as uuid } from 'uuid'
 import { LoggerClient as Logger } from '../../clients/logger'
 import Router from '../../clients/router'
@@ -25,7 +26,11 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
         const testingParameters = new TestingParameters(testingWorkspaces.ToArray())
 
         await InitializeWorkspaces(account, workspaceMetadata.Id, testingWorkspaces.ToArray(), router)
-        await router.setParameters(account, testingParameters.ToArray())
+        const tsmap = new TSMap<string, Workspace>([...testingParameters.Get()])
+        await router.setParameters(account, {
+            Id: workspaceMetadata.Id,
+            Workspaces: tsmap,
+        })
 
         await InitializeABTestParams(account, workspaceName, ctx.vtex)
         await vbase.initializeABtest()

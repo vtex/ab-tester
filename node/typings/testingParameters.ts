@@ -1,14 +1,18 @@
 import { InitialABTestParameters, WorkspaceToBetaDistribution } from '../utils/workspace'
 
 export default class TestingParameters {
-    private parameters: Map<string, ABTestParametersMetadata>
+    private parameters: Map<string, Workspace>
 
     constructor(testingWorkspaces: ABTestWorkspace[]) {
         const parameters = testingWorkspaces !== null ? MapInitialParameters(testingWorkspaces) : new Map()
         this.parameters = new Map(parameters)
     }
 
-    public ToArray = (): ABTestParametersMetadata[] => {
+    public Get = (): Map<string, Workspace> => {
+        return this.parameters
+    }
+
+    public ToArray = (): Workspace[] => {
         return UnmapParameters(this.parameters)
     }
 
@@ -21,25 +25,29 @@ export default class TestingParameters {
             if (workspacesData.has(workspace)) {
                 this.parameters.set(workspace, {
                     abTestParameters: WorkspaceToBetaDistribution(workspacesData.get(workspace)!),
-                    workspace: (workspace),
+                    name: (workspace),
+                    production: true,
+                    weight: 100,
                 })
             }
         }
     }
 }
 
-const MapInitialParameters = (workspaces: ABTestWorkspace[]): Map<string, ABTestParametersMetadata> => {
+const MapInitialParameters = (workspaces: ABTestWorkspace[]): Map<string, Workspace> => {
     const map = new Map()
     for (const workspace of workspaces) {
         map.set(workspace.name, {
             abTestParameters: InitialABTestParameters,
-            workspace: workspace.name,
+            name: workspace.name,
+            production: true,
+            weight: 100,
         })
     }
     return map
 }
-const UnmapParameters = (mapParameters: Map<string, ABTestParametersMetadata>): ABTestParametersMetadata[] => {
-    const parameters: ABTestParametersMetadata[] = []
+const UnmapParameters = (mapParameters: Map<string, Workspace>): Workspace[] => {
+    const parameters: Workspace[] = []
     for (const parameter of mapParameters.values()) {
         parameters.push(parameter)
     }
@@ -47,8 +55,10 @@ const UnmapParameters = (mapParameters: Map<string, ABTestParametersMetadata>): 
 }
 
 declare global {
-    export interface ABTestParametersMetadata {
-        workspace: string,
+    export interface Workspace {
+        name: string,
+        production: boolean,
+        weight: number,
         abTestParameters: ABTestParameters,
     }
 }

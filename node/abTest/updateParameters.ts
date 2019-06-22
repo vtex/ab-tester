@@ -1,3 +1,4 @@
+import { TSMap } from 'typescript-map'
 import Router from '../clients/router'
 import Storedash from '../clients/storedash'
 import TestingParameters from '../typings/testingParameters'
@@ -12,7 +13,7 @@ import { InitializeParameters } from './initializeParameters'
 
 const MasterWorkspaceName = 'master'
 
-export async function UpdateParameters(account: string, aBTestBeginning: string, workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, router: Router, storedash: Storedash): Promise<void> {
+export async function UpdateParameters(account: string, aBTestBeginning: string, workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, router: Router, storedash: Storedash): Promise<void> {
     if (await IsInitialStage(workspacesData, storedash)) {
         return
     }
@@ -25,10 +26,14 @@ export async function UpdateParameters(account: string, aBTestBeginning: string,
         randomRestart = workspaceCompleteData[0] === MasterWorkspaceName ? false : RandomRestart(workspaceCompleteData[1], masterWorkspace!)
         if (!randomRestart) {
             testingParameters.Set(MapWorkspaceData(workspacesData))
-            await router.setParameters(account, testingParameters.ToArray())
+            const tsmap = new TSMap<string, Workspace>([...testingParameters.Get()])
+            await router.setParameters(account, {
+                Id: testId,
+                Workspaces: tsmap,
+            })
             return
         }
     }
 
-    await InitializeParameters(account, testingWorkspaces.ToArray(), router)
+    await InitializeParameters(account, testingWorkspaces.ToArray(), testId, router)
 }

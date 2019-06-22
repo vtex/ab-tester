@@ -1,3 +1,4 @@
+import { TSMap } from 'typescript-map'
 import { LoggerClient as Logger } from '../../clients/logger'
 import TestingParameters from '../../typings/testingParameters'
 import TestingWorkspaces from '../../typings/testingWorkspace'
@@ -25,7 +26,11 @@ export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<vo
       Id: workspaceMetadata.Id,
       workspaces: testingWorkspaces.ToArray(),
     })
-    await router.setParameters(account, testingParameters.ToArray())
+    const tsmap = new TSMap<string, Workspace>([...testingParameters.Get()])
+    await router.setParameters(account, {
+      Id: workspaceMetadata.Id,
+      Workspaces: tsmap,
+    })
   } catch (err) {
     if (err.status === 404) {
       err.message = 'Workspace not found'

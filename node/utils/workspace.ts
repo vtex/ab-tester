@@ -1,3 +1,5 @@
+import { TSMap } from 'typescript-map'
+
 export const InitialABTestParameters: ABTestParameters = { a: 1, b: 1 }
 export const DefaultABTestParameters: ABTestParameters = { a: 0, b: 0 }
 
@@ -81,12 +83,14 @@ export const ToWorkspaceMetadada = (workspaceData: WorkspaceData, weight: number
     }
 }
 
-export const InitialParameters = (workspaces: ABTestWorkspace[]): ABTestParametersMetadata[] => {
-    const parameters: ABTestParametersMetadata[] = []
+export const InitialParameters = (workspaces: ABTestWorkspace[]): TSMap<string, Workspace> => {
+    const parameters = new TSMap<string, Workspace>()
     for (const workspace of workspaces) {
-        parameters.push({
+        parameters.set(workspace.name, {
             abTestParameters: InitialABTestParameters,
-            workspace: (workspace.name),
+            name: (workspace.name),
+            production: true,
+            weight: 100,
         })
     }
     return parameters
