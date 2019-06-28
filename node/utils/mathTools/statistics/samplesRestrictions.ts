@@ -1,4 +1,4 @@
-import { betaDensity, intermediateBeta } from './betaDistribution'
+import { betaDensity, incompleteBeta } from './betaDistribution'
 
 export const BoundError = 2e-4
 
@@ -21,23 +21,18 @@ export const pValue = (control: ABTestParameters, alternative: ABTestParameters)
 export const customBetaProbability = (x: number, a: number, b: number): number => {
     const lambda = (a - 1) / (a + b - 2)
     const lambda1 = lambda - BoundError
-    const lambda2 = lambda + BoundError
     const a1 = 1 + Math.floor((lambda1 / lambda) * (a - 1))
     const b1 = a + b - a1
-    const a2 = 1 + Math.floor((lambda2 / lambda) * (a - 1))
-    const b2 = a + b - a2
     const h = betaDensity(lambda, a, b)
-    const half = x > lambda
-    const xminus = x - BoundError
-    const xplus = x + BoundError
+    const distance = Math.abs(x - lambda)
 
     const totalMass = 1 + (2 * BoundError * h)
 
-    if (Math.abs(lambda - x) < 2 * BoundError) {
-        let probability = BoundError
-        probability += half ? intermediateBeta(lambda2, xplus, a2, b2) + (h * (lambda2 - x)) : intermediateBeta(xminus, lambda1, a1, b1) + (h * (x - lambda1))
-        return probability / totalMass
+    if (distance < BoundError) {
+        let probability = 1 / 2
+        probability += h * (BoundError - distance)
+        return (2 * probability) / totalMass
     }
 
-    return half ? intermediateBeta(xminus, xplus, a2, b2) / totalMass : intermediateBeta(x - BoundError, x + BoundError, a1, b1) / totalMass
+    return (2 * incompleteBeta(lambda - distance, a1, b1)) / totalMass
 }
