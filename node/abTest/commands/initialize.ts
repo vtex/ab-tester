@@ -5,7 +5,6 @@ import Router from '../../clients/router'
 import TestingParameters from '../../typings/testingParameters'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
-import { InitializeABTestParams } from '../../workspace/modify'
 
 export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
     const { vtex: { account, route: { params: { initializingWorkspace } } }, resources: { router, vbase } } = ctx
@@ -15,7 +14,6 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
         const testingWorkspaces = new TestingWorkspaces(workspaceMetadata)
         const hasTestingWorkspaces = workspaceMetadata ? true : false
         if (!hasTestingWorkspaces ? true : !testingWorkspaces.Includes('master')) {
-            await InitializeABTestParams(account, 'master', ctx.vtex)
             testingWorkspaces.Add('master')
             workspaceMetadata = {
                 Id: uuid(),
@@ -32,7 +30,6 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
             Workspaces: tsmap,
         })
 
-        await InitializeABTestParams(account, workspaceName, ctx.vtex)
         await vbase.initializeABtest()
     } catch (err) {
         if (err.status === 404) {

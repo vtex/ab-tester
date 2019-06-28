@@ -1,7 +1,6 @@
 import { LoggerClient as Logger } from '../../clients/logger'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { MinutesSinceQuery } from '../../utils/hoursSince'
-import { UpdateWorkspacesData } from '../../workspace/modify'
 import { UpdateParameters } from '../updateParameters'
 
 const bucket = 'ABTest'
@@ -22,7 +21,6 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
       const beginningString = MinutesSinceQuery(beginning)
       const workspacesData = await storedash.getWorkspacesData(beginningString)
       await UpdateParameters(account, beginningString, workspacesData, testingWorkspaces, workspacesMetadata.Id, router, storedash)
-      await UpdateWorkspacesData(account, beginningString, testingWorkspaces.WorkspacesNames(), ctx, router, storedash)
     }
   } catch (err) {
     const logger = new Logger(ctx, {})

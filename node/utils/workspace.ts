@@ -44,16 +44,6 @@ export function InitialWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWork
     return abWorkspaceMetadata
 }
 
-export function DefaultWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWorkspaceMetadata {
-    const abWorkspaceMetadata: ABWorkspaceMetadata = {
-        abTestParameters: DefaultABTestParameters,
-        name: Workspace.name,
-        production: Workspace.production,
-        weight: Workspace.weight,
-    }
-    return abWorkspaceMetadata
-}
-
 export const totalSessions = (workspacesData: WorkspaceData[]): number => {
     let total = 0
     for (const workspaceData of workspacesData) {
