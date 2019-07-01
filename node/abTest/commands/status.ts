@@ -2,9 +2,6 @@ import { LoggerClient as Logger } from '../../clients/logger'
 import { DefaultEvaluationResponse } from '../../utils/evaluation-response'
 import { TestWorkspaces } from '../testWorkspaces'
 
-const bucket = 'ABTest'
-const fileName = 'currentABTest.json'
-
 export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> {
   const { vtex: { account }, resources: { router, vbase } } = ctx
 
@@ -13,7 +10,7 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
       ctx.status = 400
       throw new Error('Test not initialized')
     }
-    const data = await vbase.get(bucket, fileName)
+    const data = await vbase.get(ctx.vtex)
     if (!data) {
       return [DefaultEvaluationResponse('Test not initialized', 'none', 'none')]
     }

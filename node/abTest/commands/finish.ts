@@ -14,7 +14,7 @@ export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<vo
     if (testingWorkspaces.Length() <= 1) {
       await router.deleteParameters(account)
       await router.deleteWorkspaces(account)
-      await vbase.finishABtest()
+      await vbase.finishABtest(ctx.vtex)
       return
     }
 

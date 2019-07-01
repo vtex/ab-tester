@@ -2,7 +2,8 @@ export default class TestingWorkspaces {
     private workspaces: Map<string, ABTestWorkspace>
 
     constructor(metaData: ABTestWorkspacesMetadata) {
-        const workspaces = metaData !== null ? MapInitialWorkspaces(metaData.workspaces) : new Map()
+        const hasWorkspaces = (metaData !== null) && (metaData.workspaces !== null)
+        const workspaces = hasWorkspaces ? MapInitialWorkspaces(metaData.workspaces) : new Map()
         this.workspaces = new Map(workspaces)
     }
 

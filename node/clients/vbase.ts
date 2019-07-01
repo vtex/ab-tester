@@ -1,7 +1,7 @@
-import { VBase as BaseClient } from '@vtex/api'
+import { IOContext, VBase as BaseClient } from '@vtex/api'
 import { Readable } from 'stream'
 
-const bucketName = 'ABTest'
+const bucketName = (account: string) => 'ABTest-' + account
 const fileName = 'currentABTest.json'
 
 const jsonStream = (arg: any) => {
@@ -18,32 +18,32 @@ export default class VBase {
     this.client = new BaseClient(opts)
   }
 
-  public get = async (bucket: string, path: string) => {
+  public get = async (ctx: IOContext) => {
     try {
-      const file = await this.client.getFile(bucket, path)
+      const file = await this.client.getFile(bucketName(ctx.account), fileName)
       return JSON.parse(file.data.toString())
     } catch (ex) {
-      throw new Error(`Get request for key ${path} in bucket ${bucket} failed!`)
+      throw new Error(`Get request for key ${fileName} in bucket ${bucketName(ctx.account)} failed!`)
     }
   }
 
-  public save = async (bucket: string, path: string, data: any) => {
+  public save = async (data: any, ctx: IOContext) => {
     try {
-      await this.client.saveFile(bucket, path, jsonStream(data))
+      await this.client.saveFile(bucketName(ctx.account), fileName, jsonStream(data))
     } catch (ex) {
-      throw new Error(`Save request for key ${path} in bucket ${bucket} failed!`)
+      throw new Error(`Save request for key ${fileName} in bucket ${bucketName(ctx.account)} failed!`)
     }
   }
 
-  public initializeABtest = async (): Promise<void> => {
+  public initializeABtest = async (ctx: IOContext): Promise<void> => {
     const beginning = new Date().toISOString().substr(0, 16)
-    return await this.save(bucketName, fileName, {
+    return await this.save({
       dateOfBeginning: beginning,
-    } as VBaseABTestData)
+    } as VBaseABTestData, ctx)
   }
 
-  public finishABtest = async (): Promise<void> => {
-    await this.client.deleteFile(bucketName, fileName)
+  public finishABtest = async (ctx: IOContext): Promise<void> => {
+    await this.client.deleteFile(bucketName(ctx.account), fileName)
   }
 }
 

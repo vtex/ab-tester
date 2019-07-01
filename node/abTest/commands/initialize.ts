@@ -13,7 +13,7 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
         let workspaceMetadata = await router.getWorkspaces(account)
         const testingWorkspaces = new TestingWorkspaces(workspaceMetadata)
         const hasTestingWorkspaces = workspaceMetadata ? true : false
-        if (!hasTestingWorkspaces ? true : !testingWorkspaces.Includes('master')) {
+        if (!hasTestingWorkspaces || !testingWorkspaces.Includes('master')) {
             testingWorkspaces.Add('master')
             workspaceMetadata = {
                 Id: uuid(),
@@ -30,7 +30,7 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
             Workspaces: tsmap,
         })
 
-        await vbase.initializeABtest()
+        await vbase.initializeABtest(ctx.vtex)
     } catch (err) {
         if (err.status === 404) {
             err.message = 'Workspace not found'
