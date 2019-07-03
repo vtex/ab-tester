@@ -1,13 +1,12 @@
 import { TSMap } from 'typescript-map'
 import { v4 as uuid } from 'uuid'
-import { LoggerClient as Logger } from '../../clients/logger'
 import Router from '../../clients/router'
 import TestingParameters from '../../typings/testingParameters'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 
 export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
-    const { vtex: { account, route: { params: { initializingWorkspace } } }, resources: { router, vbase } } = ctx
+    const { vtex: { account, route: { params: { initializingWorkspace } } }, resources: { logger, router, vbase } } = ctx
     const workspaceName = firstOrDefault(initializingWorkspace)
     try {
         let workspaceMetadata = await router.getWorkspaces(account)
@@ -31,12 +30,12 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
         })
 
         await vbase.initializeABtest(ctx.vtex)
+        logger.info(`A/B Test initialized in ${account} for workspace ${workspaceName}`, { account: `${account}`, method: 'TestInitialized' })
     } catch (err) {
         if (err.status === 404) {
             err.message = 'Workspace not found'
         }
-        const logger = new Logger(ctx.vtex, {})
-        logger.sendLog(err, { status: ctx.status, message: err.message })
+        logger.error({ status: ctx.status, message: err.message })
         throw new Error(err)
     }
 }

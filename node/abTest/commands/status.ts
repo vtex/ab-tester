@@ -1,10 +1,8 @@
-import { LoggerClient as Logger } from '../../clients/logger'
 import { DefaultEvaluationResponse } from '../../utils/evaluation-response'
 import { TestWorkspaces } from '../testWorkspaces'
 
 export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> {
-  const { vtex: { account }, resources: { router, vbase } } = ctx
-
+  const { vtex: { account }, resources: { logger, router, vbase } } = ctx
   try {
     if (await router.getWorkspaces(account) === null) {
       ctx.status = 400
@@ -16,13 +14,12 @@ export async function ABTestStatus(ctx: ColossusContext): Promise<TestResult[]> 
     }
     let beginning = data.dateOfBeginning
     if (beginning === undefined) {
-      beginning = new Date()
+      beginning = new Date().toISOString().substr(0, 16)
     }
-
+    logger.info(`A/B Test Status to user in ${account}`, { account: `${account}`, method: 'TestStatus' })
     return await TestWorkspaces(account, beginning, ctx) || []
   } catch (err) {
-    const logger = new Logger(ctx.vtex, {})
-    logger.sendLog(err, { status: ctx.status, message: err.message })
+    logger.error({ status: ctx.status, message: err.message })
     throw new Error(err)
   }
 }

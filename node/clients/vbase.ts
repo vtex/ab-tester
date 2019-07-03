@@ -18,10 +18,10 @@ export default class VBase {
     this.client = new BaseClient(opts)
   }
 
-  public get = async (ctx: IOContext) => {
+  public get = async (ctx: IOContext): Promise<VBaseABTestData> => {
     try {
       const file = await this.client.getFile(bucketName(ctx.account), fileName)
-      return JSON.parse(file.data.toString())
+      return JSON.parse(file.data.toString()) as VBaseABTestData
     } catch (ex) {
       throw new Error(`Get request for key ${fileName} in bucket ${bucketName(ctx.account)} failed!`)
     }

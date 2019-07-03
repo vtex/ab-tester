@@ -1,10 +1,9 @@
-import { LoggerClient as Logger } from '../../clients/logger'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { MinutesSinceQuery } from '../../utils/hoursSince'
 import { UpdateParameters } from '../updateParameters'
 
 export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
-  const { account, resources: { router, storedash, vbase } } = ctx
+  const { account, resources: { logger, router, storedash, vbase } } = ctx
   try {
     const workspacesMetadata = await router.getWorkspaces(account)
     const testingWorkspaces = new TestingWorkspaces(workspacesMetadata)
@@ -12,7 +11,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
       const data = await vbase.get(ctx)
       let beginning = data.dateOfBeginning
       if (beginning === undefined) {
-        beginning = new Date()
+        beginning = new Date().toISOString().substr(0, 16)
       }
 
       const beginningString = MinutesSinceQuery(beginning)
@@ -20,8 +19,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
       await UpdateParameters(account, beginningString, workspacesData, testingWorkspaces, workspacesMetadata.Id, router, storedash)
     }
   } catch (err) {
-    const logger = new Logger(ctx, {})
-    logger.sendLog(err, { status: err.status, message: err.message })
+    logger.error({ status: err.status, message: err.message })
     throw new Error(err)
   }
 }

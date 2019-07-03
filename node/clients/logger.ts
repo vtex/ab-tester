@@ -1,21 +1,21 @@
 import { InstanceOptions, IOContext, Logger, LogLevel } from '@vtex/api'
 
-const noSubject = '-'
+const DEFAULT_SUBJECT = '-'
 
-export class LoggerClient {
+export default class LoggerClient {
   private client: Logger
 
-  constructor(private ctx: IOContext, opts: InstanceOptions) {
+  constructor(ctx: IOContext, opts: InstanceOptions) {
     this.client = new Logger(ctx, opts)
   }
 
-  public sendLog = (level: LogLevel, message: string | {}): Promise<void> => {
-    const { account, userAgent } = this.ctx
-    console.warn(`Try this query at Splunk to retrieve error log: 'index=colossus key=log_error subject=${userAgent} account=${account} workspace=${this.ctx.workspace}'`)
-    const data = (typeof message === 'string' || message instanceof String)
-      ? { message }
-      : message
+  public info = (message: string, data: {}): Promise<void> => {
+    data = {...data, message}
+    return this.client.sendLog(DEFAULT_SUBJECT, data, LogLevel.Info)
+  }
 
-    return this.client.sendLog(noSubject, data, level)
+  public error = (message: string | {}): Promise<void> => {
+    const data = (typeof message === 'string' || message instanceof String) ? { message } : message
+    return this.client.error(data)
   }
 }

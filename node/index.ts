@@ -1,7 +1,6 @@
 import { Service } from '@vtex/api'
 import { map } from 'ramda'
 import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, LegacyInitializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters } from './abTest/controller'
-import { LoggerClient as Logger } from './clients/logger'
 import { Resources } from './resources/index'
 
 const tester = (handler: any) => async (ctx: ColossusContext) => {
@@ -9,10 +8,8 @@ const tester = (handler: any) => async (ctx: ColossusContext) => {
   try {
     await handler(ctx)
   } catch (err) {
-    const logger = new Logger(ctx.vtex, {})
-
     if (err.code && err.message && err.status) {
-      logger.sendLog(err, { status: ctx.status, message: err.message })
+      ctx.logger.sendErrorLog({ status: ctx.status, message: err.message })
       ctx.body = {
         code: err.code,
         message: err.message,
@@ -22,7 +19,7 @@ const tester = (handler: any) => async (ctx: ColossusContext) => {
 
     if (err.response) {
       ctx.body = ctx.status === 404 ? 'Not Found' : err.response.data
-      logger.sendLog(err, { status: ctx.status, message: err.response.data })
+      ctx.logger.sendErrorLog({ status: ctx.status, message: err.response.data })
       console.log(
         `Error from HTTP request. ${err.response.config
           ? `method=${err.response.config.method} url=${err.response.config.url} `

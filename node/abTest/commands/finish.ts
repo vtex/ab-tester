@@ -1,11 +1,10 @@
 import { TSMap } from 'typescript-map'
-import { LoggerClient as Logger } from '../../clients/logger'
 import TestingParameters from '../../typings/testingParameters'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 
 export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
-  const { vtex: { account, route: { params: { finishingWorkspace } } }, resources: { router, vbase } } = ctx
+  const { vtex: { account, route: { params: { finishingWorkspace } } }, resources: { logger, router, vbase } } = ctx
   const workspaceName = firstOrDefault(finishingWorkspace)
   try {
     const workspaceMetadata = await router.getWorkspaces(account)
@@ -15,6 +14,7 @@ export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<vo
       await router.deleteParameters(account)
       await router.deleteWorkspaces(account)
       await vbase.finishABtest(ctx.vtex)
+      logger.info(`A/B Test finished in ${account} for workspace ${workspaceName}`, { account: `${account}`, method: 'TestFinished' })
       return
     }
 
@@ -28,12 +28,12 @@ export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<vo
       Id: workspaceMetadata.Id,
       Workspaces: tsmap,
     })
+    logger.info(`A/B Test finished in ${account} for workspace ${workspaceName}`, { account: `${account}`, method: 'TestFinished' })
   } catch (err) {
     if (err.status === 404) {
       err.message = 'Workspace not found'
     }
-    const logger = new Logger(ctx.vtex, {})
-    logger.sendLog(err, { status: ctx.status, message: err.message })
+    logger.error({ status: ctx.status, message: err.message })
     throw new Error(err)
   }
 }
