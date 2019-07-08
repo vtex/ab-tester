@@ -30,7 +30,7 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
         })
 
         await vbase.initializeABtest(ctx.vtex)
-        logger.info(`A/B Test initialized in ${account} for workspace ${workspaceName}`, { account: `${account}`, method: 'TestInitialized' })
+        logger.info(`A/B Test initialized in ${account} for workspace ${workspaceName}`, { account: `${account}`, workspace: `${workspaceName}`, method: 'TestInitialized' })
     } catch (err) {
         if (err.status === 404) {
             err.message = 'Workspace not found'

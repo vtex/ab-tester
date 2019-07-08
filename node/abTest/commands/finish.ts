@@ -28,7 +28,7 @@ export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<vo
       Id: workspaceMetadata.Id,
       Workspaces: tsmap,
     })
-    logger.info(`A/B Test finished in ${account} for workspace ${workspaceName}`, { account: `${account}`, method: 'TestFinished' })
+    logger.info(`A/B Test finished in ${account} for workspace ${workspaceName}`, { account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
   } catch (err) {
     if (err.status === 404) {
       err.message = 'Workspace not found'
