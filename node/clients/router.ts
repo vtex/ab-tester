@@ -12,7 +12,7 @@ export default class Router extends InfraClient {
     }
 
     public getWorkspaces = async (account: string): Promise<ABTestWorkspacesMetadata> => {
-        return await this.http.get<ABTestWorkspacesMetadata>(routes.Workspaces(account), { metric: 'abtest-get' })
+        return this.http.get<ABTestWorkspacesMetadata>(routes.Workspaces(account), { metric: 'abtest-get' })
     }
 
     public setWorkspaces = (account: string, metadata: Partial<ABTestWorkspacesMetadata>) => {

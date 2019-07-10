@@ -16,7 +16,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
 
       const beginningString = MinutesSinceQuery(beginning)
       const workspacesData = await storedash.getWorkspacesData(beginningString)
-      await UpdateParameters(account, beginningString, workspacesData, testingWorkspaces, workspacesMetadata.Id, router, storedash)
+      await UpdateParameters(account, beginningString, workspacesData, testingWorkspaces, workspacesMetadata.id || 'noId', router, storedash)
     }
   } catch (err) {
     logger.error({ status: err.status, message: err.message })

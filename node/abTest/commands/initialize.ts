@@ -15,17 +15,17 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
         if (!hasTestingWorkspaces || !testingWorkspaces.Includes('master')) {
             testingWorkspaces.Add('master')
             workspaceMetadata = {
-                Id: uuid(),
+                id: uuid(),
                 workspaces: testingWorkspaces.ToArray(),
             }
         }
         testingWorkspaces.Add(workspaceName)
         const testingParameters = new TestingParameters(testingWorkspaces.ToArray())
 
-        await InitializeWorkspaces(account, workspaceMetadata.Id, testingWorkspaces.ToArray(), router)
+        await InitializeWorkspaces(account, workspaceMetadata.id, testingWorkspaces.ToArray(), router)
         const tsmap = new TSMap<string, Workspace>([...testingParameters.Get()])
         await router.setParameters(account, {
-            Id: workspaceMetadata.Id,
+            Id: workspaceMetadata.id,
             Workspaces: tsmap,
         })
 
@@ -40,9 +40,9 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
     }
 }
 
-async function InitializeWorkspaces(account: string, Id: string, testingWorkspaces: ABTestWorkspace[], router: Router): Promise<void> {
+async function InitializeWorkspaces(account: string, id: string, testingWorkspaces: ABTestWorkspace[], router: Router): Promise<void> {
     await router.setWorkspaces(account, {
-        Id: (Id),
+        id: (id),
         workspaces: testingWorkspaces,
     })
 }
