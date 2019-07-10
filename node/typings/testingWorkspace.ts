@@ -54,7 +54,7 @@ declare global {
         name: string,
     }
     export interface ABTestWorkspacesMetadata {
-        id: string,
+        Id: string,
         workspaces: ABTestWorkspace[]
     }
 }
