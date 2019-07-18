@@ -14,7 +14,7 @@ export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<vo
       await router.deleteParameters(account)
       await router.deleteWorkspaces(account)
       await vbase.finishABtest(ctx.vtex)
-      logger.info(`A/B Test finished in ${account} for workspace ${workspaceName}`, { account: `${account}`, method: 'TestFinished' })
+      logger.info(`A/B Test finished in ${account} for workspace ${workspaceName}`, { account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
       return
     }
 
