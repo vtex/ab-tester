@@ -5,15 +5,12 @@ export function betaDensity(x: number, a: number, b: number) {
 }
 
 export function incompleteBeta(x: number, a: number, b: number) {
-    let value = x
-    for (let i: number = 1; i < a; i++) {
-        value -= Math.pow(x, i - 1) / (i * beta(i, 1))
-    }
-    for (let j: number = 1; j < b; j++) {
-        value += Math.pow(x, a) * Math.pow(1 - x, j) / (b * beta(a, j))
+    let value = Math.pow(x, a)
+    for (let i: number = 1; i < b; i++) {
+        value += Math.pow(x, a) * Math.pow(1 - x, i) / (i * beta(a, i))
     }
 
-    return value
+    return value * beta(a, b)
 }
 
 export function intermediateBeta(x: number, y: number, a: number, b: number) {
