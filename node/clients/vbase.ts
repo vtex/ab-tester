@@ -35,10 +35,12 @@ export default class VBase {
     }
   }
 
-  public initializeABtest = async (ctx: IOContext): Promise<void> => {
+  public initializeABtest = async (initialTime: number, proportion: number, ctx: IOContext): Promise<void> => {
     const beginning = new Date().toISOString().substr(0, 16)
     return await this.save({
       dateOfBeginning: beginning,
+      initialProportion: proportion,
+      initialStageTime: initialTime,
     } as VBaseABTestData, ctx)
   }
 
@@ -49,4 +51,6 @@ export default class VBase {
 
 interface VBaseABTestData {
   dateOfBeginning: string
+  initialStageTime: number
+  initialProportion: number
 }

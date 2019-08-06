@@ -6,6 +6,17 @@ import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 
 export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promise<void> {
+    await InitializeAbTest(1, 0.5, ctx)
+}
+
+export async function InitializeAbTestForWorkspaceWithParameters(ctx: ColossusContext): Promise<void> {
+    const { vtex: { route: { params: { hours, proportion } } }} = ctx
+    const hoursOfInitialStage = firstOrDefault(hours)
+    const proportionOfTraffic = firstOrDefault(proportion)
+    await InitializeAbTest(Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx)
+}
+
+async function InitializeAbTest(hoursOfInitialStage: number, proportionOfTraffic: number, ctx: ColossusContext): Promise<void> {
     const { vtex: { account, route: { params: { initializingWorkspace } } }, resources: { logger, router, vbase } } = ctx
     const workspaceName = firstOrDefault(initializingWorkspace)
     try {
@@ -29,7 +40,7 @@ export async function InitializeAbTestForWorkspace(ctx: ColossusContext): Promis
             Workspaces: tsmap,
         })
 
-        await vbase.initializeABtest(ctx.vtex)
+        await vbase.initializeABtest(hoursOfInitialStage, proportionOfTraffic, ctx.vtex)
         logger.info(`A/B Test initialized in ${account} for workspace ${workspaceName}`, { account: `${account}`, workspace: `${workspaceName}`, method: 'TestInitialized' })
     } catch (err) {
         if (err.status === 404) {

@@ -1,6 +1,6 @@
 import { getWithRetriesHelper } from '../utils/getWithRetries'
 import { FinishAbTestForWorkspace as finish } from './commands/finish'
-import { InitializeAbTestForWorkspace as initialize } from './commands/initialize'
+import { InitializeAbTestForWorkspace as initialize,  InitializeAbTestForWorkspaceWithParameters as initializeWithParameters} from './commands/initialize'
 import { ABTestStatus as status } from './commands/status'
 import { TTCAbTest as timeToComplete } from './commands/timeToComplete'
 import { UpdateStatusOnEvent as update } from './commands/update'
@@ -30,6 +30,15 @@ export const initializeAbTestForWorkspace = async (ctx: ColossusContext) => {
 
   ctx.status = 200
   ctx.body = 'A/B Test beginning saved successfully'
+}
+
+export const initializeAbTestForWorkspaceWithParameters = async (ctx: ColossusContext) => {
+  ctx.set('Cache-Control', 'no-cache')
+
+  await getWithRetriesHelper(initializeWithParameters)(3, ctx)
+
+  ctx.status = 200
+  ctx.body = 'A/B Test beginning saved successfully, with parameters'
 }
 
 export const abTestStatus = async (ctx: ColossusContext) => {

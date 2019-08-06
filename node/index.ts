@@ -1,6 +1,6 @@
 import { Service } from '@vtex/api'
 import { map } from 'ramda'
-import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, LegacyInitializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters } from './abTest/controller'
+import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, initializeAbTestForWorkspaceWithParameters, LegacyInitializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters } from './abTest/controller'
 import { Resources } from './resources/index'
 
 const tester = (handler: any) => async (ctx: ColossusContext) => {
@@ -45,6 +45,7 @@ export default new Service({
       abTestStatus,
       finishAbTestForWorkspace,
       initializeAbTestForWorkspace,
+      initializeAbTestForWorkspaceWithParameters,
       timeToCompleteAbTest,
     }),
 })
