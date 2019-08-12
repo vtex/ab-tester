@@ -14,7 +14,7 @@ export default class Storedash extends ExternalClient {
     }
 
     public getStoredashData = (from: string) => {
-        return this.http.get<StoreDashResponse[]>('sessioncube' + AggregationQuery(from), { metric: 'storedash-get' })
+        return this.http.get<StoreDashResponse[]>('navigationcube' + AggregationQuery(from), { metric: 'storedash-get' })
     }
 
     public getWorkspacesData = async (from: string): Promise<WorkspaceData[]> => {
@@ -22,24 +22,18 @@ export default class Storedash extends ExternalClient {
         const workspacesData: WorkspaceData[] = []
         for (const metric of metrics) {
             const m: StoreDashResponse = metric as unknown as StoreDashResponse
-            workspacesData.push(WorkspaceData(m.workspace, m.count, m['data.orderPlaced']))
+            workspacesData.push(WorkspaceData(m.workspace, m['data.sessions'], m['data.sessionsOrdered']))
         }
         return workspacesData
     }
 }
 
-const AggregationQuery = (from: string): string => {
-    const stringArr = from.split('-')
-    const timeString = stringArr[1]
-    const time = Number(timeString.split('m')[0])
-    if (time > 60) {
-        return `?from=${from}&to=now-60m&operation=sum&fields=count,data.orderPlaced&aggregateBy=workspace`
-    }
-    return '?from=now-10m&to=now&operation=sum&fields=count,data.orderPlaced&aggregateBy=workspace'
-}
+const AggregationQuery = (from: string): string => (
+    '?from=' + from + '&to=now&operation=sum&fields=data.sessions,data.sessionsOrdered&aggregateBy=workspace'
+)
 
 interface StoreDashResponse {
     workspace: string
-    count: number
-    'data.orderPlaced': number
+    'data.sessions': number
+    'data.sessionsOrdered': number
 }
