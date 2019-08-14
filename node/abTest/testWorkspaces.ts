@@ -8,15 +8,15 @@ import { BuildCompleteData } from './data/buildData'
 
 const MasterWorkspaceName = 'master'
 
-export async function TestWorkspaces(account: string, abTestBeginning: string, ctx: ColossusContext): Promise<TestResult[]> {
+export async function TestWorkspaces(account: string, abTestBeginning: string, workspacesMetadata: ABTestWorkspacesMetadata, ctx: ColossusContext): Promise<TestResult[]> {
     const { resources: { router, storedash } } = ctx
-    const workspacesMetadata = await router.getWorkspaces(account)
-    const testingWorkspaces = new TestingWorkspaces (workspacesMetadata)
+    const testingWorkspaces = new TestingWorkspaces(workspacesMetadata)
     const Results: TestResult[] = []
 
-    if (IsTestInitialized(testingWorkspaces.WorkspacesNames())) {
+    if (testingWorkspaces.Length() > 0) {
         const beginningQuery = MinutesSinceQuery(abTestBeginning)
         const workspacesData = await FilterWorkspacesData(beginningQuery, testingWorkspaces.WorkspacesNames(), storedash)
+
         if (!HasWorkspacesData(workspacesData)) {
             for (const workspaceName of testingWorkspaces.WorkspacesNames()) {
                 if (workspaceName !== 'master') {
@@ -34,19 +34,13 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, c
             }
         }
     }
+    console.log(Results)
     return Results
 }
 
 async function FilterWorkspacesData(aBTestBeginning: string, testingWorkspaces: string[], storedash: Storedash): Promise<WorkspaceData[]> {
     const workspacesData = await storedash.getWorkspacesData(aBTestBeginning)
     return FilteredWorkspacesData(workspacesData, testingWorkspaces)
-}
-
-const IsTestInitialized = (testingWorkspaces: string[]): boolean => {
-    if(testingWorkspaces.length > 0) {
-        return true
-    }
-    return false
 }
 
 const HasWorkspacesData = (workspacesData: WorkspaceData[]): boolean => {
