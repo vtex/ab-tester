@@ -23,10 +23,15 @@ export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<vo
       id: workspaceMetadata.id,
       workspaces: testingWorkspaces.ToArray(),
     })
-    const tsmap = new TSMap<string, Workspace>([...testingParameters.Get()])
+    
+    let tsmap = new TSMap<string, ABTestParameters>()
+    for (let entry of testingParameters.Get()) {
+        tsmap.set(entry[0], entry[1].abTestParameters)
+    }
+
     await router.setParameters(account, {
       Id: workspaceMetadata.id,
-      Workspaces: tsmap,
+      parameterPerWorkspace: tsmap,
     })
     logger.info(`A/B Test finished in ${account} for workspace ${workspaceName}`, { account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
   } catch (err) {

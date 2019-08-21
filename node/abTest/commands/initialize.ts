@@ -34,10 +34,15 @@ async function InitializeAbTest(hoursOfInitialStage: number, proportionOfTraffic
         const testingParameters = new TestingParameters(testingWorkspaces.ToArray())
 
         await InitializeWorkspaces(account, workspaceMetadata.id, testingWorkspaces.ToArray(), router)
-        const tsmap = new TSMap<string, Workspace>([...testingParameters.Get()])
+        
+        let tsmap = new TSMap<string, ABTestParameters>()
+        for (let entry of testingParameters.Get()) {
+            tsmap.set(entry[0], entry[1].abTestParameters)
+        }
+
         await router.setParameters(account, {
             Id: workspaceMetadata.id,
-            Workspaces: tsmap,
+            parameterPerWorkspace: tsmap,
         })
 
         await vbase.initializeABtest(hoursOfInitialStage, proportionOfTraffic, ctx.vtex)
