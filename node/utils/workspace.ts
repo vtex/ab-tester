@@ -73,15 +73,10 @@ export const ToWorkspaceMetadada = (workspaceData: WorkspaceData, weight: number
     }
 }
 
-export const InitialParameters = (workspaces: ABTestWorkspace[]): TSMap<string, Workspace> => {
-    const parameters = new TSMap<string, Workspace>()
+export const InitialParameters = (workspaces: ABTestWorkspace[]): TSMap<string, ABTestParameters> => {
+    const parameters = new TSMap<string, ABTestParameters>()
     for (const workspace of workspaces) {
-        parameters.set(workspace.name, {
-            abTestParameters: InitialABTestParameters,
-            name: (workspace.name),
-            production: true,
-            weight: 100,
-        })
+        parameters.set(workspace.name, InitialABTestParameters)
     }
     return parameters
 }
