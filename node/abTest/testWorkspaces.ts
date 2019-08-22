@@ -34,7 +34,6 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, w
             }
         }
     }
-    console.log(Results)
     return Results
 }
 
