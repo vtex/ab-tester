@@ -18,17 +18,13 @@ export async function FinishAbTestForWorkspace(ctx: ColossusContext): Promise<vo
       return
     }
 
-    const testingParameters = new TestingParameters(testingWorkspaces.ToArray())
+    const testingParameters = new TestingParameters(workspaceMetadata.workspaces)
+    testingParameters.Remove(workspaceName)
     await router.setWorkspaces(account, {
       id: workspaceMetadata.id,
       workspaces: testingWorkspaces.ToArray(),
     })
-    
-    let tsmap = new TSMap<string, ABTestParameters>()
-    for (let entry of testingParameters.Get()) {
-        tsmap.set(entry[0], entry[1].abTestParameters)
-    }
-
+    const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
     await router.setParameters(account, {
       Id: workspaceMetadata.id,
       parameterPerWorkspace: tsmap,
