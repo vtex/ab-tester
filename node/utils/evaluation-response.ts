@@ -15,8 +15,6 @@ export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceANam
     WorkspaceB: workspaceBName,
     WorkspaceBSessions: 0,
     WorkspaceBSessionsLast24Hours: 0,
-    WorkspaceAOrdersValue: 0,
-    WorkspaceBOrdersValue: 0,
 })
 
 export const EvaluationResponse = (abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, winner: string, lossA: number, lossB: number, probabilityOneBeatTwo: number, pValue: number): TestResult => ({
@@ -36,6 +34,4 @@ export const EvaluationResponse = (abTestBeginning: string, workspaceAData: Work
     WorkspaceB: workspaceBData.SinceBeginning.Workspace,
     WorkspaceBSessions: workspaceBData.SinceBeginning.Sessions,
     WorkspaceBSessionsLast24Hours: workspaceBData.Last24Hours.Sessions,
-    WorkspaceAOrdersValue: workspaceAData.SinceBeginning.OrdersValue,
-    WorkspaceBOrdersValue: workspaceBData.SinceBeginning.OrdersValue,
 })

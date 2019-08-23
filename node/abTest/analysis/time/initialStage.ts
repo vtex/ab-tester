@@ -23,7 +23,7 @@ export const InitialParameters = (proportion: number, workspaces: ABTestWorkspac
     for (const workspace of workspaces) {
         [noOrderSessions, orderSessions] = workspace.name !== MasterWorkspaceName ? [0, 0]
             : [(1 - proportion) * INFINITE_MASS, proportion * INFINITE_MASS]
-        map.set(workspace.name, WorkspaceData(workspace.name, noOrderSessions + orderSessions, orderSessions, 0))
+        map.set(workspace.name, WorkspaceData(workspace.name, noOrderSessions + orderSessions, orderSessions))
     }
     return map
 }
