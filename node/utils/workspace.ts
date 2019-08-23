@@ -8,13 +8,12 @@ export const WorkspaceToBetaDistribution = (Workspace: WorkspaceData): ABTestPar
     b: Workspace.NoOrderSessions + 1,
 })
 
-export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSessions: number, OrdersValue: number): WorkspaceData => ({
+export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSessions: number): WorkspaceData => ({
     Conversion: (TotalSessions > 0 ? OrderSessions / TotalSessions : 0),
     NoOrderSessions: (TotalSessions - OrderSessions),
     OrderSessions: (OrderSessions),
     Sessions: TotalSessions,
     Workspace: `${Workspace}`,
-    OrdersValue: (OrdersValue),
 })
 
 const ErrorWorkspaceData = (workspace: string): WorkspaceData => ({
@@ -23,7 +22,6 @@ const ErrorWorkspaceData = (workspace: string): WorkspaceData => ({
     OrderSessions: 0,
     Sessions: 0,
     Workspace: workspace,
-    OrdersValue: 0,
 })
 
 export const FilteredWorkspacesData = (workspacesData: WorkspaceData[], testingWorkspaces: string[]): WorkspaceData[] => {

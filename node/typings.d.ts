@@ -18,7 +18,6 @@ declare global {
     OrderSessions: number
     NoOrderSessions: number
     Conversion: number
-    OrdersValue: number
   }
 
   export interface WorkspaceCompleteData {
@@ -43,8 +42,6 @@ declare global {
     ConversionBLast24Hours: number
     ProbabilityAlternativeBeatMaster: number
     PValue: number
-    WorkspaceAOrdersValue: number
-    WorkspaceBOrdersValue: number
   }
 
   export interface ABTestParameters {

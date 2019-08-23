@@ -15,6 +15,6 @@ export async function Evaluate(abTestBeginning: string, workspaceAData: Workspac
     const probabilityTwoBeatOne = ProbabilityOfOneBeatTwo(betaDistributionB.a, betaDistributionB.b, betaDistributionA.a, betaDistributionA.b)
     const statiscs = pValue(betaDistributionA, betaDistributionB)
     const winner = ChooseWinner(workspaceAData.SinceBeginning, workspaceBData.SinceBeginning, BoundError) || 'Not yet decided'
-    
+
     return EvaluationResponse(abTestBeginning, workspaceAData, workspaceBData, winner, lossA, lossB, probabilityTwoBeatOne, statiscs)
 }

@@ -22,19 +22,18 @@ export default class Storedash extends ExternalClient {
         const workspacesData: WorkspaceData[] = []
         for (const metric of metrics) {
             const m: StoreDashResponse = metric as unknown as StoreDashResponse
-            workspacesData.push(WorkspaceData(m.workspace, m['data.sessions'], m['data.sessionsOrdered'], m['data.ordersValue']))
+            workspacesData.push(WorkspaceData(m.workspace, m['data.sessions'], m['data.sessionsOrdered']))
         }
         return workspacesData
     }
 }
 
 const AggregationQuery = (from: string): string => (
-    '?from=' + from + '&to=now&operation=sum&fields=data.sessions,data.sessionsOrdered,data.ordersValue&aggregateBy=workspace'
+    '?from=' + from + '&to=now&operation=sum&fields=data.sessions,data.sessionsOrdered&aggregateBy=workspace'
 )
 
 interface StoreDashResponse {
     workspace: string
     'data.sessions': number
     'data.sessionsOrdered': number
-    'data.ordersValue': number
 }
