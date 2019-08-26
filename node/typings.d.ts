@@ -43,8 +43,10 @@ declare global {
     ConversionBLast24Hours: number
     ProbabilityAlternativeBeatMaster: number
     PValue: number
-    WorkspaceAOrdersValue: number
-     WorkspaceBOrdersValue: number
+    OrdersValueA: number
+    OrdersValueB: number
+    OrdersValueALast24Hours: number
+    OrdersValueBLast24Hours: number
   }
 
   export interface ABTestParameters {
