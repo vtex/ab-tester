@@ -21,6 +21,74 @@ export function ProbabilityOfOneBeatTwo(a: number, b: number, c: number, d: numb
     return result
 }
 
+function ProbabilityAllBeatY(Y: ABTestParameters, X: Array<ABTestParameters>, idxs: Array<number>, next: number) {
+    let x = Y.a
+    let y = Y.b
+    for (let i = 0; i < idxs.length; i++) {
+        x += idxs[i]
+        y += X[i].b
+    }
+    let ret = logBeta(x, y)
+
+    let den = 0
+    for (let i = 0; i < idxs.length; i++) {
+        den += Math.log(X[i].b + idxs[i])
+        den += logBeta(idxs[i] + 1, X[i].b)
+    }
+    den += logBeta(Y.a, Y.b)
+
+    ret -= den
+    ret = Math.exp(ret)
+    if (idxs[next] + 1 < X[next].a) {
+        let copyIdxs = [...idxs]
+        copyIdxs[next]++
+        ret += ProbabilityAllBeatY(Y, X, copyIdxs, next)
+    }
+    if (next + 1 < idxs.length) {
+        let copyIdxs = [...idxs]
+        copyIdxs[++next]++
+        ret += ProbabilityAllBeatY(Y, X, copyIdxs, next)
+    }
+    return ret
+}
+
+function NextComb(v: Array<number>) {
+    v[0] += 1
+    let i = 0
+    while (v[i] === 2) {
+        v[i] = 0
+        i++
+        v[i]++
+    }
+}
+
+export function ProbabilityYBeatsAll(Y: ABTestParameters, X: Array<ABTestParameters>) {
+    let ret = 1
+    let els = Array<number>(X.length)
+    for (let i = 0; i < els.length; i++) {
+        els[i] = 0
+    }
+    let maxi = Math.pow(2, X.length) - 1
+    for (let i = 0; i < maxi; i++) {
+        let curr = 0
+        NextComb(els)
+        let CurrX = Array<ABTestParameters>(0)
+        let idxs = []
+        for (let j = 0; j < els.length; j++) {
+            if (els[j] === 1) {
+                CurrX.push(X[j])
+                idxs.push(0)
+            }
+        }
+        curr += ProbabilityAllBeatY(Y, CurrX, idxs, 0)
+        curr *= Math.pow(-1, idxs.length)
+        ret += curr
+    }
+    ret *= 10000
+    ret = Math.round(ret)
+    return {a:ret, b:1}
+}
+
 export function LossFunctionChossingVariantOne(Beta1: ABTestParameters, Beta2: ABTestParameters) {
     const a = Beta2.a
     const b = Beta2.b

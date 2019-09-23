@@ -4,7 +4,6 @@ import { AverageDaySessions } from './timeToComplete'
 
 const TIME_STEP_FACTOR = (1 / 24)
 const MasterWorkspaceName = 'master'
-const INFINITE_MASS = 1e9
 
 const IsInitialConstraint = (sessions: number, dailySessions: number, hours: number): boolean => (
     sessions < (hours * TIME_STEP_FACTOR * dailySessions)
@@ -20,9 +19,10 @@ export const InitialParameters = (proportion: number, workspaces: ABTestWorkspac
     let noOrderSessions = 0
     let orderSessions = 0
 
+    proportion = (proportion < 1) ? 100 : proportion
     for (const workspace of workspaces) {
-        [noOrderSessions, orderSessions] = workspace.name !== MasterWorkspaceName ? [0, 0]
-            : [(1 - proportion) * INFINITE_MASS, proportion * INFINITE_MASS]
+        [noOrderSessions, orderSessions] = workspace.name !== MasterWorkspaceName ? [1, 100]
+            : [1, proportion]
         map.set(workspace.name, WorkspaceData(workspace.name, noOrderSessions + orderSessions, orderSessions, 0))
     }
     return map

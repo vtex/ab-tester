@@ -19,12 +19,12 @@ export async function UpdateParameters(account: string, aBTestBeginning: string,
 
     if (await IsInitialStage(hoursOfInitialStage, workspacesData, storedash)) {
         testingParameters.Set(InitialParameters(proportionOfTraffic, testingWorkspaces.ToArray()))
-        
         const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
-        await router.setParameters(account, {
+        router.setParameters(account, {
             Id: testId,
             parameterPerWorkspace: tsmap,
         })
+        
         return
     }
 
@@ -37,7 +37,7 @@ export async function UpdateParameters(account: string, aBTestBeginning: string,
             testingParameters.Set(MapWorkspaceData(workspacesData))
             
             const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
-            await router.setParameters(account, {
+            router.setParameters(account, {
                 Id: testId,
                 parameterPerWorkspace: tsmap,
             })

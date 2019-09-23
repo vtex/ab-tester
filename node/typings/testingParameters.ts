@@ -1,4 +1,5 @@
 import { InitialABTestParameters, WorkspaceToBetaDistribution } from '../utils/workspace'
+import { ProbabilityYBeatsAll } from '../utils/mathTools/forBetaDistribution/decisionRule'
 
 export default class TestingParameters {
     private parameters: Map<string, ABTestParameters>
@@ -29,10 +30,18 @@ export default class TestingParameters {
     }
 
     public Set = (workspacesData: Map<string, WorkspaceData>) => {
+        let names = Array<string>(0)
+        let betaParams = Array<ABTestParameters>(0)
         for (const workspace of this.parameters.keys()) {
             if (workspacesData.has(workspace)) {
-                this.parameters.set(workspace, WorkspaceToBetaDistribution(workspacesData.get(workspace)!))
+                names.push(workspace)
+                betaParams.push(WorkspaceToBetaDistribution(workspacesData.get(workspace)!))
             }
+        }
+        for (let i = 0; i < betaParams.length; i++) {
+            let y = betaParams.shift()!
+            this.parameters.set(names.shift()!, ProbabilityYBeatsAll(y, betaParams))
+            betaParams.push(y)
         }
     }
 }

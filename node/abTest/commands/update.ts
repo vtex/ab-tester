@@ -15,7 +15,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
       if (!(beginning && hours && proportion)) {
         beginning = new Date().toISOString().substr(0, 16)
         hours = 0
-        proportion = 0.5
+        proportion = 100
       }
 
       const beginningString = MinutesSinceQuery(beginning)
