@@ -6,7 +6,7 @@ import TestingWorkspaces from '../typings/testingWorkspace'
 import { RandomRestart } from '../utils/randomExploration'
 import { FilteredWorkspacesData } from '../utils/workspace'
 import { MapWorkspaceData } from '../utils/workspacesInfo/workspaceData'
-import { InitialParameters, IsInitialStage } from './analysis/time/initialStage'
+import { IsInitialStage } from './analysis/time/initialStage'
 import { BuildCompleteData } from './data/buildData'
 import { InitializeParameters } from './initializeParameters'
 
@@ -18,13 +18,13 @@ export async function UpdateParameters(account: string, aBTestBeginning: string,
     const testingParameters = new TestingParameters(testingWorkspaces.ToArray())
 
     if (await IsInitialStage(hoursOfInitialStage, workspacesData, storedash)) {
-        testingParameters.Set(InitialParameters(proportionOfTraffic, testingWorkspaces.ToArray()))
+        testingParameters.SetWithFixedParameters(proportionOfTraffic)
         const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
         router.setParameters(account, {
             Id: testId,
             parameterPerWorkspace: tsmap,
         })
-        
+
         return
     }
 
@@ -35,7 +35,7 @@ export async function UpdateParameters(account: string, aBTestBeginning: string,
         randomRestart = workspaceCompleteData[0] === MasterWorkspaceName ? false : RandomRestart(workspaceCompleteData[1], masterWorkspace!)
         if (!randomRestart) {
             testingParameters.Set(MapWorkspaceData(workspacesData))
-            
+
             const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
             router.setParameters(account, {
                 Id: testId,

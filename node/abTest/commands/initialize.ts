@@ -33,9 +33,10 @@ async function InitializeAbTest(hoursOfInitialStage: number, proportionOfTraffic
         testingWorkspaces.Add(workspaceName)
         const testingParameters = new TestingParameters(workspaceMetadata.workspaces)
         testingParameters.Add(workspaceName)
+        testingParameters.SetWithFixedParameters(proportionOfTraffic)
 
         await InitializeWorkspaces(account, workspaceMetadata.id, testingWorkspaces.ToArray(), router)
-        
+
         const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
         await router.setParameters(account, {
             Id: workspaceMetadata.id,
@@ -43,7 +44,7 @@ async function InitializeAbTest(hoursOfInitialStage: number, proportionOfTraffic
         })
 
         await vbase.initializeABtest(hoursOfInitialStage, proportionOfTraffic, ctx.vtex)
-        logger.info(`A/B Test initialized in ${account} for workspace ${workspaceName}`, { account: `${account}`, workspace: `${workspaceName}`, method: 'TestInitialized' })
+        logger.info(`A/B Test initialized in ${account} for workspace ${workspaceName}`, { account: `${account}`, workspace: `${workspaceName}`, proportion: `${proportionOfTraffic}`, method: 'TestInitialized' })
     } catch (err) {
         if (err.status === 404) {
             err.message = 'Workspace not found'
