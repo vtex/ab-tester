@@ -3,6 +3,7 @@ import { Readable } from 'stream'
 
 const bucketName = (account: string) => 'ABTest-' + account
 const fileName = 'currentABTest.json'
+const resultsListFile = 'resultsList.json'
 
 const jsonStream = (arg: any) => {
   const readable = new Readable()
@@ -27,25 +28,40 @@ export default class VBase {
     }
   }
 
-  public save = async (data: any, ctx: IOContext) => {
+  public save = async (data: any, file: string, ctx: IOContext) => {
     try {
-      await this.client.saveFile(bucketName(ctx.account), fileName, jsonStream(data))
+      await this.client.saveFile(bucketName(ctx.account), file, jsonStream(data))
     } catch (ex) {
-      throw new Error(`Save request for key ${fileName} in bucket ${bucketName(ctx.account)} failed!`)
+      throw new Error(`Save request for key ${file} in bucket ${bucketName(ctx.account)} failed!`)
     }
   }
 
-  public initializeABtest = async (initialTime: number, proportion: number, ctx: IOContext): Promise<void> => {
+  public initializeABtest = (initialTime: number, proportion: number, ctx: IOContext): Promise<void> => {
     const beginning = new Date().toISOString().substr(0, 16)
-    return await this.save({
+    return this.save({
       dateOfBeginning: beginning,
       initialProportion: proportion,
       initialStageTime: initialTime,
-    } as VBaseABTestData, ctx)
+    } as VBaseABTestData, fileName, ctx)
   }
 
-  public finishABtest = async (ctx: IOContext): Promise<void> => {
+  public finishABtest = async (ctx: IOContext, results: TestResult[]): Promise<void> => {
     await this.client.deleteFile(bucketName(ctx.account), fileName)
+    if (results.length > 0) {
+      const testResultsFile = 'TestResults' + results[0].ABTestBeginning + '.json'
+      const resultsList = [...await this.fetchResultsList(ctx), testResultsFile]
+      await Promise.all([this.save(results, testResultsFile, ctx), this.save(resultsList, resultsListFile, ctx)])
+    }
+  }
+
+  private fetchResultsList = async (ctx: IOContext): Promise<string[]> => {
+    try {
+      const listFile = await this.client.getFile(bucketName(ctx.account), resultsListFile)
+      return JSON.parse(listFile.data.toString()) as string[]
+    }
+    catch {
+      return []
+    }
   }
 }
 
