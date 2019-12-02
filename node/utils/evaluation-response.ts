@@ -6,6 +6,10 @@ export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceANam
     ConversionBLast24Hours: 0,
     ExpectedLossChoosingA: 0,
     ExpectedLossChoosingB: 0,
+    OrdersValueA: 0,
+    OrdersValueALast24Hours: 0,
+    OrdersValueB: 0,
+    OrdersValueBLast24Hours: 0,
     PValue: 0,
     ProbabilityAlternativeBeatMaster: 0,
     Winner: 'Not yet decided',
@@ -15,10 +19,6 @@ export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceANam
     WorkspaceB: workspaceBName,
     WorkspaceBSessions: 0,
     WorkspaceBSessionsLast24Hours: 0,
-    OrdersValueA: 0,
-    OrdersValueB: 0,
-    OrdersValueALast24Hours: 0,
-    OrdersValueBLast24Hours: 0,
 })
 
 export const EvaluationResponse = (abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, winner: string, lossA: number, lossB: number, probabilityOneBeatTwo: number, pValue: number): TestResult => ({
@@ -29,6 +29,10 @@ export const EvaluationResponse = (abTestBeginning: string, workspaceAData: Work
     ConversionBLast24Hours: workspaceBData.Last24Hours.Conversion,
     ExpectedLossChoosingA: lossA,
     ExpectedLossChoosingB: lossB,
+    OrdersValueA: workspaceAData.SinceBeginning.OrdersValue,
+    OrdersValueALast24Hours: workspaceAData.Last24Hours.OrdersValue,
+    OrdersValueB: workspaceBData.SinceBeginning.OrdersValue,
+    OrdersValueBLast24Hours: workspaceBData.Last24Hours.OrdersValue,
     PValue : pValue,
     ProbabilityAlternativeBeatMaster: probabilityOneBeatTwo,
     Winner: winner,
@@ -38,8 +42,4 @@ export const EvaluationResponse = (abTestBeginning: string, workspaceAData: Work
     WorkspaceB: workspaceBData.SinceBeginning.Workspace,
     WorkspaceBSessions: workspaceBData.SinceBeginning.Sessions,
     WorkspaceBSessionsLast24Hours: workspaceBData.Last24Hours.Sessions,
-    OrdersValueA: workspaceAData.SinceBeginning.OrdersValue,
-    OrdersValueB: workspaceBData.SinceBeginning.OrdersValue,
-    OrdersValueALast24Hours: workspaceAData.Last24Hours.OrdersValue,
-    OrdersValueBLast24Hours: workspaceBData.Last24Hours.OrdersValue,
 })

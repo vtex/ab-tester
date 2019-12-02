@@ -14,11 +14,11 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
     if (testingWorkspaces.Length() <= 1) {
       await abTestRouter.deleteParameters(account)
       await abTestRouter.deleteWorkspaces(account)
-      const data = await storage.get(ctx.vtex)
-      const beginning = data && data.dateOfBeginning
-        ? data.dateOfBeginning
+      const testData = await storage.getTestData(ctx)
+      const beginning = testData && testData.dateOfBeginning
+        ? testData.dateOfBeginning
         : new Date().toISOString().substr(0, 16)
-      await storage.finishABtest(ctx.vtex, (await TestWorkspaces(account, beginning, workspaceMetadata, ctx)))
+      await storage.finishABtest(ctx, (await TestWorkspaces(account, beginning, workspaceMetadata, ctx)))
       logger.info({message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
       return
     }

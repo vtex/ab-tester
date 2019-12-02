@@ -1,9 +1,9 @@
-import { IOContext, VBase as BaseClient } from '@vtex/api'
+import { VBase as BaseClient } from '@vtex/api'
 import { Readable } from 'stream'
 
 const bucketName = (account: string) => 'ABTest-' + account
-const fileName = 'currentABTest.json'
-const resultsListFile = 'resultsList.json'
+const abTestHistoryFile = 'abTestHistory.json'
+const testFileName = 'currentABTest.json'
 
 const jsonStream = (arg: any) => {
   const readable = new Readable()
@@ -13,48 +13,111 @@ const jsonStream = (arg: any) => {
 }
 
 export default class VBase extends BaseClient {
-  public get = async (ctx: IOContext): Promise<VBaseABTestData> => {
+
+  public getTestData = async (ctx: Context): Promise<VBaseABTestData> => {
     try {
-      const file = await this.getFile(bucketName(ctx.account), fileName)
-      return JSON.parse(file.data.toString()) as VBaseABTestData
+      const testData = await this.get(testFileName, ctx)
+      return testData as VBaseABTestData
     } catch (ex) {
-      throw new Error(`Get request for key ${fileName} in bucket ${bucketName(ctx.account)} failed!`)
+      ctx.clients.logger.error(ex)
+      throw new Error(`An error occurred trying to get test's metadata!`)
     }
   }
 
-  public save = async (data: any, file: string, ctx: IOContext) => {
+  public save = async (data: any, file: string, ctx: Context) => {
     try {
-      await this.saveFile(bucketName(ctx.account), file, jsonStream(data))
+      await this.saveFile(bucketName(ctx.vtex.account), file, jsonStream(data))
     } catch (ex) {
-      throw new Error(`Save request for key ${file} in bucket ${bucketName(ctx.account)} failed!`)
+      ctx.clients.logger.error(ex)
+      throw new Error(`Save request for key ${file} in bucket ${bucketName(ctx.vtex.account)} failed!`)
     }
   }
 
-  public initializeABtest = (initialTime: number, proportion: number, ctx: IOContext): Promise<void> => {
+  public initializeABtest = async (initialTime: number, proportion: number, ctx: Context) => {
     const beginning = new Date().toISOString().substr(0, 16)
-    return this.save({
-      dateOfBeginning: beginning,
-      initialProportion: proportion,
-      initialStageTime: initialTime,
-    } as VBaseABTestData, fileName, ctx)
-  }
-
-  public finishABtest = async (ctx: IOContext, results: TestResult[]): Promise<void> => {
-    await this.deleteFile(bucketName(ctx.account), fileName)
-    if (results.length > 0) {
-      const testResultsFile = 'TestResults' + results[0].ABTestBeginning + '.json'
-      const resultsList = [...await this.fetchResultsList(ctx), testResultsFile]
-      await Promise.all([this.save(results, testResultsFile, ctx), this.save(resultsList, resultsListFile, ctx)])
-    }
-  }
-
-  private fetchResultsList = async (ctx: IOContext): Promise<string[]> => {
     try {
-      const listFile = await this.getFile(bucketName(ctx.account), resultsListFile)
-      return JSON.parse(listFile.data.toString()) as string[]
+      await this.save({
+        dateOfBeginning: beginning,
+        initialProportion: proportion,
+        initialStageTime: initialTime,
+      } as VBaseABTestData, testFileName, ctx)
+    } catch (ex) {
+      ctx.clients.logger.error(ex)
+      throw new Error(`An error occurred initializing the test!`)
     }
-    catch {
-      return []
+
+    try {
+      const testHistory = await this.fetchTestHistory(ctx)
+      testHistory.onGoing = beginning
+      await this.save(testHistory, abTestHistoryFile, ctx)
+    } catch (ex) {
+      ctx.clients.logger.error(ex)
+      this.mantainConsistentMetadata(ctx)
+      throw new Error(`An error occurred initializing the test!`)
+    }
+  }
+
+  public finishABtest = async (ctx: Context, results: TestResult[]): Promise<void> => {
+    const testHistory = await this.fetchTestHistory(ctx)
+    if (!(results.length > 0) || results[0].ABTestBeginning !== testHistory.onGoing) {
+      ctx.clients.logger.error(`Inconsistent data about initialization date`)
+    }
+
+    const testResultsFile = 'TestResults' + testHistory.onGoing + '.json'
+
+    testHistory.onGoing = ''
+    testHistory.finishedTests.push(results[0].ABTestBeginning)
+    if (testHistory.finishedTests.length > 100) {
+      testHistory.finishedTests.shift()
+    }
+    try {
+      await Promise.all([this.save(testHistory, abTestHistoryFile, ctx), this.save(results, testResultsFile, ctx)])
+    } catch (ex) {
+      ctx.clients.logger.error(ex)
+      throw new Error(`Something went wrong while finishing the test and updating its metadata!`)
+    }
+
+    try {
+      await this.deleteFile(bucketName(ctx.vtex.account), testFileName)
+    } catch (ex) {
+      ctx.clients.logger.error({exception: ex, error: 'inconsistent_state', account: ctx.vtex.account, workspace: ctx.vtex.workspace})
+      throw new Error(`Something went wrong while finishing the test and updating its metadata! Tests metadata can be inconsistent.`)
+    }
+  }
+
+  private get = async (file: string, ctx: Context) => {
+    try {
+      const rawFile = await this.getFile(bucketName(ctx.vtex.account), file)
+      return JSON.parse(rawFile.data.toString())
+    } catch (ex) {
+      ctx.clients.logger.error(ex)
+      throw new Error(`Get request for key ${testFileName} in bucket ${bucketName(ctx.vtex.account)} failed!`)
+    }
+  }
+
+  private fetchTestHistory = async (ctx: Context): Promise<ABTestHistory> => {
+    try {
+      const abTestHistory = await this.get(abTestHistoryFile, ctx) as ABTestHistory
+      return abTestHistory
+    } catch (ex) {
+      ctx.clients.logger.error(ex)
+      if (ctx.status === 404) {
+        return {
+          finishedTests: [],
+          onGoing: '',
+        } as ABTestHistory
+      }
+      ctx.clients.logger.error(ex)
+      throw new Error(`An error occurred fetching test metadata!`)
+    }
+  }
+
+  private mantainConsistentMetadata = async (ctx: Context) => {
+    try {
+      await this.deleteFile(bucketName(ctx.vtex.account), testFileName)
+    } catch (ex) {
+      ctx.clients.logger.error({exception: ex, error: 'inconsistent_state', account: ctx.vtex.account, workspace: ctx.vtex.workspace})
+      throw new Error(`An error occurred initializing the test and its metadata are inconsistent!`)
     }
   }
 }
@@ -63,4 +126,9 @@ interface VBaseABTestData {
   dateOfBeginning: string
   initialStageTime: number
   initialProportion: number
+}
+
+interface ABTestHistory {
+  onGoing: string
+  finishedTests: string[]
 }

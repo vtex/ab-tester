@@ -2,16 +2,16 @@
   "dependencies": {
     "ramda": "^0.25.0",
     "typescript-map": "^0.0.7",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
-    "@types/koa": "^2.0.39",
-    "@types/node": "^8.10.48",
+    "@types/koa": "^2.0.52",
+    "@types/node": "^8.10.59",
     "@types/ramda": "types/npm-ramda#dist",
-    "@types/uuid": "^3.3.2",
-    "@vtex/api": "^3.15.0",
-    "tslint": "^5.16.0",
+    "@types/uuid": "^3.4.6",
+    "@vtex/api": "^3.66.2",
+    "tslint": "^5.20.1",
     "tslint-config-vtex": "^2.0.0",
     "typescript": "3.5.2",
     "typescript-map": "^0.0.7"

@@ -1,4 +1,3 @@
-import { DefaultEvaluationResponse } from '../../utils/evaluation-response'
 import { TestWorkspaces } from '../testWorkspaces'
 
 export async function ABTestStatus(ctx: Context): Promise<TestResult[]> {
@@ -6,14 +5,12 @@ export async function ABTestStatus(ctx: Context): Promise<TestResult[]> {
   try {
     const workspaces = await abTestRouter.getWorkspaces(account)
     if (workspaces === null) {
-      ctx.status = 400
+      ctx.response.status = 400
       throw new Error('Test not initialized')
     }
-    const data = await storage.get(ctx.vtex)
-    if (!data) {
-      return [DefaultEvaluationResponse('Test not initialized', 'none', 'none')]
-    }
-    let beginning = data.dateOfBeginning
+
+    const testData = await storage.getTestData(ctx)
+    let beginning = testData.dateOfBeginning
     if (beginning === undefined) {
       beginning = new Date().toISOString().substr(0, 16)
     }
