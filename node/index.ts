@@ -1,15 +1,36 @@
-import { Service } from '@vtex/api'
+import { ClientsConfig, Service } from '@vtex/api'
 import { map } from 'ramda'
 import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, initializeAbTestForWorkspaceWithParameters, LegacyInitializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters } from './abTest/controller'
-import { Resources } from './resources/index'
+import { Clients } from './clients/index'
 
-const tester = (handler: any) => async (ctx: ColossusContext) => {
-  ctx.resources = new Resources(ctx.vtex)
+const THREE_SECONDS_MS = 3000
+
+const clients: ClientsConfig<Clients> = {
+  implementation: Clients,
+  options: {
+    logger: {
+      timeout: THREE_SECONDS_MS,
+    },
+    routes: {
+      timeout: THREE_SECONDS_MS,
+    },
+    storage: {
+      retries: 2,
+      timeout: THREE_SECONDS_MS,
+    },
+    storedash: {
+      retries: 2,
+      timeout: THREE_SECONDS_MS,
+    },
+  },
+}
+
+const tester = (handler: any) => async (ctx: Context) => {
   try {
     await handler(ctx)
   } catch (err) {
     if (err.code && err.message && err.status) {
-      ctx.logger.sendErrorLog({ status: ctx.status, message: err.message })
+      ctx.clients.logger.error({ status: ctx.status, message: err.message })
       ctx.body = {
         code: err.code,
         message: err.message,
@@ -19,7 +40,7 @@ const tester = (handler: any) => async (ctx: ColossusContext) => {
 
     if (err.response) {
       ctx.body = ctx.status === 404 ? 'Not Found' : err.response.data
-      ctx.logger.sendErrorLog({ status: ctx.status, message: err.response.data })
+      ctx.clients.logger.error({ status: ctx.status, message: err.response.data })
       console.log(
         `Error from HTTP request. ${err.response.config
           ? `method=${err.response.config.method} url=${err.response.config.url} `
@@ -32,11 +53,11 @@ const tester = (handler: any) => async (ctx: ColossusContext) => {
   }
 }
 
-export default new Service({
+export default new Service<Clients>({
+  clients,
   events: {
-    periodicUpdate: async (ctx: EventsContext) => {
-      ctx.resources = new Resources(ctx)
-      updateParameters(ctx)
+    periodicUpdate: async (ctx: Context) => {
+      await updateParameters(ctx)
     },
   },
   routes:

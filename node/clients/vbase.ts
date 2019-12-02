@@ -12,16 +12,10 @@ const jsonStream = (arg: any) => {
   return readable
 }
 
-export default class VBase {
-  private client: BaseClient
-
-  constructor(opts: any) {
-    this.client = new BaseClient(opts)
-  }
-
+export default class VBase extends BaseClient {
   public get = async (ctx: IOContext): Promise<VBaseABTestData> => {
     try {
-      const file = await this.client.getFile(bucketName(ctx.account), fileName)
+      const file = await this.getFile(bucketName(ctx.account), fileName)
       return JSON.parse(file.data.toString()) as VBaseABTestData
     } catch (ex) {
       throw new Error(`Get request for key ${fileName} in bucket ${bucketName(ctx.account)} failed!`)
@@ -30,7 +24,7 @@ export default class VBase {
 
   public save = async (data: any, file: string, ctx: IOContext) => {
     try {
-      await this.client.saveFile(bucketName(ctx.account), file, jsonStream(data))
+      await this.saveFile(bucketName(ctx.account), file, jsonStream(data))
     } catch (ex) {
       throw new Error(`Save request for key ${file} in bucket ${bucketName(ctx.account)} failed!`)
     }
@@ -46,7 +40,7 @@ export default class VBase {
   }
 
   public finishABtest = async (ctx: IOContext, results: TestResult[]): Promise<void> => {
-    await this.client.deleteFile(bucketName(ctx.account), fileName)
+    await this.deleteFile(bucketName(ctx.account), fileName)
     if (results.length > 0) {
       const testResultsFile = 'TestResults' + results[0].ABTestBeginning + '.json'
       const resultsList = [...await this.fetchResultsList(ctx), testResultsFile]
@@ -56,7 +50,7 @@ export default class VBase {
 
   private fetchResultsList = async (ctx: IOContext): Promise<string[]> => {
     try {
-      const listFile = await this.client.getFile(bucketName(ctx.account), resultsListFile)
+      const listFile = await this.getFile(bucketName(ctx.account), resultsListFile)
       return JSON.parse(listFile.data.toString()) as string[]
     }
     catch {

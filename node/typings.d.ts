@@ -1,16 +1,10 @@
 import { Context as KoaContext } from 'koa'
-import { IOContext, Events } from '@vtex/api'
-import { Resources } from './resources/index'
+import { IOContext, Events, ServiceContext } from '@vtex/api'
+import { Clients } from './clients'
 declare global {
   type LogLevel = 'info' | 'error' | 'warning' | 'debug'
-  export interface ColossusContext extends KoaContext {
-    vtex: IOContext
-    resources: Resources
-  }
 
-  export interface EventsContext extends IOContext {
-    resources: Resources
-  }
+  type Context = ServiceContext<Clients>
 
   export interface WorkspaceData {
     Workspace: string

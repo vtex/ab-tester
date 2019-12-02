@@ -2,13 +2,13 @@ import TestingWorkspaces from '../../typings/testingWorkspace'
 import { MinutesSinceQuery } from '../../utils/hoursSince'
 import { UpdateParameters } from '../updateParameters'
 
-export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
-  const { account, resources: { logger, router, storedash, vbase } } = ctx
+export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
+  const { vtex: { account }, clients: { abTestRouter, logger, storedash, storage } } = ctx
   try {
-    const workspacesMetadata = await router.getWorkspaces(account)
+    const workspacesMetadata = await abTestRouter.getWorkspaces(account)
     const testingWorkspaces = new TestingWorkspaces(workspacesMetadata)
     if (testingWorkspaces.Length() > 0) {
-      const data = await vbase.get(ctx)
+      const data = await storage.get(ctx.vtex)
       let beginning = data.dateOfBeginning
       let hours = data.initialStageTime
       let proportion = data.initialProportion
@@ -20,7 +20,7 @@ export async function UpdateStatusOnEvent(ctx: EventsContext): Promise<void> {
 
       const beginningString = MinutesSinceQuery(beginning)
       const workspacesData = await storedash.getWorkspacesData(beginningString)
-      await UpdateParameters(account, beginningString, hours, proportion, workspacesData, testingWorkspaces, workspacesMetadata.id || 'noId', router, storedash)
+      await UpdateParameters(ctx, beginningString, hours, proportion, workspacesData, testingWorkspaces, workspacesMetadata.id || 'noId')
     }
   } catch (err) {
     logger.error({ status: err.status, message: err.message })

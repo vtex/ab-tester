@@ -1,6 +1,4 @@
 import { TSMap } from 'typescript-map'
-import Router from '../clients/router'
-import Storedash from '../clients/storedash'
 import TestingParameters from '../typings/testingParameters'
 import TestingWorkspaces from '../typings/testingWorkspace'
 import { RandomRestart } from '../utils/randomExploration'
@@ -13,14 +11,15 @@ import { InitializeParameters } from './initializeParameters'
 
 const MasterWorkspaceName = 'master'
 
-export async function UpdateParameters(account: string, aBTestBeginning: string, hoursOfInitialStage: number, proportionOfTraffic: number,
-    workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, router: Router, storedash: Storedash): Promise<void> {
+export async function UpdateParameters(ctx: Context, aBTestBeginning: string, hoursOfInitialStage: number, proportionOfTraffic: number,
+    workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string): Promise<void> {
+        const { clients: { abTestRouter, storedash } } = ctx
     const testingParameters = new TestingParameters(testingWorkspaces.ToArray())
 
     if (await IsInitialStage(hoursOfInitialStage, workspacesData, storedash)) {
         testingParameters.SetWithFixedParameters(proportionOfTraffic)
         const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
-        router.setParameters(account, {
+        abTestRouter.setParameters(ctx.vtex.account, {
             Id: testId,
             parameterPerWorkspace: tsmap,
         })
@@ -28,7 +27,7 @@ export async function UpdateParameters(account: string, aBTestBeginning: string,
         return
     }
 
-    const workspacesCompleteData = await BuildCompleteData(account, aBTestBeginning, FilteredWorkspacesData(workspacesData, testingWorkspaces.WorkspacesNames()), storedash, router)
+    const workspacesCompleteData = await BuildCompleteData(ctx.vtex.account, aBTestBeginning, FilteredWorkspacesData(workspacesData, testingWorkspaces.WorkspacesNames()), storedash, abTestRouter)
     const masterWorkspace = workspacesCompleteData.get(MasterWorkspaceName)
     let randomRestart: boolean = false
     for (const workspaceCompleteData of workspacesCompleteData) {
@@ -37,7 +36,7 @@ export async function UpdateParameters(account: string, aBTestBeginning: string,
             testingParameters.Set(MapWorkspaceData(workspacesData))
 
             const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
-            router.setParameters(account, {
+            abTestRouter.setParameters(ctx.vtex.account, {
                 Id: testId,
                 parameterPerWorkspace: tsmap,
             })
@@ -45,5 +44,5 @@ export async function UpdateParameters(account: string, aBTestBeginning: string,
         }
     }
 
-    await InitializeParameters(account, testingWorkspaces.ToArray(), testId, router)
+    await InitializeParameters(ctx.vtex.account, testingWorkspaces.ToArray(), testId, abTestRouter)
 }

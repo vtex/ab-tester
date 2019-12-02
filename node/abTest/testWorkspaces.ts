@@ -8,8 +8,8 @@ import { BuildCompleteData } from './data/buildData'
 
 const MasterWorkspaceName = 'master'
 
-export async function TestWorkspaces(account: string, abTestBeginning: string, workspacesMetadata: ABTestWorkspacesMetadata, ctx: ColossusContext): Promise<TestResult[]> {
-    const { resources: { router, storedash } } = ctx
+export async function TestWorkspaces(account: string, abTestBeginning: string, workspacesMetadata: ABTestWorkspacesMetadata, ctx: Context): Promise<TestResult[]> {
+    const { clients: { abTestRouter, storedash } } = ctx
     const testingWorkspaces = new TestingWorkspaces(workspacesMetadata)
     const Results: TestResult[] = []
 
@@ -25,7 +25,7 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, w
             }
             return Results
         }
-        const workspacesCompleteData = await BuildCompleteData(account, abTestBeginning, workspacesData, storedash, router)
+        const workspacesCompleteData = await BuildCompleteData(account, abTestBeginning, workspacesData, storedash, abTestRouter)
         const masterWorkspace = workspacesCompleteData.get(MasterWorkspaceName)
 
         for (const workspaceData of workspacesCompleteData) {
