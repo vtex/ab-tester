@@ -1,5 +1,5 @@
 import { TSMap } from 'typescript-map'
-import TestingParameters from '../../typings/testingParameters'
+import { createTestingParameters } from '../../typings/testingParameters'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import { TestWorkspaces } from '../testWorkspaces'
@@ -23,7 +23,8 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
       return
     }
 
-    const testingParameters = new TestingParameters(workspaceMetadata.workspaces)
+    const testType = (await storage.getTestData(ctx)).testType
+    const testingParameters = createTestingParameters(testType, workspaceMetadata.workspaces)
     testingParameters.Remove(workspaceName)
     await abTestRouter.setWorkspaces(account, {
       id: workspaceMetadata.id,

@@ -1,9 +1,22 @@
 import { ProbabilityYBeatsAll } from '../utils/mathTools/forBetaDistribution/decisionRule'
 import { InitialABTestParameters, WorkspaceToBetaDistribution } from '../utils/workspace'
+import { TestType } from '../clients/vbase'
 
 const MasterWorkspaceName = 'master'
 
-export default class TestingParameters {
+export interface ITestingParameters {
+    Get(): Map<string, ABTestParameters>;
+
+    Add(workspaceName: string): void;
+
+    Remove(workspaceName: string): void;
+
+    Update(workspacesData: Map<string, WorkspaceData>): void;
+
+    UpdateWithFixedParameters(proportion: number): void;
+}
+
+export class TestingParametersConversion implements ITestingParameters{
     private parameters: Map<string, ABTestParameters>
 
     constructor(testingWorkspaces: ABTestWorkspace[]) {
@@ -23,15 +36,7 @@ export default class TestingParameters {
         this.parameters.delete(workspaceName)
     }
 
-    public ToArray = (): ABTestParameters[] => {
-        return UnmapParameters(this.parameters)
-    }
-
-    public Includes = (workspaceName: string): boolean => {
-        return this.parameters.has(workspaceName)
-    }
-
-    public Set = (workspacesData: Map<string, WorkspaceData>) => {
+    public Update = (workspacesData: Map<string, WorkspaceData>) => {
         const names = Array<string>(0)
         const betaParams = Array<ABTestParameters>(0)
 
@@ -50,7 +55,7 @@ export default class TestingParameters {
         }
     }
 
-    public SetWithFixedParameters = (proportion: number) => {
+    public UpdateWithFixedParameters = (proportion: number) => {
         const actualProportion = proportion >= 0 && proportion <= 10000 ? proportion : 10000
         const size = this.parameters.size
         const nonMasterParameter = (10000 - actualProportion) / (size - 1)
@@ -69,12 +74,11 @@ const MapInitialParameters = (workspaces: ABTestWorkspace[]): Map<string, ABTest
     }
     return map
 }
-const UnmapParameters = (mapParameters: Map<string, ABTestParameters>): ABTestParameters[] => {
-    const parameters: ABTestParameters[] = []
-    for (const parameter of mapParameters.values()) {
-        parameters.push(parameter)
+export const createTestingParameters = (testType: TestType, testingWorkspaces: ABTestWorkspace[]): ITestingParameters => {
+    if (testType == TestType.conversion) {
+        return new TestingParametersConversion(testingWorkspaces)
     }
-    return parameters
+    return new TestingParametersConversion(testingWorkspaces)
 }
 
 declare global {

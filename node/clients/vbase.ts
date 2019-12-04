@@ -40,6 +40,7 @@ export default class VBase extends BaseClient {
         dateOfBeginning: beginning,
         initialProportion: proportion,
         initialStageTime: initialTime,
+        testType: TestType.conversion,
       } as VBaseABTestData, testFileName, ctx)
     } catch (ex) {
       ctx.clients.logger.error(ex)
@@ -122,10 +123,15 @@ export default class VBase extends BaseClient {
   }
 }
 
+export enum TestType {
+  conversion,
+}
+
 interface VBaseABTestData {
   dateOfBeginning: string
   initialStageTime: number
   initialProportion: number
+  testType: TestType
 }
 
 interface ABTestHistory {

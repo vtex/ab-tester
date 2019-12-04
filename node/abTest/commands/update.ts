@@ -20,7 +20,8 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
 
       const beginningString = MinutesSinceQuery(beginning)
       const workspacesData = await storedash.getWorkspacesData(beginningString)
-      await UpdateParameters(ctx, beginningString, hours, proportion, workspacesData, testingWorkspaces, workspacesMetadata.id || 'noId')
+      const testType = (await storage.getTestData(ctx)).testType
+      await UpdateParameters(ctx, beginningString, hours, proportion, workspacesData, testingWorkspaces, workspacesMetadata.id || 'noId', testType)
     }
   } catch (err) {
     logger.error({ status: err.status, message: err.message })

@@ -1,8 +1,9 @@
 import { TSMap } from 'typescript-map'
 import { v4 as uuid } from 'uuid'
-import TestingParameters from '../../typings/testingParameters'
+import { createTestingParameters } from '../../typings/testingParameters'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
+import { TestType } from '../../clients/vbase';
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     return InitializeAbTest(1, 0.5, ctx)
@@ -15,7 +16,7 @@ export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promis
     return InitializeAbTest(Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx)
 }
 
-async function InitializeAbTest(hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context): Promise<void> {
+async function InitializeAbTest(hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType = TestType.conversion): Promise<void> {
     const { vtex: { account, route: { params: { initializingWorkspace } } }, clients: { logger, abTestRouter, storage } } = ctx
     const workspaceName = firstOrDefault(initializingWorkspace)
     try {
@@ -30,9 +31,9 @@ async function InitializeAbTest(hoursOfInitialStage: number, proportionOfTraffic
             }
         }
         testingWorkspaces.Add(workspaceName)
-        const testingParameters = new TestingParameters(workspaceMetadata.workspaces)
+        const testingParameters = createTestingParameters(testType, workspaceMetadata.workspaces)
         testingParameters.Add(workspaceName)
-        testingParameters.SetWithFixedParameters(proportionOfTraffic)
+        testingParameters.UpdateWithFixedParameters(proportionOfTraffic)
 
         await InitializeWorkspaces(ctx, workspaceMetadata.id, testingWorkspaces.ToArray())
 
