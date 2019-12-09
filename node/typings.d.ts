@@ -13,6 +13,7 @@ declare global {
     NoOrderSessions: number
     Conversion: number
     OrdersValue: number
+    OrdersValueHistory: number[]
   }
 
   export interface WorkspaceCompleteData {

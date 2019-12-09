@@ -125,6 +125,7 @@ export default class VBase extends BaseClient {
 
 export enum TestType {
   conversion,
+  revenue,
 }
 
 interface VBaseABTestData {
