@@ -1,7 +1,6 @@
 import Storedash from '../clients/storedash'
 import TestingWorkspaces from '../typings/testingWorkspace'
 import { DefaultEvaluationResponse } from '../utils/evaluation-response'
-import { MinutesSinceQuery } from '../utils/hoursSince'
 import { FilteredWorkspacesData } from '../utils/workspace'
 import { Evaluate } from './analysis/compareWorkspaces/conversion'
 import { BuildCompleteData } from './data/buildData'
@@ -14,8 +13,7 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, w
     const Results: TestResult[] = []
 
     if (testingWorkspaces.Length() > 0) {
-        const beginningQuery = MinutesSinceQuery(abTestBeginning)
-        const workspacesData = await FilterWorkspacesData(beginningQuery, testingWorkspaces.WorkspacesNames(), storedash)
+        const workspacesData = await FilterWorkspacesData(abTestBeginning, testingWorkspaces.WorkspacesNames(), storedash)
 
         if (!HasWorkspacesData(workspacesData)) {
             for (const workspaceName of testingWorkspaces.WorkspacesNames()) {

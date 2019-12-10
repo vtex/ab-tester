@@ -34,7 +34,6 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
         randomRestart = workspaceCompleteData[0] === MasterWorkspaceName ? false : RandomRestart(workspaceCompleteData[1], masterWorkspace!)
         if (!randomRestart) {
             testingParameters.Update(MapWorkspaceData(workspacesData))
-
             const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
             abTestRouter.setParameters(ctx.vtex.account, {
                 Id: testId,
