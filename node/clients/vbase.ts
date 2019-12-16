@@ -4,12 +4,20 @@ import { Readable } from 'stream'
 const bucketName = (account: string) => 'ABTest-' + account
 const abTestHistoryFile = 'abTestHistory.json'
 const testFileName = 'currentABTest.json'
+const WorkspaceDataFile = 'workspaceDataCache.json'
 
 const jsonStream = (arg: any) => {
   const readable = new Readable()
   readable.push(JSON.stringify(arg))
   readable.push(null)
   return readable
+}
+
+const InitialWorkspaceDataCache = (date: Date): WorkspaceDataCache => {
+  return {
+    ordersValue: [],
+    lastUpdate: date.toISOString().substr(0, 16)
+  }
 }
 
 export default class VBase extends BaseClient {
@@ -24,6 +32,16 @@ export default class VBase extends BaseClient {
     }
   }
 
+  public getWorkspaceDataCache = async (ctx: Context): Promise<WorkspaceDataCache> => {
+    try {
+      const ordersValueHistory = await this.get(WorkspaceDataFile, ctx)
+      return ordersValueHistory as WorkspaceDataCache
+    } catch (ex) {
+      ctx.clients.logger.error(ex)
+      throw new Error(`An error occurred trying to get test's OrdersValueHistory!`)
+    }
+  }
+
   public save = async (data: any, file: string, ctx: Context) => {
     try {
       await this.saveFile(bucketName(ctx.vtex.account), file, jsonStream(data))
@@ -35,6 +53,13 @@ export default class VBase extends BaseClient {
 
   public initializeABtest = async (initialTime: number, proportion: number, ctx: Context) => {
     const beginning = new Date().toISOString().substr(0, 16)
+    try {
+      const initialCache = InitialWorkspaceDataCache(new Date())
+      await this.save(initialCache, WorkspaceDataFile, ctx)
+    } catch (ex) {
+      ctx.clients.logger.error(ex)
+      throw new Error(`An error occurred initializing the test!`)
+    }
     try {
       await this.save({
         dateOfBeginning: beginning,
@@ -81,8 +106,17 @@ export default class VBase extends BaseClient {
     try {
       await this.deleteFile(bucketName(ctx.vtex.account), testFileName)
     } catch (ex) {
-      ctx.clients.logger.error({exception: ex, error: 'inconsistent_state', account: ctx.vtex.account, workspace: ctx.vtex.workspace})
+      ctx.clients.logger.error({ exception: ex, error: 'inconsistent_state', account: ctx.vtex.account, workspace: ctx.vtex.workspace })
       throw new Error(`Something went wrong while finishing the test and updating its metadata! Tests metadata can be inconsistent.`)
+    }
+  }
+
+  public updateWorkspaceDataCache = async (newValue: WorkspaceDataCache, ctx: Context): Promise<void> => {
+    try {
+      return this.save(newValue, WorkspaceDataFile, ctx)
+    } catch (ex) {
+      ctx.clients.logger.error(ex)
+      throw new Error(`An error occurred trying to update test's workspace data cache!`)
     }
   }
 
@@ -117,7 +151,7 @@ export default class VBase extends BaseClient {
     try {
       await this.deleteFile(bucketName(ctx.vtex.account), testFileName)
     } catch (ex) {
-      ctx.clients.logger.error({exception: ex, error: 'inconsistent_state', account: ctx.vtex.account, workspace: ctx.vtex.workspace})
+      ctx.clients.logger.error({ exception: ex, error: 'inconsistent_state', account: ctx.vtex.account, workspace: ctx.vtex.workspace })
       throw new Error(`An error occurred initializing the test and its metadata are inconsistent!`)
     }
   }
@@ -138,4 +172,9 @@ interface VBaseABTestData {
 interface ABTestHistory {
   onGoing: string
   finishedTests: string[]
+}
+
+interface WorkspaceDataCache {
+  ordersValue: WorkspaceData[]
+  lastUpdate: string
 }

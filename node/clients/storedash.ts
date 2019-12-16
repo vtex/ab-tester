@@ -33,7 +33,7 @@ export default class Storedash extends ExternalClient {
         return workspacesData
     }
 
-    public getWorkspacesGranularData = async (beginning: string): Promise<WorkspaceData[]> => {
+    public getWorkspacesGranularData = async (beginning: string): Promise<{data: WorkspaceData[], updateTime: string}> => {
         const metrics = await this.getStoredashData(MinutesSinceQuery(beginning))
         const workspacesData: Map<string, WorkspaceData> = new Map()
         for (const metric of metrics) {
@@ -57,7 +57,7 @@ export default class Storedash extends ExternalClient {
             dateFrom.setMinutes(dateTo.getMinutes())
             dateTo.setMinutes(dateTo.getMinutes() + 5)
         }
-        return [ ...workspacesData.values() ]
+        return {data: [ ...workspacesData.values() ], updateTime: dateFrom.toISOString().substr(0, 16)}
     }
 }
 

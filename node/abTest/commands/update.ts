@@ -18,11 +18,37 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
         proportion = 100
       }
       const testType = (await storage.getTestData(ctx)).testType
-      const workspacesData: WorkspaceData[] = (testType === TestType.revenue) ? await storedash.getWorkspacesGranularData(beginning) : await storedash.getWorkspacesData(beginning)
+      const workspacesData: WorkspaceData[] = (testType === TestType.revenue) ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
       await UpdateParameters(ctx, beginning, hours, proportion, workspacesData, testingWorkspaces, workspacesMetadata.id || 'noId', testType)
     }
   } catch (err) {
     logger.error({ status: err.status, message: err.message })
     throw new Error(err)
   }
+}
+
+async function GetGranularData(ctx: Context): Promise<WorkspaceData[]> {
+  const { clients: { storedash, storage } } = ctx
+
+  const cachedData = await storage.getWorkspaceDataCache(ctx)
+  const { data: newData, updateTime: lastUpdate } = await storedash.getWorkspacesGranularData(cachedData.lastUpdate)
+
+  for (const cachedWorkspaceData of cachedData.ordersValue) {
+    let notFound = true
+    for (const newWorkspaceData of newData) {
+      if (cachedWorkspaceData.Workspace === newWorkspaceData.Workspace) {
+        notFound = false
+        newWorkspaceData.OrdersValueHistory = cachedWorkspaceData.OrdersValueHistory.concat(newWorkspaceData.OrdersValueHistory)
+      }
+    }
+    if (notFound) {
+      newData.push(cachedWorkspaceData)
+    }
+  }
+
+  cachedData.lastUpdate = lastUpdate
+  cachedData.ordersValue = newData
+  storage.updateWorkspaceDataCache(cachedData, ctx)
+
+  return newData
 }
