@@ -162,11 +162,13 @@ export enum TestType {
   revenue,
 }
 
-interface VBaseABTestData {
-  dateOfBeginning: string
-  initialStageTime: number
-  initialProportion: number
-  testType: TestType
+declare global {
+  interface VBaseABTestData {
+    dateOfBeginning: string
+    initialStageTime: number
+    initialProportion: number
+    testType: TestType
+  }
 }
 
 interface ABTestHistory {
