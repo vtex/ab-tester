@@ -15,8 +15,8 @@ const jsonStream = (arg: any) => {
 
 const InitialWorkspaceDataCache = (date: Date): WorkspaceDataCache => {
   return {
+    lastUpdate: date.toISOString().substr(0, 16),
     ordersValue: [],
-    lastUpdate: date.toISOString().substr(0, 16)
   }
 }
 
@@ -85,14 +85,21 @@ export default class VBase extends BaseClient {
 
   public finishABtest = async (ctx: Context, results: TestResult[]): Promise<void> => {
     const testHistory = await this.fetchTestHistory(ctx)
-    if (!(results.length > 0) || results[0].ABTestBeginning !== testHistory.onGoing) {
+    let hasTestResult = true
+    if (results.length === 0) {
+      hasTestResult = false
+      ctx.clients.logger.error(`Inconsistent data about initialized test`)
+    }
+    let date = hasTestResult ? results[0].ABTestBeginning : ''
+    if (date !== testHistory.onGoing) {
+      date = testHistory.onGoing
       ctx.clients.logger.error(`Inconsistent data about initialization date`)
     }
 
-    const testResultsFile = 'TestResults' + testHistory.onGoing + '.json'
+    const testResultsFile = 'TestResults' + date + '.json'
 
     testHistory.onGoing = ''
-    testHistory.finishedTests.push(results[0].ABTestBeginning)
+    testHistory.finishedTests.push(date)
     if (testHistory.finishedTests.length > 100) {
       testHistory.finishedTests.shift()
     }

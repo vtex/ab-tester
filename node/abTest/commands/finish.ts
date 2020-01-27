@@ -32,9 +32,9 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
 
       const results = await TestWorkspaces(account, beginning, workspaceMetadata, ctx).catch(logErrorTest(ctx))
 
-        await storage.finishABtest(ctx, results).catch(logErrorTest(ctx))
-        ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
-        return
+      await storage.finishABtest(ctx, results).catch(logErrorTest(ctx))
+      ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
+      return
     } catch (err) {
       if (err.status === 404) {
         err.message = 'Workspace not found'
@@ -45,32 +45,32 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
   }
 
   try {
-      const testType = (await storage.getTestData(ctx)).testType
-      const testingParameters = createTestingParameters(testType, workspaceMetadata.workspaces)
-      testingParameters.Remove(workspaceName)
-      await abTestRouter.setWorkspaces(account, {
-        id: workspaceMetadata.id,
-        workspaces: testingWorkspaces.ToArray(),
-      }).catch(logErrorTest(ctx))
-      const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
-      await abTestRouter.setParameters(account, {
-        Id: workspaceMetadata.id,
-        parameterPerWorkspace: tsmap,
-      }).catch(logErrorTest(ctx))
-      ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
-    } catch (err) {
-      if (err.status === 404) {
-        err.message = 'Workspace not found'
-      }
-      ctx.vtex.logger.error({ status: ctx.status, message: err.message })
-      throw new Error(err)
-    }
-  }
-
-  const logErrorTest = (ctx: Context) => (err: any) => {
+    const testType = (await storage.getTestData(ctx)).testType
+    const testingParameters = createTestingParameters(testType, workspaceMetadata.workspaces)
+    testingParameters.Remove(workspaceName)
+    await abTestRouter.setWorkspaces(account, {
+      id: workspaceMetadata.id,
+      workspaces: testingWorkspaces.ToArray(),
+    }).catch(logErrorTest(ctx))
+    const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
+    await abTestRouter.setParameters(account, {
+      Id: workspaceMetadata.id,
+      parameterPerWorkspace: tsmap,
+    }).catch(logErrorTest(ctx))
+    ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
+  } catch (err) {
     if (err.status === 404) {
-      err.message = 'Test not found'
+      err.message = 'Workspace not found'
     }
     ctx.vtex.logger.error({ status: ctx.status, message: err.message })
     throw new Error(err)
   }
+}
+
+const logErrorTest = (ctx: Context) => (err: any) => {
+  if (err.status === 404) {
+    err.message = 'Test not found'
+  }
+  ctx.vtex.logger.error({ status: ctx.status, message: err.message })
+  throw new Error(err)
+}
