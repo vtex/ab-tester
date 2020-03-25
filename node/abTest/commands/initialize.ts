@@ -50,7 +50,7 @@ async function InitializeAbTest(hoursOfInitialStage: number, proportionOfTraffic
             err.message = 'Workspace not found'
         }
         logger.error({ status: ctx.status, message: err.message })
-        throw new Error(err)
+        throw err
     }
 }
 

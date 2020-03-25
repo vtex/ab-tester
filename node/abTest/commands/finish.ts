@@ -15,7 +15,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
       err.message = 'Test not found'
     }
     ctx.vtex.logger.error({ status: ctx.status, message: err.message })
-    throw new Error(err)
+    throw err
   }
 
   const testingWorkspaces = new TestingWorkspaces(workspaceMetadata)
@@ -40,7 +40,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
         err.message = 'Workspace not found'
       }
       ctx.vtex.logger.error({ status: ctx.status, message: err.message })
-      throw new Error(err)
+      throw err
     }
   }
 
@@ -63,7 +63,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
       err.message = 'Workspace not found'
     }
     ctx.vtex.logger.error({ status: ctx.status, message: err.message })
-    throw new Error(err)
+    throw err
   }
 }
 
@@ -72,5 +72,5 @@ const logErrorTest = (ctx: Context) => (err: any) => {
     err.message = 'Test not found'
   }
   ctx.vtex.logger.error({ status: ctx.status, message: err.message })
-  throw new Error(err)
+  throw err
 }
