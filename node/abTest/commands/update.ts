@@ -17,7 +17,7 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
         hours = 0
         proportion = 100
       }
-      const testType = (testData).testType
+      const testType = testData.testType
       const workspacesData: WorkspaceData[] = (testType === TestType.revenue) ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
       await UpdateParameters(ctx, beginning, hours, proportion, workspacesData, testingWorkspaces, workspacesMetadata.id || 'noId', testType)
     }
