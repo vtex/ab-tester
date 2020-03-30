@@ -7,6 +7,6 @@ export async function TTCAbTest(ctx: Context): Promise<number> {
         return await TimeToCompleteAbTest(1 - Number(probability), storedash)
     } catch (err) {
         logger.error({ status: ctx.status, message: err.message })
-        throw new Error(err)
+        throw err
     }
 }

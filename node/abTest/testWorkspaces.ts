@@ -34,7 +34,7 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, w
             }
         } catch (err) {
             ctx.vtex.logger.error({ status: ctx.status, message: err.message })
-            throw new Error(err)
+            throw err
         }
     }
     return Results
@@ -45,7 +45,7 @@ async function FilterWorkspacesData(aBTestBeginning: string, testingWorkspaces: 
         const workspacesData = await storedash.getWorkspacesData(aBTestBeginning)
         return FilteredWorkspacesData(workspacesData, testingWorkspaces)
     } catch (err) {
-        throw new Error(err)
+        throw err
     }
 }
 

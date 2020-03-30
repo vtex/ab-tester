@@ -19,6 +19,6 @@ export async function ABTestStatus(ctx: Context): Promise<TestResult[]> {
     return await TestWorkspaces(account, beginning, workspaces, ctx) || []
   } catch (err) {
     logger.error({ status: ctx.status, message: err.message })
-    throw new Error(err)
+    throw err
   }
 }
