@@ -29,7 +29,7 @@
   },
   "events": {
     "periodicUpdate": {
-      "sender": "colossus",
+      "sender": "kube-router",
       "keys": ["pulse"]
     }
   }
