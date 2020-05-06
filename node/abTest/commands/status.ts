@@ -5,8 +5,8 @@ export async function ABTestStatus(ctx: Context): Promise<TestResult[]> {
   try {
     const workspaces = await abTestRouter.getWorkspaces(account)
     if (workspaces === null) {
-      ctx.response.status = 400
-      throw new Error('Test not initialized')
+      ctx.response.status = 200
+      return []
     }
 
     const testData = await storage.getTestData(ctx)

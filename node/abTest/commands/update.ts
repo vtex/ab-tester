@@ -1,14 +1,14 @@
+import { TestType } from '../../clients/vbase'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { UpdateParameters } from '../updateParameters'
-import { TestType } from '../../clients/vbase';
 
 export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
   const { vtex: { account }, clients: { abTestRouter, logger, storedash, storage } } = ctx
   try {
     const workspacesMetadata = await abTestRouter.getWorkspaces(account)
     const testingWorkspaces = new TestingWorkspaces(workspacesMetadata)
-    const testData = await storage.getTestData(ctx)
     if (testingWorkspaces.Length() > 0) {
+      const testData = await storage.getTestData(ctx)
       let beginning = testData.dateOfBeginning
       let hours = testData.initialStageTime
       let proportion = testData.initialProportion
