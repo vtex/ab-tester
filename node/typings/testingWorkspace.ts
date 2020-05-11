@@ -1,10 +1,18 @@
+import { v4 as uuid } from 'uuid'
+
 export default class TestingWorkspaces {
+    private id: string
     private workspaces: Map<string, ABTestWorkspace>
 
     constructor(metaData: ABTestWorkspacesMetadata) {
         const hasWorkspaces = (metaData !== null) && (metaData.workspaces !== null)
         const workspaces = hasWorkspaces ? MapInitialWorkspaces(metaData.workspaces) : new Map()
         this.workspaces = new Map(workspaces)
+        this.id = hasWorkspaces && (metaData.id !== null) ? metaData.id : uuid()
+    }
+
+    public Id = (): string => {
+        return this.id
     }
 
     public ToArray = (): ABTestWorkspace[] => {

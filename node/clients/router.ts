@@ -1,5 +1,6 @@
 import { InfraClient, InstanceOptions, IOContext } from '@vtex/api'
 import { TSMap } from 'typescript-map'
+import TestingWorkspaces from '../typings/testingWorkspace'
 
 const routes = {
     Parameters: (account: string) => `/${account}/_abtest/parameters`,
@@ -11,8 +12,13 @@ export default class Router extends InfraClient {
         super('router', ctx, options, true)
     }
 
-    public getWorkspaces = async (account: string): Promise<ABTestWorkspacesMetadata> => {
-        return this.http.get<ABTestWorkspacesMetadata>(routes.Workspaces(account), { metric: 'abtest-get' })
+    public getWorkspaces = async (account: string): Promise<TestingWorkspaces> => {
+        try {
+            const workspaceMetadata = await this.http.get<ABTestWorkspacesMetadata>(routes.Workspaces(account), { metric: 'abtest-get' })
+            return new TestingWorkspaces(workspaceMetadata)
+        } catch (err) {
+            throw err
+        }
     }
 
     public setWorkspaces = (account: string, metadata: Partial<ABTestWorkspacesMetadata>) => {

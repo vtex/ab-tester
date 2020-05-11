@@ -7,9 +7,8 @@ import { BuildCompleteData } from './data/buildData'
 
 const MasterWorkspaceName = 'master'
 
-export async function TestWorkspaces(account: string, abTestBeginning: string, workspacesMetadata: ABTestWorkspacesMetadata, ctx: Context): Promise<TestResult[]> {
+export async function TestWorkspaces(account: string, abTestBeginning: string, testingWorkspaces: TestingWorkspaces, ctx: Context): Promise<TestResult[]> {
     const { clients: { abTestRouter, storedash } } = ctx
-    const testingWorkspaces = new TestingWorkspaces(workspacesMetadata)
     const Results: TestResult[] = []
 
     if (testingWorkspaces.Length() > 0) {

@@ -1,9 +1,7 @@
 import { TSMap } from 'typescript-map'
-import { v4 as uuid } from 'uuid'
+import { TestType } from '../../clients/vbase'
 import { createTestingParameters } from '../../typings/testingParameters'
-import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
-import { TestType } from '../../clients/vbase';
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     return InitializeAbTest(1, 0.5, ctx)
@@ -20,26 +18,21 @@ async function InitializeAbTest(hoursOfInitialStage: number, proportionOfTraffic
     const { vtex: { account, route: { params: { initializingWorkspace } } }, clients: { logger, abTestRouter, storage } } = ctx
     const workspaceName = firstOrDefault(initializingWorkspace)
     try {
-        let workspaceMetadata = await abTestRouter.getWorkspaces(account)
-        const testingWorkspaces = new TestingWorkspaces(workspaceMetadata)
-        const hasTestingWorkspaces = workspaceMetadata ? true : false
+        const testingWorkspaces = await abTestRouter.getWorkspaces(account)
+        const hasTestingWorkspaces = testingWorkspaces.Length() > 0
         if (!hasTestingWorkspaces || !testingWorkspaces.Includes('master')) {
             testingWorkspaces.Add('master')
-            workspaceMetadata = {
-                id: uuid(),
-                workspaces: testingWorkspaces.ToArray(),
-            }
         }
         testingWorkspaces.Add(workspaceName)
-        const testingParameters = createTestingParameters(testType, workspaceMetadata.workspaces)
+        const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
         testingParameters.Add(workspaceName)
         testingParameters.UpdateWithFixedParameters(proportionOfTraffic)
 
-        await InitializeWorkspaces(ctx, workspaceMetadata.id, testingWorkspaces.ToArray())
+        await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
 
         const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
         await abTestRouter.setParameters(account, {
-            Id: workspaceMetadata.id,
+            Id: testingWorkspaces.Id(),
             parameterPerWorkspace: tsmap,
         })
 
