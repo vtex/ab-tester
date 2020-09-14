@@ -4,7 +4,7 @@ import { createTestingParameters } from '../../typings/testingParameters'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
-    return InitializeAbTest(1, 0.5, ctx)
+    return InitializeAbTest(1, 5000, ctx)
 }
 
 export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promise<void> {
