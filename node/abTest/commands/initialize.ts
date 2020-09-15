@@ -2,6 +2,7 @@ import { TSMap } from 'typescript-map'
 import { TestType } from '../../clients/vbase'
 import { createTestingParameters } from '../../typings/testingParameters'
 import { firstOrDefault } from '../../utils/firstOrDefault'
+import getRequestParams from '../../utils/BodyParser/getRequestParams'
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     const workspace = ctx.vtex.route.params.initializingWorkspace
@@ -23,6 +24,22 @@ export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promis
         throw new Error(`An error occurred when reading proportion of traffic being distributed between workspaces: value is not a number.`)
     }
     
+    return InitializeAbTest(workspaceName, Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx)
+}
+
+export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<void> {
+    const { InitializingWorkspace, Hours, Proportion } = await getRequestParams(ctx)
+    const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspace, Hours, Proportion ].map(firstOrDefault)
+
+    if (Number.isNaN(Number(hoursOfInitialStage)))
+    {
+        throw new Error(`An error occurred when reading amount of hours to fix proportion of traffic: value is not a number.`)
+    }
+    if (Number.isNaN(Number(proportionOfTraffic)))
+    {
+        throw new Error(`An error occurred when reading proportion of traffic being distributed between workspaces: value is not a number.`)
+    }
+
     return InitializeAbTest(workspaceName, Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx)
 }
 
