@@ -191,12 +191,3 @@ export const createTestingParameters = (testType: TestType, testingWorkspaces: A
     }
     return new TestingParametersConversion(testingWorkspaces)
 }
-
-declare global {
-    export interface Workspace {
-        name: string,
-        production: boolean,
-        weight: number,
-        abTestParameters: ABTestParameters,
-    }
-}
