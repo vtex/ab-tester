@@ -38,16 +38,6 @@ export const FilteredWorkspacesData = (workspacesData: WorkspaceData[], testingW
     return filteredWorkspaces
 }
 
-export function InitialWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWorkspaceMetadata {
-    const abWorkspaceMetadata: ABWorkspaceMetadata = {
-        abTestParameters: InitialABTestParameters,
-        name: Workspace.name,
-        production: Workspace.production,
-        weight: Workspace.weight,
-    }
-    return abWorkspaceMetadata
-}
-
 export const totalSessions = (workspacesData: WorkspaceData[]): number => {
     let total = 0
     for (const workspaceData of workspacesData) {
