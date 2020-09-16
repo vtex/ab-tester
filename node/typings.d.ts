@@ -1,7 +1,6 @@
 import {  ServiceContext } from '@vtex/api'
 import { Clients } from './clients'
 declare global {
-  type LogLevel = 'info' | 'error' | 'warning' | 'debug'
 
   type Context = ServiceContext<Clients>
 
