@@ -58,15 +58,6 @@ export function GetWorkspaceData(workspacesData: WorkspaceData[], workspace: str
     return ErrorWorkspaceData(workspace)
 }
 
-export const ToWorkspaceMetadada = (workspaceData: WorkspaceData, weight: number, production: boolean): ABWorkspaceMetadata => {
-    return {
-        abTestParameters: WorkspaceToBetaDistribution(workspaceData),
-        name: workspaceData.Workspace,
-        production: (production),
-        weight: (weight),
-    }
-}
-
 export const InitialParameters = (workspaces: ABTestWorkspace[]): TSMap<string, ABTestParameters> => {
     const parameters = new TSMap<string, ABTestParameters>()
     for (const workspace of workspaces) {
