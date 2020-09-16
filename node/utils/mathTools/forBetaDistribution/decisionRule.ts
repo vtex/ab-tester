@@ -89,7 +89,7 @@ export function ProbabilityYBeatsAll(Y: ABTestParameters, X: Array<ABTestParamet
     return {a:ret, b:1}
 }
 
-export function LossFunctionChossingVariantOne(Beta1: ABTestParameters, Beta2: ABTestParameters) {
+export function LossFunctionChoosingVariantOne(Beta1: ABTestParameters, Beta2: ABTestParameters) {
     const a = Beta2.a
     const b = Beta2.b
     const c = Beta1.a
@@ -106,8 +106,8 @@ export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceDat
     const betaB = WorkspaceToBetaDistribution(WorkspaceB)
     const pvalue = pValue(betaA, betaB)
 
-    const chooseA = LossFunctionChossingVariantOne(betaA, betaB) < epsilon
-    const chooseB = LossFunctionChossingVariantOne(betaB, betaA) < epsilon
+    const chooseA = LossFunctionChoosingVariantOne(betaA, betaB) < epsilon
+    const chooseB = LossFunctionChoosingVariantOne(betaB, betaA) < epsilon
     const draw = pvalue > Confidence
     const distinct = pvalue < 1 - Confidence
 

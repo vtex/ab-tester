@@ -1,5 +1,5 @@
 import { DefaultEvaluationResponse, EvaluationResponse } from '../../../utils/evaluation-response'
-import { ChooseWinner, LossFunctionChossingVariantOne, ProbabilityOfOneBeatTwo } from '../../../utils/mathTools/forBetaDistribution/decisionRule'
+import { ChooseWinner, LossFunctionChoosingVariantOne, ProbabilityOfOneBeatTwo } from '../../../utils/mathTools/forBetaDistribution/decisionRule'
 import { BoundError, pValue } from '../../../utils/mathTools/statistics/samplesRestrictions'
 import { WorkspaceToBetaDistribution } from '../../../utils/workspace'
 
@@ -8,8 +8,8 @@ export async function Evaluate(abTestBeginning: string, workspaceAData: Workspac
         return DefaultEvaluationResponse(abTestBeginning, workspaceAData.SinceBeginning.Workspace, workspaceBData.SinceBeginning.Workspace)
     }
 
-    const lossA = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceAData.SinceBeginning), WorkspaceToBetaDistribution(workspaceBData.SinceBeginning))
-    const lossB = LossFunctionChossingVariantOne(WorkspaceToBetaDistribution(workspaceBData.SinceBeginning), WorkspaceToBetaDistribution(workspaceAData.SinceBeginning))
+    const lossA = LossFunctionChoosingVariantOne(WorkspaceToBetaDistribution(workspaceAData.SinceBeginning), WorkspaceToBetaDistribution(workspaceBData.SinceBeginning))
+    const lossB = LossFunctionChoosingVariantOne(WorkspaceToBetaDistribution(workspaceBData.SinceBeginning), WorkspaceToBetaDistribution(workspaceAData.SinceBeginning))
     const betaDistributionA = WorkspaceToBetaDistribution(workspaceAData.SinceBeginning)
     const betaDistributionB = WorkspaceToBetaDistribution(workspaceBData.SinceBeginning)
     const probabilityTwoBeatOne = ProbabilityOfOneBeatTwo(betaDistributionB.a, betaDistributionB.b, betaDistributionA.a, betaDistributionA.b)
