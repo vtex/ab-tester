@@ -78,7 +78,7 @@ export default class VBase extends BaseClient {
       await this.save(testHistory, abTestHistoryFile, ctx)
     } catch (ex) {
       ctx.clients.logger.error(ex)
-      this.mantainConsistentMetadata(ctx)
+      this.maintainConsistentMetadata(ctx)
       throw new Error(`An error occurred initializing the test!`)
     }
   }
@@ -154,7 +154,7 @@ export default class VBase extends BaseClient {
     }
   }
 
-  private mantainConsistentMetadata = async (ctx: Context) => {
+  private maintainConsistentMetadata = async (ctx: Context) => {
     try {
       await this.deleteFile(bucketName(ctx.vtex.account), testFileName)
     } catch (ex) {
