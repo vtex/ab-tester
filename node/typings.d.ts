@@ -1,5 +1,4 @@
-import { Context as KoaContext } from 'koa'
-import { IOContext, Events, ServiceContext } from '@vtex/api'
+import {  ServiceContext } from '@vtex/api'
 import { Clients } from './clients'
 declare global {
   type LogLevel = 'info' | 'error' | 'warning' | 'debug'
