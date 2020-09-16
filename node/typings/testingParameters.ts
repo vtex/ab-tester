@@ -4,7 +4,7 @@ import { TestType } from '../clients/vbase'
 
 const MasterWorkspaceName = 'master'
 
-export interface ITestingParameters {
+interface ITestingParameters {
     Get(): Map<string, ABTestParameters>;
 
     Add(workspaceName: string): void;
@@ -16,7 +16,7 @@ export interface ITestingParameters {
     UpdateWithFixedParameters(proportion: number): void;
 }
 
-export class TestingParametersConversion implements ITestingParameters{
+class TestingParametersConversion implements ITestingParameters{
     private parameters: Map<string, ABTestParameters>
 
     constructor(testingWorkspaces: ABTestWorkspace[]) {
@@ -67,7 +67,7 @@ export class TestingParametersConversion implements ITestingParameters{
     }
 }
 
-export class TestingParametersRevenue implements ITestingParameters{
+class TestingParametersRevenue implements ITestingParameters{
     private parameters: Map<string, ABTestParameters>
 
     constructor(testingWorkspaces: ABTestWorkspace[]) {
