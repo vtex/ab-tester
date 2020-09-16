@@ -46,11 +46,4 @@ declare global {
     a: number
     b: number
   }
-
-  export interface ABWorkspaceMetadata {
-    name: string
-    weight: number
-    abTestParameters: ABTestParameters
-    production: boolean
-  }
 }
