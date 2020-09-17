@@ -12,7 +12,7 @@ const Confidence = 0.95
 *   and then exponatiating.
 */
 
-export function ProbabilityOfOneBeatTwo(a: number, b: number, c: number, d: number) {
+export function ProbabilityOfOneBeatsTwo(a: number, b: number, c: number, d: number) {
     let result = 1
 
     for (let j = 0; j < c; j++) {
@@ -21,7 +21,7 @@ export function ProbabilityOfOneBeatTwo(a: number, b: number, c: number, d: numb
     return result
 }
 
-function ProbabilityAllBeatY(Y: ABTestParameters, X: Array<ABTestParameters>, idxs: Array<number>, next: number) {
+function ProbabilityAllBeatsY(Y: ABTestParameters, X: Array<ABTestParameters>, idxs: Array<number>, next: number) {
     let x = Y.a
     let y = Y.b
     for (let i = 0; i < idxs.length; i++) {
@@ -42,12 +42,12 @@ function ProbabilityAllBeatY(Y: ABTestParameters, X: Array<ABTestParameters>, id
     if (idxs[next] + 1 < X[next].a) {
         let copyIdxs = [...idxs]
         copyIdxs[next]++
-        ret += ProbabilityAllBeatY(Y, X, copyIdxs, next)
+        ret += ProbabilityAllBeatsY(Y, X, copyIdxs, next)
     }
     if (next + 1 < idxs.length) {
         let copyIdxs = [...idxs]
         copyIdxs[++next]++
-        ret += ProbabilityAllBeatY(Y, X, copyIdxs, next)
+        ret += ProbabilityAllBeatsY(Y, X, copyIdxs, next)
     }
     return ret
 }
@@ -80,7 +80,7 @@ export function ProbabilityYBeatsAll(Y: ABTestParameters, X: Array<ABTestParamet
                 idxs.push(0)
             }
         }
-        curr += ProbabilityAllBeatY(Y, CurrX, idxs, 0)
+        curr += ProbabilityAllBeatsY(Y, CurrX, idxs, 0)
         curr *= Math.pow(-1, idxs.length)
         ret += curr
     }
@@ -98,7 +98,7 @@ export function LossFunctionChoosingVariantOne(Beta1: ABTestParameters, Beta2: A
     const logCoefficient1 = logBeta(a + 1, b) - logBeta(a, b)
     const logCoefficient2 = logBeta(c + 1, d) - logBeta(c, d)
 
-    return Math.exp(logCoefficient1) * ProbabilityOfOneBeatTwo(a + 1, b, c, d) - Math.exp(logCoefficient2) * ProbabilityOfOneBeatTwo(a, b, c + 1, d)
+    return Math.exp(logCoefficient1) * ProbabilityOfOneBeatsTwo(a + 1, b, c, d) - Math.exp(logCoefficient2) * ProbabilityOfOneBeatsTwo(a, b, c + 1, d)
 }
 
 export function ChooseWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData, epsilon: number) {
