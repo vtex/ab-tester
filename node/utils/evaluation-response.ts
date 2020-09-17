@@ -1,4 +1,4 @@
-export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceAName: string, workspaceBName: string): TestResult => ({
+export const DefaultEvaluationResponseConversion = (abTestBeginning: string, workspaceAName: string, workspaceBName: string): TestResult => ({
     ABTestBeginning: abTestBeginning,
     ConversionA: 0,
     ConversionALast24Hours: 0,

@@ -1,11 +1,11 @@
-import { DefaultEvaluationResponse, EvaluationResponse } from '../../../utils/evaluation-response'
+import { DefaultEvaluationResponseConversion, EvaluationResponse } from '../../../utils/evaluation-response'
 import { ChooseWinner, LossFunctionChoosingVariantOne, ProbabilityOfOneBeatsTwo } from '../../../utils/mathTools/forBetaDistribution/decisionRule'
 import { BoundError, pValue } from '../../../utils/mathTools/statistics/samplesRestrictions'
 import { WorkspaceToBetaDistribution } from '../../../utils/workspace'
 
 export async function Evaluate(abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData): Promise<TestResult> {
     if (workspaceAData.SinceBeginning.Sessions === 0 || workspaceBData.SinceBeginning.Sessions === 0) {
-        return DefaultEvaluationResponse(abTestBeginning, workspaceAData.SinceBeginning.Workspace, workspaceBData.SinceBeginning.Workspace)
+        return DefaultEvaluationResponseConversion(abTestBeginning, workspaceAData.SinceBeginning.Workspace, workspaceBData.SinceBeginning.Workspace)
     }
 
     const betaDistributionA = WorkspaceToBetaDistribution(workspaceAData.SinceBeginning)
