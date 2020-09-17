@@ -51,7 +51,7 @@ export default class VBase extends BaseClient {
     }
   }
 
-  public initializeABtest = async (initialTime: number, proportion: number, ctx: Context) => {
+  public initializeABtest = async (initialTime: number, proportion: number, testType: TestType, ctx: Context) => {
     const beginning = new Date().toISOString().substr(0, 16)
     try {
       const initialCache = InitialWorkspaceDataCache(new Date())
@@ -65,7 +65,7 @@ export default class VBase extends BaseClient {
         dateOfBeginning: beginning,
         initialProportion: proportion,
         initialStageTime: initialTime,
-        testType: TestType.conversion,
+        testType: testType,
       } as VBaseABTestData, testFileName, ctx)
     } catch (ex) {
       ctx.vtex.logger.error(ex)

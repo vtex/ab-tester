@@ -65,7 +65,7 @@ async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: numb
             parameterPerWorkspace: tsmap,
         })
 
-        await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, ctx)
+        await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, ctx)
         logger.info({message: `A/B Test initialized in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, proportion: `${proportionOfTraffic}`, method: 'TestInitialized' })
     } catch (err) {
         if (err.status === 404) {
