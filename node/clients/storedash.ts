@@ -54,7 +54,7 @@ export default class Storedash extends ExternalClient {
                     workspaceData.OrdersValueHistory.push(CalculateOrdersValue(m['data.ordersValue'], m['data.sessionsOrdered']))
                 }
             }
-            dateFrom.setMinutes(dateTo.getMinutes())
+            dateFrom.setTime(dateTo.getTime())
             dateTo.setMinutes(dateTo.getMinutes() + 5)
         }
         return {data: [ ...workspacesData.values() ], updateTime: dateFrom.toISOString().substr(0, 16)}
