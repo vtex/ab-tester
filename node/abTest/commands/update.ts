@@ -1,4 +1,3 @@
-import { TestType } from '../../clients/vbase'
 import { UpdateParameters } from '../updateParameters'
 
 export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
@@ -16,7 +15,7 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
         proportion = 100
       }
       const testType = testData.testType
-      const workspacesData: WorkspaceData[] = (testType === TestType.revenue) ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
+      const workspacesData: WorkspaceData[] = (testType === 'revenue') ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
       await UpdateParameters(ctx, beginning, hours, proportion, workspacesData, testingWorkspaces, testingWorkspaces.Id() || 'noId', testType)
     }
   } catch (err) {

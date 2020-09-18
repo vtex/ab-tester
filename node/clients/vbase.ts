@@ -164,11 +164,6 @@ export default class VBase extends BaseClient {
   }
 }
 
-export enum TestType {
-  conversion,
-  revenue,
-}
-
 declare global {
   interface VBaseABTestData {
     dateOfBeginning: string
