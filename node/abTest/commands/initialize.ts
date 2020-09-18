@@ -28,8 +28,9 @@ export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promis
 }
 
 export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<void> {
-    const { InitializingWorkspace, Hours, Proportion } = await getRequestParams(ctx)
-    const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspace, Hours, Proportion ].map(firstOrDefault)
+    const { InitializingWorkspace, Hours, Proportion, Type } = await getRequestParams(ctx)
+    const [ workspaceName, hoursOfInitialStage, proportionOfTraffic, type ] = [ InitializingWorkspace, Hours, Proportion, Type ].map(firstOrDefault)
+    const testType = TestType[type as keyof typeof TestType]
 
     if (Number.isNaN(Number(hoursOfInitialStage)))
     {
@@ -40,7 +41,7 @@ export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<
         throw new Error(`An error occurred when reading proportion of traffic being distributed between workspaces: value is not a number.`)
     }
 
-    return InitializeAbTest(workspaceName, Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx)
+    return InitializeAbTest(workspaceName, Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx, testType)
 }
 
 async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType = TestType.conversion): Promise<void> {
