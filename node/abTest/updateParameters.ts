@@ -8,7 +8,6 @@ import { IsInitialStage } from './analysis/time/initialStage'
 import { BuildCompleteData } from './data/buildData'
 import { InitializeParameters } from './initializeParameters'
 
-
 const MasterWorkspaceName = 'master'
 
 export async function UpdateParameters(ctx: Context, aBTestBeginning: string, hoursOfInitialStage: number, proportionOfTraffic: number,
