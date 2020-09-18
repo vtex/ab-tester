@@ -9,9 +9,22 @@ export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
 
 export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promise<void> {
     const { vtex: { route: { params: { hours, proportion } } }} = ctx
-    const hoursOfInitialStage = firstOrDefault(hours)
-    const proportionOfTraffic = firstOrDefault(proportion)
-    return InitializeAbTest(Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx)
+    const hoursOfInitialStageStr = firstOrDefault(hours)
+    const proportionOfTrafficStr = firstOrDefault(proportion)
+
+    const hoursOfInitialStage = Number(hoursOfInitialStageStr)
+    const proportionOfTraffic = Number(proportionOfTrafficStr)
+
+    if (Number.isNaN(hoursOfInitialStage))
+    {
+        throw new Error(`An error occurred when reading amount of hours to fix proportion of traffic: value is not a number.`)
+    }
+    if (Number.isNaN(proportionOfTraffic))
+    {
+        throw new Error(`An error occurred when reading proportion of traffic being distributed between workspaces: value is not a number.`)
+    }
+
+    return InitializeAbTest(hoursOfInitialStage, proportionOfTraffic, ctx)
 }
 
 async function InitializeAbTest(hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType = TestType.conversion): Promise<void> {
