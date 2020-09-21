@@ -27,9 +27,9 @@ export default class VBase extends BaseClient {
     try {
       const testData = await this.get(testFileName, ctx)
       return testData as VBaseABTestData
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`An error occurred trying to get test's metadata!`)
+    } catch (err) {
+      err.message = 'Error getting test\'s metadata from VBase: ' + err.message
+      throw err
     }
   }
 
