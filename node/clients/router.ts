@@ -31,8 +31,13 @@ export default class Router extends InfraClient {
             throw err
         }
     }
-    public setParameters = (account: string, metadata: Partial<ABTestMetadata>) => {
-        return this.http.put(routes.Parameters(account), metadata, { metric: 'abtest-set-parameters' })
+    public setParameters = async (account: string, metadata: Partial<ABTestMetadata>) => {
+        try {
+            return await this.http.put(routes.Parameters(account), metadata, { metric: 'abtest-set-parameters' })
+        } catch (err) {
+            err.message = concatErrorMessages('Error setting parameteres to Router', err.message)
+            throw err
+        }
     }
 
     public deleteWorkspaces = (account: string) => {
