@@ -142,16 +142,15 @@ export default class VBase extends BaseClient {
     try {
       const abTestHistory = await this.get(abTestHistoryFile, ctx) as ABTestHistory
       return abTestHistory
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
+    } catch (err) {
       if (ctx.status === 404) {
         return {
           finishedTests: [],
           onGoing: '',
         } as ABTestHistory
       }
-      ctx.vtex.logger.error(ex)
-      throw new Error(`An error occurred fetching test metadata!`)
+      err.message = 'Error fetching test\'s metadata: ' + err.message
+      throw err
     }
   }
 
