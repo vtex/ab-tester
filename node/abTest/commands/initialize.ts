@@ -53,9 +53,9 @@ async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: numb
         logger.info({message: `A/B Test initialized in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, proportion: `${proportionOfTraffic}`, type: `${testType}`, method: 'TestInitialized' })
     } catch (err) {
         if (err.status === 404) {
-            err.message = 'Workspace not found'
+            err.message = 'Workspace not found: ' + err.message
         }
-        logger.error({ status: ctx.status, message: err.message })
+        err.message = 'Error initializing A/B test: ' + err.message
         throw err
     }
 }
