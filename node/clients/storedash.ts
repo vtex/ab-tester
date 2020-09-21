@@ -1,6 +1,7 @@
 import { ExternalClient, IOContext } from '@vtex/api'
 import { WorkspaceData } from '../utils/workspace'
 import { MinutesSinceQuery } from '../utils/hoursSince'
+import { concatErrorMessages } from '../utils/errorHandling'
 
 const baseURL = (account: string) => `http://api.vtex.com/api/storedash/${account}/metrics/storedash`
 
@@ -14,8 +15,13 @@ export default class Storedash extends ExternalClient {
         })
     }
 
-    public getStoredashData = (from: string) => {
-        return this.http.get<StoreDashResponse[]>('navigationcube' + AggregationQueryFrom(from), { metric: 'storedash-get' })
+    public getStoredashData = async (from: string) => {
+        try {
+            return await this.http.get<StoreDashResponse[]>('navigationcube' + AggregationQueryFrom(from), { metric: 'storedash-get' })
+        } catch (err) {
+            err.message = concatErrorMessages(`Error getting test's metadata from storedash`, err.message)
+            throw err
+        }
     }
 
     public getStoredashDataFromTo = (from: string, to: string) => {
