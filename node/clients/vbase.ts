@@ -37,9 +37,9 @@ export default class VBase extends BaseClient {
     try {
       const ordersValueHistory = await this.get(WorkspaceDataFile, ctx)
       return ordersValueHistory as WorkspaceDataCache
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`An error occurred trying to get test's OrdersValueHistory!`)
+    } catch (err) {
+      err.message = `Error getting test's OrdersValueHistory from VBase: ` + err.message
+      throw err
     }
   }
 
