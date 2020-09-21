@@ -21,8 +21,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
     throw new NotFoundError(`Test not initialized for this account`)
   }
 
-  testingWorkspaces.Remove(workspaceName)
-  if (testingWorkspaces.Length() <= 1) {
+  if (testingWorkspaces.Length() <= 2) {
     try {
       await abTestRouter.deleteParameters(account).catch(logErrorTest(ctx))
       await abTestRouter.deleteWorkspaces(account).catch(logErrorTest(ctx))
@@ -48,6 +47,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
 
   try {
     const testType = (await storage.getTestData(ctx)).testType
+    testingWorkspaces.Remove(workspaceName)
     const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
     testingParameters.Remove(workspaceName)
     await abTestRouter.setWorkspaces(account, {
