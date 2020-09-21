@@ -24,8 +24,13 @@ export default class Storedash extends ExternalClient {
         }
     }
 
-    public getStoredashDataFromTo = (from: string, to: string) => {
-        return this.http.get<StoreDashResponse[]>('navigationcube' + AggregationQueryFromTo(from, to), { metric: 'storedash-get' })
+    public getStoredashDataFromTo = async (from: string, to: string) => {
+        try{
+            return await this.http.get<StoreDashResponse[]>('navigationcube' + AggregationQueryFromTo(from, to), { metric: 'storedash-get' })
+        } catch (err) {
+            err.message = concatErrorMessages(`Error getting test's partial metadata from storedash`, err.message)
+            throw err
+        }
     }
 
     public getWorkspacesData = async (beginning: string): Promise<WorkspaceData[]> => {
