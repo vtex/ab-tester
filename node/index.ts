@@ -41,11 +41,6 @@ const tester = (handler: any) => async (ctx: Context) => {
     if (err.response) {
       ctx.body = ctx.status === 404 ? 'Not Found' : err.response.data
       ctx.vtex.logger.error({ status: ctx.status, message: err.response.data })
-      console.log(
-        `Error from HTTP request. ${err.response.config
-          ? `method=${err.response.config.method} url=${err.response.config.url} `
-          : ''} status=${err.response.status} data=${err.response.data}`
-      )
       return
     }
 
