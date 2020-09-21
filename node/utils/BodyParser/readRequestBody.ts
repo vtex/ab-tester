@@ -1,3 +1,5 @@
+import { concatErrorMessages } from '../errorHandling'
+
 export default (ctx: Context) => {
     const bodyMessage = ctx.body ? ctx.body : parseBody(ctx)
     return bodyMessage
@@ -19,11 +21,4 @@ const parseBody = async <BodyType>(ctx: Context): Promise<BodyType> => {
             reject(err)
         })
     })
-} 
-
-const concatErrorMessages = (newMessage: string, previousMessage: string | undefined): string => {
-    const message = previousMessage
-        ? newMessage + ': ' + previousMessage
-        : newMessage
-    return message
 }
