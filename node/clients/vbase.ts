@@ -86,12 +86,8 @@ export default class VBase extends BaseClient {
 
   public finishABtest = async (ctx: Context, results: TestResult[]): Promise<void> => {
     const testHistory = await this.fetchTestHistory(ctx)
-    let hasTestResult = true
-    if (results.length === 0) {
-      hasTestResult = false
-      ctx.vtex.logger.error(`Inconsistent data about initialized test`)
-    }
-    let date = hasTestResult ? results[0].ABTestBeginning : ''
+    
+    let date = results[0].ABTestBeginning
     if (date !== testHistory.onGoing) {
       date = testHistory.onGoing
       ctx.vtex.logger.error(`Inconsistent data about initialization date`)
@@ -104,18 +100,26 @@ export default class VBase extends BaseClient {
     if (testHistory.finishedTests.length > 100) {
       testHistory.finishedTests.shift()
     }
+
     try {
-      await Promise.all([this.save(testHistory, abTestHistoryFile, ctx), this.save(results, testResultsFile, ctx)])
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`Something went wrong while finishing the test and updating its metadata!`)
+      await this.save(testHistory, abTestHistoryFile, ctx)
+     } catch (err) {
+      err.message = concatErrorMessages('Error saving test history in VBase', err.message)
+      throw err
+     }
+
+     try {
+      await this.save(results, testResultsFile, ctx)
+     } catch (err) {
+      err.message = concatErrorMessages('Error saving test results in VBase', err.message)
+      throw err
     }
 
     try {
       await this.deleteFile(bucketName(ctx.vtex.account), testFileName)
-    } catch (ex) {
-      ctx.vtex.logger.error({ exception: ex, error: 'inconsistent_state', account: ctx.vtex.account, workspace: ctx.vtex.workspace })
-      throw new Error(`Something went wrong while finishing the test and updating its metadata! Tests metadata can be inconsistent.`)
+    } catch (err) {
+      err.message = concatErrorMessages(`Error deleting file ${testFileName} from VBase's bucket ${bucketName(ctx.vtex.account)}: test's metadata may be inconsistent`, err.message)
+      throw err
     }
   }
 
