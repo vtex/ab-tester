@@ -34,14 +34,19 @@ export default class Storedash extends ExternalClient {
     }
 
     public getWorkspacesData = async (beginning: string): Promise<WorkspaceData[]> => {
-        const from =  MinutesSinceQuery(beginning)
-        const metrics = await this.getStoredashData(from)
-        const workspacesData: WorkspaceData[] = []
-        for (const metric of metrics) {
-            const m: StoreDashResponse = metric as unknown as StoreDashResponse
-            workspacesData.push(WorkspaceData(m.workspace, m['data.sessions'], m['data.sessionsOrdered'], m['data.ordersValue']))
+        try {
+            const from =  MinutesSinceQuery(beginning)
+            const metrics = await this.getStoredashData(from)
+            const workspacesData: WorkspaceData[] = []
+            for (const metric of metrics) {
+                const m: StoreDashResponse = metric as unknown as StoreDashResponse
+                workspacesData.push(WorkspaceData(m.workspace, m['data.sessions'], m['data.sessionsOrdered'], m['data.ordersValue']))
+            }
+            return workspacesData
+        } catch (err) {
+            err.message = 'Error getting workspaces data: ' + err.message
+            throw err
         }
-        return workspacesData
     }
 
     public getWorkspacesGranularData = async (beginning: string): Promise<{data: WorkspaceData[], updateTime: string}> => {
