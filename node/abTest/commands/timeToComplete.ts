@@ -6,7 +6,7 @@ export async function TTCAbTest(ctx: Context): Promise<number> {
         logger.info(`A/B Test Time to Complete checked in ${account}`)
         return await TimeToCompleteAbTest(1 - Number(probability), storedash)
     } catch (err) {
-        logger.error({ status: ctx.status, message: err.message })
+        err.message = 'Error calculating TimeToComplete: ' + err.message
         throw err
     }
 }
