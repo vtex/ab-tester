@@ -1,6 +1,7 @@
 import { InfraClient, InstanceOptions, IOContext } from '@vtex/api'
 import { TSMap } from 'typescript-map'
 import TestingWorkspaces from '../typings/testingWorkspace'
+import { concatErrorMessages } from '../utils/errorHandling'
 
 const routes = {
     Parameters: (account: string) => `/${account}/_abtest/parameters`,
@@ -17,6 +18,7 @@ export default class Router extends InfraClient {
             const workspaceMetadata = await this.http.get<ABTestWorkspacesMetadata>(routes.Workspaces(account), { metric: 'abtest-get' })
             return new TestingWorkspaces(workspaceMetadata)
         } catch (err) {
+            err.message = concatErrorMessages('Error getting workspaces from Router', err.message)
             throw err
         }
     }
