@@ -121,10 +121,10 @@ export default class VBase extends BaseClient {
 
   public updateWorkspaceDataCache = async (newValue: WorkspaceDataCache, ctx: Context): Promise<void> => {
     try {
-      return this.save(newValue, WorkspaceDataFile, ctx)
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`An error occurred trying to update test's workspace data cache!`)
+      return await this.save(newValue, WorkspaceDataFile, ctx)
+    } catch (err) {
+      err.message = `Error updating test's workspace data cache on VBase: ` + err.message
+      throw err
     }
   }
 
