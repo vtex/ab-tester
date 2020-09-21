@@ -132,9 +132,9 @@ export default class VBase extends BaseClient {
     try {
       const rawFile = await this.getFile(bucketName(ctx.vtex.account), file)
       return JSON.parse(rawFile.data.toString())
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`Get request for key ${testFileName} in bucket ${bucketName(ctx.vtex.account)} failed!`)
+    } catch (err) {
+      err.message = concatErrorMessages(`Error reading from file ${testFileName} in bucket ${bucketName(ctx.vtex.account)}`, err.message)
+      throw err
     }
   }
 
