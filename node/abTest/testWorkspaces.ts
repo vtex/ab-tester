@@ -40,12 +40,8 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, t
 }
 
 async function FilterWorkspacesData(aBTestBeginning: string, testingWorkspaces: string[], storedash: Storedash): Promise<WorkspaceData[]> {
-    try {
-        const workspacesData = await storedash.getWorkspacesData(aBTestBeginning)
-        return FilteredWorkspacesData(workspacesData, testingWorkspaces)
-    } catch (err) {
-        throw err
-    }
+    const workspacesData = await storedash.getWorkspacesData(aBTestBeginning)
+    return FilteredWorkspacesData(workspacesData, testingWorkspaces)
 }
 
 const HasWorkspacesData = (workspacesData: WorkspaceData[]): boolean => {
