@@ -21,7 +21,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
     throw new NotFoundError(`Test not initialized for this account`)
   }
 
-  if (testingWorkspaces.Length() <= 2) {
+  if (IsLastTestingWorkspace(testingWorkspaces)) {
     try {
       await abTestRouter.deleteParameters(account).catch(logErrorTest(ctx))
       await abTestRouter.deleteWorkspaces(account).catch(logErrorTest(ctx))
@@ -74,4 +74,8 @@ const logErrorTest = (ctx: Context) => (err: any) => {
   }
   ctx.vtex.logger.error({ status: ctx.status, message: err.message })
   throw err
+}
+
+const IsLastTestingWorkspace = (testingWorkspaces: TestingWorkspaces): boolean => {
+  return (testingWorkspaces.Length() <= 2)
 }
