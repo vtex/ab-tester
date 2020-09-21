@@ -1,5 +1,6 @@
 import { VBase as BaseClient } from '@vtex/api'
 import { Readable } from 'stream'
+import { concatErrorMessages } from '../utils/errorHandling'
 
 const bucketName = (account: string) => 'ABTest-' + account
 const abTestHistoryFile = 'abTestHistory.json'
@@ -45,9 +46,9 @@ export default class VBase extends BaseClient {
   public save = async (data: any, file: string, ctx: Context) => {
     try {
       await this.saveFile(bucketName(ctx.vtex.account), file, jsonStream(data))
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`Save request for key ${file} in bucket ${bucketName(ctx.vtex.account)} failed!`)
+    } catch (err) {
+      err.message = concatErrorMessages(`Error saving file ${file} in bucket ${bucketName(ctx.vtex.account)}`, err.message)
+      throw err
     }
   }
 
