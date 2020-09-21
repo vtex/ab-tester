@@ -40,8 +40,13 @@ export default class Router extends InfraClient {
         }
     }
 
-    public deleteWorkspaces = (account: string) => {
-        return this.http.delete(routes.Workspaces(account), { metric: 'abtest-delete-workspaces' })
+    public deleteWorkspaces = async (account: string) => {
+        try {
+            return await this.http.delete(routes.Workspaces(account), { metric: 'abtest-delete-workspaces' })
+        } catch (err) {
+            err.message = concatErrorMessages('Error deleting workspaces from Router', err.message)
+            throw err
+        }
     }
     public deleteParameters = (account: string) => {
         return this.http.delete(routes.Parameters(account), { metric: 'abtest-delete-parameters' })
