@@ -32,7 +32,7 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, t
                 }
             }
         } catch (err) {
-            ctx.vtex.logger.error({ status: ctx.status, message: err.message })
+            err.message = 'Error evaluating test results: ' + err.message
             throw err
         }
     }
