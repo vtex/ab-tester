@@ -60,10 +60,12 @@ async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: numb
     }
 }
 
-function InitializeWorkspaces(ctx: Context, id: string, testingWorkspaces: ABTestWorkspace[]): Promise<void> {
-    return ctx.clients.abTestRouter.setWorkspaces(ctx.vtex.account, {
+async function InitializeWorkspaces(ctx: Context, id: string, testingWorkspaces: ABTestWorkspace[]): Promise<void> {
+    return await ctx.clients.abTestRouter.setWorkspaces(ctx.vtex.account, {
         id: (id),
         workspaces: testingWorkspaces,
+    }).catch((err) => {
+        err.message = 'Error initializing workspaces: ' + err.message
     })
 }
 
