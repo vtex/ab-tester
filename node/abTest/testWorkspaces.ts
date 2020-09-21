@@ -17,24 +17,27 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, t
 
             if (!HasWorkspacesData(workspacesData)) {
                 for (const workspaceName of testingWorkspaces.WorkspacesNames()) {
-                    if (workspaceName !== 'master') {
+                    if (workspaceName !== MasterWorkspaceName) {
                         Results.push(DefaultEvaluationResponseConversion(abTestBeginning, MasterWorkspaceName, workspaceName))
                     }
                 }
-                return Results
-            }
-            const workspacesCompleteData = await BuildCompleteData(account, abTestBeginning, workspacesData, storedash, abTestRouter)
-            const masterWorkspace = workspacesCompleteData.get(MasterWorkspaceName)
+            } else {
+                const workspacesCompleteData = await BuildCompleteData(account, abTestBeginning, workspacesData, storedash, abTestRouter)
+                const masterWorkspace = workspacesCompleteData.get(MasterWorkspaceName)
 
-            for (const workspaceData of workspacesCompleteData) {
-                if (workspaceData[0] !== MasterWorkspaceName) {
-                    Results.push(await Evaluate(abTestBeginning, masterWorkspace!, workspaceData[1]))
+                for (const workspaceData of workspacesCompleteData) {
+                    if (workspaceData[0] !== MasterWorkspaceName) {
+                        Results.push(await Evaluate(abTestBeginning, masterWorkspace!, workspaceData[1]))
+                    }
                 }
             }
         } catch (err) {
             err.message = 'Error evaluating test results: ' + err.message
             throw err
         }
+    }
+    if (Results.length === 0) {
+        throw new Error(`Error evaluating test's results: inconsistent data about initialized test`)
     }
     return Results
 }
