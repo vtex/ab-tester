@@ -52,7 +52,7 @@ export const DefaultEvaluationResponseRevenue = (abTestBeginning: string, worksp
     OrdersMedianWorkspaceB: 0,
 })
 
-export const EvaluationResponse = (abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, winner: string, lossA: number, lossB: number, probabilityOneBeatsTwo: number, pValue: number): TestResult => ({
+export const EvaluationResponseConversion = (abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, winner: string, lossA: number, lossB: number, probabilityOneBeatsTwo: number, pValue: number): TestResult => ({
     ABTestBeginning: abTestBeginning,
     ConversionA: workspaceAData.SinceBeginning.Conversion,
     ConversionALast24Hours: workspaceAData.Last24Hours.Conversion,

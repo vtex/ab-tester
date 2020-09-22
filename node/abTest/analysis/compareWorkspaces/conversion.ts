@@ -1,4 +1,4 @@
-import { DefaultEvaluationResponseConversion, EvaluationResponse } from '../../../utils/evaluation-response'
+import { DefaultEvaluationResponseConversion, EvaluationResponseConversion } from '../../../utils/evaluation-response'
 import { ChooseWinner, LossFunctionChoosingVariantOne, ProbabilityOfOneBeatsTwo } from '../../../utils/mathTools/forBetaDistribution/decisionRule'
 import { BoundError, pValue } from '../../../utils/mathTools/statistics/samplesRestrictions'
 import { WorkspaceToBetaDistribution } from '../../../utils/workspace'
@@ -16,5 +16,5 @@ export async function Evaluate(abTestBeginning: string, workspaceAData: Workspac
     const statiscs = pValue(betaDistributionA, betaDistributionB)
     const winner = ChooseWinner(workspaceAData.SinceBeginning, workspaceBData.SinceBeginning, BoundError) || 'Not yet decided'
 
-    return EvaluationResponse(abTestBeginning, workspaceAData, workspaceBData, winner, lossA, lossB, probabilityTwoBeatsOne, statiscs)
+    return EvaluationResponseConversion(abTestBeginning, workspaceAData, workspaceBData, winner, lossA, lossB, probabilityTwoBeatsOne, statiscs)
 }
