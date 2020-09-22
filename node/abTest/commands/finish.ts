@@ -49,7 +49,6 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
     const testType = (await storage.getTestData(ctx)).testType
     testingWorkspaces.Remove(workspaceName)
     const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
-    testingParameters.Remove(workspaceName)
     await abTestRouter.setWorkspaces(account, {
       id: testingWorkspaces.Id(),
       workspaces: testingWorkspaces.ToArray(),
