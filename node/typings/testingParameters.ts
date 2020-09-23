@@ -61,7 +61,7 @@ class TestingParametersConversion implements ITestingParameters{
 
         for (const workspace of this.parameters.keys()) {
             const parameter = workspace === MasterWorkspaceName ? actualProportion : nonMasterParameter
-            this.parameters.set(workspace, { a: parameter, b: 1 })
+            this.parameters.set(workspace, { a: Math.round(parameter), b: 1 })
         }
     }
 }
@@ -107,7 +107,7 @@ class TestingParametersRevenue implements ITestingParameters{
             sum += U
         }
         for (let i = 0; i < size; i++) {
-            this.parameters.set(testData.workspaceNames[i], {a:(testData.U[i]/sum), b:0})
+            this.parameters.set(testData.workspaceNames[i], { a: Math.round(testData.U[i]/sum), b: 0 })
         }
     }
 
@@ -118,7 +118,7 @@ class TestingParametersRevenue implements ITestingParameters{
 
         for (const workspace of this.parameters.keys()) {
             const parameter = workspace === MasterWorkspaceName ? actualProportion : nonMasterParameter
-            this.parameters.set(workspace, { a: parameter, b: 1 })
+            this.parameters.set(workspace, { a: Math.round(parameter), b: 1 })
         }
     }
 
