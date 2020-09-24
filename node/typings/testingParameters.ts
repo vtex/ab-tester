@@ -55,12 +55,11 @@ class TestingParametersConversion implements ITestingParameters{
     }
 
     public UpdateWithFixedParameters = (proportion: number) => {
-        const actualProportion = CheckProportionBounds(proportion)
         const size = this.parameters.size
-        const nonMasterParameter = (10000 - actualProportion) / (size - 1)
+        const nonMasterParameter = (10000 - proportion) / (size - 1)
 
         for (const workspace of this.parameters.keys()) {
-            const parameter = workspace === MasterWorkspaceName ? actualProportion : nonMasterParameter
+            const parameter = workspace === MasterWorkspaceName ? proportion : nonMasterParameter
             this.parameters.set(workspace, { a: Math.round(parameter), b: 1 })
         }
     }
@@ -112,12 +111,11 @@ class TestingParametersRevenue implements ITestingParameters{
     }
 
     public UpdateWithFixedParameters = (proportion: number) => {
-        const actualProportion = CheckProportionBounds(proportion)
         const size = this.parameters.size
-        const nonMasterParameter = (10000 - actualProportion) / (size - 1)
+        const nonMasterParameter = (10000 - proportion) / (size - 1)
 
         for (const workspace of this.parameters.keys()) {
-            const parameter = workspace === MasterWorkspaceName ? actualProportion : nonMasterParameter
+            const parameter = workspace === MasterWorkspaceName ? proportion : nonMasterParameter
             this.parameters.set(workspace, { a: Math.round(parameter), b: 1 })
         }
     }
@@ -168,10 +166,6 @@ interface MannWhitneyTestData {
     OrdersValueHistory: number[][],
     U: number[],
 
-}
-
-const CheckProportionBounds = (proportion: number): number => {
-    return proportion >= 0 && proportion <= 10000 ? proportion : 10000
 }
 
 const MapInitialParameters = (workspaces: ABTestWorkspace[]): Map<string, ABTestParameters> => {
