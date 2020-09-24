@@ -46,7 +46,6 @@ declare global {
     WinnerRevenue?: string
     PValueRevenue?: number
     ProbabilityAlternativeBeatsMasterRevenue?: number
-    UValue?: number
     EffectSizeWorkspaceA?: number
     EffectSizeWorkspaceB?: number
     OrdersMedianWorkspaceA?: number

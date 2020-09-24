@@ -45,7 +45,6 @@ export const DefaultEvaluationResponseRevenue = (abTestBeginning: string, worksp
     WinnerRevenue: 'Not yet decided',
     PValueRevenue: 0,
     ProbabilityAlternativeBeatsMasterRevenue: 0,
-    UValue: 0,
     EffectSizeWorkspaceA: 0,
     EffectSizeWorkspaceB: 0,
     OrdersMedianWorkspaceA: 0,
@@ -76,7 +75,7 @@ export const EvaluationResponseConversion = (abTestBeginning: string, workspaceA
 })
 
 export const EvaluationResponseRevenue = (abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, winner: string, lossA: number, lossB: number, probabilityOneBeatTwo: number, pValue: number, 
-    winnerRevenue: string, pValueRevenue: number, uValue: number, effectSizeA: number, effectSizeB: number, medianA: number, medianB: number): TestResult => ({
+    winnerRevenue: string, pValueRevenue: number, effectSizeA: number, effectSizeB: number, medianA: number, medianB: number): TestResult => ({
 
     ABTestBeginning: abTestBeginning,
     ConversionA: workspaceAData.SinceBeginning.Conversion,
@@ -101,7 +100,6 @@ export const EvaluationResponseRevenue = (abTestBeginning: string, workspaceADat
     WinnerRevenue: winnerRevenue,
     PValueRevenue: pValueRevenue,
     ProbabilityAlternativeBeatsMasterRevenue: 1 - pValueRevenue,
-    UValue: uValue,
     EffectSizeWorkspaceA: effectSizeA,
     EffectSizeWorkspaceB: effectSizeB,
     OrdersMedianWorkspaceA: medianA,
