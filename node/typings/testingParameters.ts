@@ -1,4 +1,5 @@
 import { ProbabilityYBeatsAll } from '../utils/mathTools/decisionRule/forBetaDistribution'
+import { CalculateUValue } from '../utils/mathTools/decisionRule/forMannWhitney'
 import { InitialABTestParameters, WorkspaceToBetaDistribution } from '../utils/workspace'
 
 const MasterWorkspaceName = 'master'
@@ -101,7 +102,7 @@ class TestingParametersRevenue implements ITestingParameters{
         const size = testData.workspaceNames.length
         let sum = 0
         for (let i = 0; i < size; i++) {
-            const U = this.CalculateUValue(testData.OrdersValueHistory, i)
+            const U = CalculateUValue(testData.OrdersValueHistory, i)
             testData.U.push(U)
             sum += U
         }
@@ -118,46 +119,6 @@ class TestingParametersRevenue implements ITestingParameters{
             const parameter = workspace === MasterWorkspaceName ? proportion : nonMasterParameter
             this.parameters.set(workspace, { a: Math.round(parameter), b: 1 })
         }
-    }
-
-    //for a brief introduction on test being used and U values, check: https://en.wikipedia.org/wiki/Mann–Whitney_U_test
-    private CalculateUValue(OrdersValueHistory: number[][], idx: number) {
-        const valuesAndLabels = this.CreateOrdersValueHistoryWithLabels(OrdersValueHistory, idx)
-        let iterator = 0
-        let U = 0
-        while(iterator < valuesAndLabels.length) {
-            let countIdx = 0
-            let countTotal = 0
-            let repetitions = iterator
-            while (repetitions < valuesAndLabels.length && valuesAndLabels[repetitions][0] == valuesAndLabels[iterator][0]) {
-                if (valuesAndLabels[repetitions][1] == 0) {
-                    countIdx++
-                }
-                countTotal++
-                repetitions++
-            }
-            let avg = (2 * iterator + countTotal + 1) /2.0
-            U += avg * countIdx
-            iterator = repetitions
-        }
-        U -= OrdersValueHistory[idx].length * (OrdersValueHistory[idx].length + 1) / 2.0
-        return U
-    }
-
-    private CreateOrdersValueHistoryWithLabels(OrdersValueHistory: number[][], idx: number) {
-        let valuesAndLabels: Array<[number, number]> = []
-        for (const value of OrdersValueHistory[idx]) {
-            valuesAndLabels.push([value, 0])
-        }
-        for (let i = 0; i < OrdersValueHistory.length; i++) {
-            if (i != idx) {
-                for (const value of OrdersValueHistory[i]) {
-                    valuesAndLabels.push([value, 1])
-                }
-            }
-        }
-        valuesAndLabels = valuesAndLabels.sort((a, b) => b[0] - a[0])
-        return valuesAndLabels
     }
 }
 
