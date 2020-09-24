@@ -1,4 +1,4 @@
-import { ProbabilityYBeatsAll } from '../utils/mathTools/forBetaDistribution/decisionRule'
+import { ProbabilityYBeatsAll } from '../utils/mathTools/decisionRule/forBetaDistribution'
 import { InitialABTestParameters, WorkspaceToBetaDistribution } from '../utils/workspace'
 
 const MasterWorkspaceName = 'master'

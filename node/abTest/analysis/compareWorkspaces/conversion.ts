@@ -1,5 +1,5 @@
 import { DefaultEvaluationResponseConversion, EvaluationResponseConversion } from '../../../utils/evaluation-response'
-import { ChooseWinner, LossFunctionChoosingVariantOne, ProbabilityOfOneBeatsTwo } from '../../../utils/mathTools/forBetaDistribution/decisionRule'
+import { ChooseWinner, LossFunctionChoosingVariantOne, ProbabilityOfOneBeatsTwo } from '../../../utils/mathTools/decisionRule/forBetaDistribution'
 import { BoundError, pValue } from '../../../utils/mathTools/statistics/samplesRestrictions'
 import { WorkspaceToBetaDistribution } from '../../../utils/workspace'
 
