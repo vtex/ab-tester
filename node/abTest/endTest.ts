@@ -14,7 +14,8 @@ export default async (testingWorkspaces: TestingWorkspaces, ctx: Context) => {
     ? testData.dateOfBeginning
     : new Date().toISOString().substr(0, 16)
 
-  const results = await TestWorkspaces(account, beginning, testingWorkspaces, ctx)
+  const testType = testData.testType
+  const results = await TestWorkspaces(account, beginning, testingWorkspaces, testType, ctx)
 
   await storage.finishABtest(ctx, results)
   ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })

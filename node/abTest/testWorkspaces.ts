@@ -7,13 +7,13 @@ import { BuildCompleteData } from './data/buildData'
 
 const MasterWorkspaceName = 'master'
 
-export async function TestWorkspaces(account: string, abTestBeginning: string, testingWorkspaces: TestingWorkspaces, ctx: Context): Promise<TestResult[]> {
+export async function TestWorkspaces(account: string, abTestBeginning: string, testingWorkspaces: TestingWorkspaces, testType: TestType, ctx: Context): Promise<TestResult[]> {
     const { clients: { abTestRouter, storedash } } = ctx
     const Results: TestResult[] = []
 
     if (testingWorkspaces.Length() > 0) {
         try {
-            const workspacesData = await FilterWorkspacesData(abTestBeginning, testingWorkspaces.WorkspacesNames(), storedash)
+            const workspacesData = await FilterWorkspacesData(abTestBeginning, testingWorkspaces.WorkspacesNames(), storedash, testType)
 
             if (!HasWorkspacesData(workspacesData)) {
                 for (const workspaceName of testingWorkspaces.WorkspacesNames()) {
@@ -42,8 +42,15 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, t
     return Results
 }
 
-async function FilterWorkspacesData(aBTestBeginning: string, testingWorkspaces: string[], storedash: Storedash): Promise<WorkspaceData[]> {
-    const workspacesData = await storedash.getWorkspacesData(aBTestBeginning)
+async function FilterWorkspacesData(aBTestBeginning: string, testingWorkspaces: string[], storedash: Storedash, testType: TestType): Promise<WorkspaceData[]> {
+    let workspacesData: WorkspaceData[] = []
+
+    if (testType === 'conversion') {
+        workspacesData = await storedash.getWorkspacesData(aBTestBeginning)
+    }
+    if (testType === 'revenue') {
+        workspacesData = (await storedash.getWorkspacesGranularData(aBTestBeginning)).data
+    }
     return FilteredWorkspacesData(workspacesData, testingWorkspaces)
 }
 
