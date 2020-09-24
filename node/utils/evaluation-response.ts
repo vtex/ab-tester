@@ -99,7 +99,7 @@ export const EvaluationResponseRevenue = (abTestBeginning: string, workspaceADat
     WorkspaceBSessionsLast24Hours: workspaceBData.Last24Hours.Sessions,
     WinnerRevenue: winnerRevenue,
     PValueRevenue: pValueRevenue,
-    ProbabilityAlternativeBeatsMasterRevenue: 1 - pValueRevenue,
+    ProbabilityAlternativeBeatsMasterRevenue: pValueRevenue,
     EffectSizeWorkspaceA: effectSizeA,
     EffectSizeWorkspaceB: effectSizeB,
     OrdersMedianWorkspaceA: medianA,
