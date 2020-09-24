@@ -106,7 +106,7 @@ class TestingParametersRevenue implements ITestingParameters{
             sum += U
         }
         for (let i = 0; i < size; i++) {
-            this.parameters.set(testData.workspaceNames[i], { a: Math.round(testData.U[i]/sum), b: 0 })
+            this.parameters.set(testData.workspaceNames[i], { a: Math.round(10000*testData.U[i]/sum), b: 0 })
         }
     }
 
