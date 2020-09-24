@@ -1,3 +1,12 @@
+export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceAName: string, workspaceBName: string, testType: TestType): TestResult => {
+    
+    if (testType === 'revenue') {
+        return DefaultEvaluationResponseRevenue(abTestBeginning, workspaceAName, workspaceBName)
+    }
+
+    return DefaultEvaluationResponseConversion(abTestBeginning, workspaceAName, workspaceBName)
+}
+
 export const DefaultEvaluationResponseConversion = (abTestBeginning: string, workspaceAName: string, workspaceBName: string): TestResult => ({
     ABTestBeginning: abTestBeginning,
     ConversionA: 0,
