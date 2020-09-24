@@ -12,7 +12,7 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
       if (!(beginning && proportion && hours !== undefined)) {
         beginning = new Date().toISOString().substr(0, 16)
         hours = 0
-        proportion = 100
+        proportion = 10000
       }
       const testType = testData.testType
       const workspacesData: WorkspaceData[] = (testType === 'revenue') ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
