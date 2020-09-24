@@ -2,7 +2,8 @@
   "dependencies": {
     "ramda": "^0.25.0",
     "typescript-map": "^0.0.7",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "ts-gaussian": "^2.0.2"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

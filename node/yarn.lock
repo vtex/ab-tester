@@ -1747,6 +1747,11 @@ toidentifier@1.0.0:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
 
+ts-gaussian@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/ts-gaussian/-/ts-gaussian-2.0.2.tgz#c612163f3c068542b2678c9385a5bb56559b6380"
+  integrity sha512-DdMwQc1bgzRwbKQ3VoiV3aK2isz7CJhOmtO2oA+mp9soGpbN/p2pkBaIrZnJBW3jB293CUARLFmNktcTSHjypQ==
+
 ts-invariant@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.2.1.tgz#3d587f9d6e3bded97bf9ec17951dd9814d5a9d3f"
