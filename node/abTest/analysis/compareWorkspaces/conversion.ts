@@ -13,8 +13,8 @@ export async function EvaluateConversion(abTestBeginning: string, workspaceAData
     const lossA = LossFunctionChoosingVariantOne(betaDistributionA, betaDistributionB)
     const lossB = LossFunctionChoosingVariantOne(betaDistributionB, betaDistributionA)
     const probabilityTwoBeatsOne = ProbabilityOfOneBeatsTwo(betaDistributionB.a, betaDistributionB.b, betaDistributionA.a, betaDistributionA.b)
-    const statiscs = pValue(betaDistributionA, betaDistributionB)
+    const PValue = pValue(betaDistributionA, betaDistributionB)
     const winner = ChooseWinner(workspaceAData.SinceBeginning, workspaceBData.SinceBeginning, BoundError) || 'Not yet decided'
 
-    return EvaluationResponseConversion(abTestBeginning, workspaceAData, workspaceBData, winner, lossA, lossB, probabilityTwoBeatsOne, statiscs)
+    return EvaluationResponseConversion(abTestBeginning, workspaceAData, workspaceBData, winner, lossA, lossB, probabilityTwoBeatsOne, PValue)
 }
