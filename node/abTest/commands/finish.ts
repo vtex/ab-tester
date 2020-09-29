@@ -9,9 +9,16 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
   const { vtex: { account, route: { params: { finishingWorkspace } } }, clients: { abTestRouter, storage } } = ctx
   const workspaceName = firstOrDefault(finishingWorkspace)
 
+  if (workspaceName === 'master') {
+    throw new Error(`Bad workspace name: the master workspace cannot be removed from the test`)
+  }
   try {
 
     const testingWorkspaces = await abTestRouter.getWorkspaces(account)
+
+    if (!(testingWorkspaces.Includes(workspaceName))) {
+      throw new Error(`Bad workspace name: make sure to select one of the workspaces under test`)
+    }
 
     if (testingWorkspaces.Length() === 0) {
       ctx.response.status = 404
