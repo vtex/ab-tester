@@ -5,39 +5,36 @@ import getRequestParams from '../../utils/BodyParser/getRequestParams'
 import { concatErrorMessages } from '../../utils/errorHandling'
 import { WorkspaceMetadata } from '@vtex/api'
 
-export async function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
+export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     const workspace = ctx.vtex.route.params.initializingWorkspace
-    const workspaceName = firstOrDefault(workspace)
-    await CheckWorkspace(workspaceName, ctx)
-
-    return InitializeAbTest(workspaceName, 1, 5000, ctx)
+    return RunChecksAndInitialize(ctx, workspace, '1', '5000', 'conversion')
 }
 
-export async function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promise<void> {
-    const { vtex: { route: { params: { hours, proportion, initializingWorkspace } } }} = ctx
-    const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ initializingWorkspace, hours, proportion ].map(firstOrDefault)
-    await CheckWorkspace(workspaceName, ctx)
-    
-    checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
-    const [ numberHours, numberProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(proportionOfTraffic))]
-    
-    return InitializeAbTest(workspaceName, numberHours, numberProportion, ctx)
+export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promise<void> {
+    const { vtex: { route: { params: { hours, proportion, initializingWorkspace } } }} = ctx  
+    return RunChecksAndInitialize(ctx, initializingWorkspace, hours, proportion, 'conversion')
 }
 
 export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<void> {
     const { InitializingWorkspace, Hours, Proportion, Type } = await getRequestParams(ctx)
-    const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspace, Hours, Proportion ].map(firstOrDefault)
+    return RunChecksAndInitialize(ctx, InitializingWorkspace, Hours, Proportion, Type)
+}
+
+async function RunChecksAndInitialize(ctx: Context, InitializingWorkspace: UrlParameter, Hours: UrlParameter, Proportion: UrlParameter, Type: string): Promise<void> {
+    const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspace, Hours, Proportion ].map(firstOrDefault) 
+
+    checkTestType(Type)
     const testType = Type as TestType
 
     await CheckWorkspace(workspaceName, ctx)
-    
+
     checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
     const [ numberHours, numberProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(proportionOfTraffic))]
 
     return InitializeAbTest(workspaceName, numberHours, numberProportion, ctx, testType)
 }
 
-async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType = 'conversion'): Promise<void> {
+async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType): Promise<void> {
     const { vtex: { account, logger }, clients: { abTestRouter, storage } } = ctx
     try {
         const testingWorkspaces = await abTestRouter.getWorkspaces(account)
@@ -75,6 +72,12 @@ async function InitializeWorkspaces(ctx: Context, id: string, testingWorkspaces:
     }).catch((err) => {
         err.message = 'Error initializing workspaces: ' + err.message
     })
+}
+
+const checkTestType = (Type: string) => {
+    if (Type !== 'conversion' && Type !== 'revenue') {
+        throw new Error(`Error setting test type: please make sure to spell it correctly (either 'conversion' or 'revenue')`)
+    }
 }
 
 const checkIfNaN = (hours: string, proportion: string) => {

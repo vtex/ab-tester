@@ -7,6 +7,8 @@ declare global {
 
   type TestType = 'conversion' | 'revenue'
 
+  type UrlParameter = string | string[] | undefined
+
   interface WorkspaceData {
     Workspace: string
     Sessions: number
