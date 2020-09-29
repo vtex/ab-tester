@@ -1,7 +1,7 @@
 import { TSMap } from 'typescript-map'
 import { createTestingParameters } from '../../typings/testingParameters'
 import { firstOrDefault } from '../../utils/firstOrDefault'
-import getRequestParams from '../../utils/BodyParser/getRequestParams'
+import getRequestParams from '../../utils/Request/getRequestParams'
 import { concatErrorMessages } from '../../utils/errorHandling'
 import { WorkspaceMetadata } from '@vtex/api'
 
