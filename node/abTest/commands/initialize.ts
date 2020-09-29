@@ -2,17 +2,21 @@ import { TSMap } from 'typescript-map'
 import { createTestingParameters } from '../../typings/testingParameters'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import getRequestParams from '../../utils/BodyParser/getRequestParams'
+import { concatErrorMessages } from '../../utils/errorHandling'
+import { WorkspaceMetadata } from '@vtex/api'
 
-export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
+export async function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     const workspace = ctx.vtex.route.params.initializingWorkspace
     const workspaceName = firstOrDefault(workspace)
+    await CheckWorkspace(workspaceName, ctx)
 
     return InitializeAbTest(workspaceName, 1, 5000, ctx)
 }
 
-export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promise<void> {
+export async function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promise<void> {
     const { vtex: { route: { params: { hours, proportion, initializingWorkspace } } }} = ctx
     const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ initializingWorkspace, hours, proportion ].map(firstOrDefault)
+    await CheckWorkspace(workspaceName, ctx)
     
     checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
     const [ numberHours, numberProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(proportionOfTraffic))]
@@ -24,6 +28,8 @@ export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<
     const { InitializingWorkspace, Hours, Proportion, Type } = await getRequestParams(ctx)
     const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspace, Hours, Proportion ].map(firstOrDefault)
     const testType = Type as TestType
+
+    await CheckWorkspace(workspaceName, ctx)
     
     checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
     const [ numberHours, numberProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(proportionOfTraffic))]
@@ -82,4 +88,24 @@ const checkIfNaN = (hours: string, proportion: string) => {
 
 const CheckProportion = (proportion: number): number => {
     return proportion >= 0 && proportion <= 10000 ? Math.round(proportion) : 10000
+}
+
+const CheckWorkspace = async (workspaceName: string, ctx: Context) => {    
+    if (workspaceName === 'master') {
+        throw new Error(`Bad workspace name: please select a workspace different from the master; the master workspace will be part of the test anyway`)
+    }
+    const account = ctx.vtex.account
+    let workspaces: WorkspaceMetadata[]
+    try {
+        workspaces = await ctx.clients.workspaces.list(account)
+    } catch (err) {
+        err.message = concatErrorMessages(`Error checking workspace name: Error fetching list of account's workspaces`, err.message)
+        throw err
+    }
+
+    for (const workspace of workspaces) {
+        if (workspace.production && workspaceName === workspace.name) return
+    }
+
+    throw new Error(`Bad workspace name: make sure to select one of your account's production workspaces`)
 }
