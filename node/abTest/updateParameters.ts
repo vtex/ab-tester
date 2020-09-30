@@ -13,7 +13,7 @@ const MasterWorkspaceName = 'master'
 export async function UpdateParameters(ctx: Context, aBTestBeginning: string, hoursOfInitialStage: number, proportionOfTraffic: number,
     workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, testType: TestType): Promise<void> {
     try { 
-        const { clients: { abTestRouter, storedash } } = ctx
+        const { clients: { abTestRouter, storedash, storage } } = ctx
         const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
 
         if (await IsInitialStage(hoursOfInitialStage, workspacesData, storedash)) {
@@ -41,6 +41,7 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
             }
         }
         await ResetParameters(ctx.vtex.account, testingWorkspaces.ToArray(), proportionOfTraffic, testType, testId, abTestRouter)
+        await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, ctx)
 
     } catch (err) {
         err.message = 'Error updating parameters: ' + err.message
