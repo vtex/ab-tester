@@ -31,18 +31,23 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
       await EndTest(testingWorkspaces, ctx)
     } 
     else {
-      const testType = (await storage.getTestData(ctx)).testType
+      const testData = await storage.getTestData(ctx)
+      const [ testType, proportion ] = [ testData.testType, testData.initialProportion ]
+      
       testingWorkspaces.Remove(workspaceName)
-      const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
       await abTestRouter.setWorkspaces(account, {
         id: testingWorkspaces.Id(),
         workspaces: testingWorkspaces.ToArray(),
       })
+
+      const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
+      testingParameters.UpdateWithFixedParameters(proportion)
       const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
       await abTestRouter.setParameters(account, {
         Id: testingWorkspaces.Id(),
         parameterPerWorkspace: tsmap,
       })
+
       ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
     }
 
