@@ -6,7 +6,7 @@ import { FilteredWorkspacesData } from '../utils/workspace'
 import { MapWorkspaceData } from '../utils/workspacesInfo/workspaceData'
 import { IsInitialStage } from './analysis/time/initialStage'
 import { BuildCompleteData } from './data/buildData'
-import { InitializeParameters } from './initializeParameters'
+import { ResetParameters } from './initializeParameters'
 
 const MasterWorkspaceName = 'master'
 
@@ -40,8 +40,8 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
                 return
             }
         }
+        await ResetParameters(ctx.vtex.account, testingWorkspaces.ToArray(), proportionOfTraffic, testType, testId, abTestRouter)
 
-        await InitializeParameters(ctx.vtex.account, testingWorkspaces.ToArray(), testId, abTestRouter)
     } catch (err) {
         err.message = 'Error updating parameters: ' + err.message
         throw err
