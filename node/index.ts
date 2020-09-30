@@ -44,6 +44,7 @@ const tester = (handler: any) => async (ctx: Context) => {
       return
     }
 
+    ctx.body = err.message
     if (err.status) ctx.status = err.status
 
     if (ctx.status === 400 || ctx.status === 404) return
