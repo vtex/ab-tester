@@ -13,7 +13,9 @@ export async function EvaluateRevenue(abTestBeginning: string, workspaceAData: W
     const ordersHistoryB = workspaceBData.SinceBeginning.OrdersValueHistory
 
     if (ordersHistoryA.length <= 10 || ordersHistoryB.length <= 10) {
-        throw new Error('Not enough data to perform accurate analysis')
+        const err = new Error('Not enough data to perform accurate analysis') as any
+        err.status = 404
+        throw err
     }
 
     // For conversion evaluation

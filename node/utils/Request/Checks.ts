@@ -7,23 +7,31 @@ export const checkForExpectedFields = (object: object) => {
     for (let idx = 0; idx < expectedFields.length; idx++) {
         const field = expectedFields[idx]
         if (!(field in object)) {
-            throw new Error(`Error getting request's parameters: make sure to set the ${field} field`)
+            const err = new Error(`Error getting request's parameters: make sure to set the ${field} field`) as any
+            err.status = 400
+            throw err
         }
     }
 }
 
 export const checkTestType = (Type: string) => {
     if (Type !== 'conversion' && Type !== 'revenue') {
-        throw new Error(`Error setting test type: please make sure to spell it correctly (either 'conversion' or 'revenue')`)
+        const err = new Error(`Error setting test type: please make sure to spell it correctly (either 'conversion' or 'revenue')`) as any
+        err.status = 400
+        throw err
     }
 }
 
 export const checkIfNaN = (hours: string, proportion: string) => {
     if (Number.isNaN(Number(hours))) {
-        throw new Error(`Error reading time parameter: make sure to insert a number`)
+        const err = new Error(`Error reading time parameter: make sure to insert a number`) as any
+        err.status = 400
+        throw err
     }
     if (Number.isNaN(Number(proportion))) {
-        throw new Error(`Error reading proportion parameter: make sure to insert a number`)
+        const err = new Error(`Error reading proportion parameter: make sure to insert a number`) as any
+        err.status = 400
+        throw err
     }
 }
 
@@ -33,7 +41,9 @@ export const CheckProportion = (proportion: number): number => {
 
 export const CheckWorkspace = async (workspaceName: string, ctx: Context) => {    
     if (workspaceName === 'master') {
-        throw new Error(`Bad workspace name: please select a workspace different from the master; the master workspace will be part of the test anyway`)
+        const err = new Error(`Bad workspace name: please select a workspace different from the master; the master workspace will be part of the test anyway`) as any
+        err.status = 400
+        throw err
     }
     const account = ctx.vtex.account
     let workspaces: WorkspaceMetadata[]
@@ -48,5 +58,7 @@ export const CheckWorkspace = async (workspaceName: string, ctx: Context) => {
         if (workspace.production && workspaceName === workspace.name) return
     }
 
-    throw new Error(`Bad workspace name: make sure to select one of your account's production workspaces`)
+    const err = new Error(`Bad workspace name: make sure to select one of your account's production workspaces`) as any
+    err.status = 400
+    throw err
 }

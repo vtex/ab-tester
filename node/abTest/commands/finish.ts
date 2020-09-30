@@ -10,6 +10,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
   const workspaceName = firstOrDefault(finishingWorkspace)
 
   if (workspaceName === 'master') {
+    ctx.status = 400
     throw new Error(`Bad workspace name: the master workspace cannot be removed from the test`)
   }
   try {
@@ -17,6 +18,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
     const testingWorkspaces = await abTestRouter.getWorkspaces(account)
 
     if (!(testingWorkspaces.Includes(workspaceName))) {
+      ctx.status = 400
       throw new Error(`Bad workspace name: make sure to select one of the workspaces under test`)
     }
 
