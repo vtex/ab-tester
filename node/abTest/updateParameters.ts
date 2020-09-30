@@ -30,15 +30,15 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
         let randomRestart: boolean = false
         for (const workspaceCompleteData of workspacesCompleteData) {
             randomRestart = workspaceCompleteData[0] === MasterWorkspaceName ? false : RandomRestart(workspaceCompleteData[1], masterWorkspace!)
-            if (!randomRestart) {
-                testingParameters.Update(MapWorkspaceData(workspacesData))
-                const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
-                await abTestRouter.setParameters(ctx.vtex.account, {
-                    Id: testId,
-                    parameterPerWorkspace: tsmap,
-                })
-                return
-            }
+        }
+        if (!randomRestart) {
+            testingParameters.Update(MapWorkspaceData(workspacesData))
+            const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
+            await abTestRouter.setParameters(ctx.vtex.account, {
+                Id: testId,
+                parameterPerWorkspace: tsmap,
+            })
+            return
         }
         await ResetParameters(ctx.vtex.account, testingWorkspaces.ToArray(), proportionOfTraffic, testType, testId, abTestRouter)
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, ctx)
