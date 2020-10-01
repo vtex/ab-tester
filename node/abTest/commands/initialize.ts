@@ -15,8 +15,8 @@ export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promis
 }
 
 export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<void> {
-    const { InitializingWorkspace, Hours, Proportion, Type } = await getRequestParams(ctx)
-    return RunChecksAndInitialize(ctx, InitializingWorkspace, Hours, Proportion, Type)
+    const { InitializingWorkspaces, Hours, Proportion, Type } = await getRequestParams(ctx)
+    return RunChecksAndInitialize(ctx, InitializingWorkspaces, Hours, Proportion, Type)
 }
 
 async function RunChecksAndInitialize(ctx: Context, InitializingWorkspace: UrlParameter, Hours: UrlParameter, Proportion: UrlParameter, Type: string): Promise<void> {
