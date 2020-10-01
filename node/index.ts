@@ -1,6 +1,6 @@
 import { ClientsConfig, Service } from '@vtex/api'
 import { map } from 'ramda'
-import { abTestStatus, finishAbTestForWorkspace, initializeAbTestForWorkspace, initializeAbTestForWorkspaceWithParameters, LegacyInitializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters, initializeAbTest } from './abTest/controller'
+import { abTestStatus, finishAbTestForWorkspace, finishAbTest, initializeAbTestForWorkspace, initializeAbTestForWorkspaceWithParameters, LegacyInitializeAbTestForWorkspace, timeToCompleteAbTest, updateParameters, initializeAbTest } from './abTest/controller'
 import { Clients } from './clients/index'
 
 const THREE_SECONDS_MS = 3000
@@ -65,6 +65,7 @@ export default new Service<Clients>({
       LegacyInitializeAbTestForWorkspace,
       abTestStatus,
       finishAbTestForWorkspace,
+      finishAbTest,
       initializeAbTestForWorkspace,
       initializeAbTestForWorkspaceWithParameters,
       initializeAbTest,
