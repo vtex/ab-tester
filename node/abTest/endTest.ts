@@ -2,7 +2,7 @@ import TestingWorkspaces from '../typings/testingWorkspace'
 import { TestWorkspaces } from './testWorkspaces'
 import { firstOrDefault } from '../utils/firstOrDefault'
 
-export default async (testingWorkspaces: TestingWorkspaces, ctx: Context) => {
+export const EndTestForWorkspace = async (testingWorkspaces: TestingWorkspaces, ctx: Context) => {
   const { vtex: { account, route: { params: { finishingWorkspace } } }, clients: { abTestRouter, storage } } = ctx
   const workspaceName = firstOrDefault(finishingWorkspace)
 

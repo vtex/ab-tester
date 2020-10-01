@@ -3,7 +3,7 @@ import { TSMap } from 'typescript-map'
 import { createTestingParameters } from '../../typings/testingParameters'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
-import EndTest from '../endTest'
+import { EndTestForWorkspace } from '../endTest'
 
 export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
   const { vtex: { account, route: { params: { finishingWorkspace } } }, clients: { abTestRouter, storage } } = ctx
@@ -28,7 +28,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
     }
 
     if (IsLastTestingWorkspace(testingWorkspaces)) {
-      await EndTest(testingWorkspaces, ctx)
+      await EndTestForWorkspace(testingWorkspaces, ctx)
     } 
     else {
       const testData = await storage.getTestData(ctx)
