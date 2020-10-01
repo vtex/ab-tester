@@ -1,5 +1,5 @@
 import { getWithRetriesHelper } from '../utils/getWithRetries'
-import { FinishAbTestForWorkspace as finish } from './commands/finish'
+import { FinishAbTestForWorkspace as finishForWorkspace, FinishAbTest as finish } from './commands/finish'
 import { InitializeAbTestForWorkspace as initialize, InitializeAbTestForWorkspaceWithParameters as initializeWithParameters, InitializeAbTestWithBodyParameters as initializeWithBodyParameters } from './commands/initialize'
 import { ABTestStatus as status } from './commands/status'
 import { TTCAbTest as timeToComplete } from './commands/timeToComplete'
@@ -60,6 +60,15 @@ export const abTestStatus = async (ctx: Context) => {
 }
 
 export const finishAbTestForWorkspace = async (ctx: Context) => {
+  ctx.set('Cache-Control', 'no-cache')
+
+  await getWithRetriesHelper(finishForWorkspace)(3, ctx)
+
+  ctx.status = 200
+  ctx.body = 'A/B Test finished for workspace'
+}
+
+export const finishAbTest = async (ctx: Context) => {
   ctx.set('Cache-Control', 'no-cache')
 
   await getWithRetriesHelper(finish)(3, ctx)
