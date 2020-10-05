@@ -2,7 +2,7 @@ import { TSMap } from 'typescript-map'
 import { createTestingParameters } from '../../typings/testingParameters'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import getRequestParams from '../../utils/Request/getRequestParams'
-import { checkTestType, checkIfNaN, CheckProportion, CheckWorkspace } from '../../utils/Request/Checks'
+import { checkTestType, checkIfNaN, CheckProportion, CheckWorkspaces } from '../../utils/Request/Checks'
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     const workspace = ctx.vtex.route.params.initializingWorkspace
@@ -19,21 +19,22 @@ export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<
     return RunChecksAndInitialize(ctx, InitializingWorkspaces, Hours, Proportion, Type)
 }
 
-async function RunChecksAndInitialize(ctx: Context, InitializingWorkspace: UrlParameter, Hours: UrlParameter, Proportion: UrlParameter, Type: string): Promise<void> {
-    const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspace, Hours, Proportion ].map(firstOrDefault) 
+async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlParameter, Hours: UrlParameter, Proportion: UrlParameter, Type: string): Promise<void> {
+    const [ workspacesString, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspaces, Hours, Proportion ].map(firstOrDefault) 
 
     checkTestType(Type)
     const testType = Type as TestType
 
-    await CheckWorkspace(workspaceName, ctx)
+    const workspacesNames = workspacesString.split(' ')
+    await CheckWorkspaces(workspacesNames, ctx)
 
     checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
     const [ numberHours, numberProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(proportionOfTraffic))]
 
-    return InitializeAbTest(workspaceName, numberHours, numberProportion, ctx, testType)
+    return InitializeAbTest(workspacesNames, numberHours, numberProportion, ctx, testType)
 }
 
-async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType): Promise<void> {
+async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType): Promise<void> {
     const { vtex: { account, logger }, clients: { abTestRouter, storage } } = ctx
     try {
         const testingWorkspaces = await abTestRouter.getWorkspaces(account)
@@ -41,7 +42,9 @@ async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: numb
         if (!hasTestingWorkspaces || !testingWorkspaces.Includes('master')) {
             testingWorkspaces.Add('master')
         }
-        testingWorkspaces.Add(workspaceName)
+        for (const workspace of workspacesNames) {
+            testingWorkspaces.Add(workspace)
+        }
         const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
         testingParameters.UpdateWithFixedParameters(proportionOfTraffic)
 
@@ -54,7 +57,7 @@ async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: numb
         })
 
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, ctx)
-        logger.info({message: `A/B Test initialized in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, proportion: `${proportionOfTraffic}`, type: `${testType}`, method: 'TestInitialized' })
+        logger.info({message: `A/B Test initialized in ${account} for workspaces ${workspacesNames}`, account: `${account}`, workspaces: `${workspacesNames}`, proportion: `${proportionOfTraffic}`, type: `${testType}`, method: 'TestInitialized' })
     } catch (err) {
         if (err.status === 404) {
             err.message = 'Workspace not found: ' + err.message
