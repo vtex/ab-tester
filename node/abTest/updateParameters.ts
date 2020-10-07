@@ -40,7 +40,7 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
             })
             return
         }
-        await InitializeParameters(ctx.vtex.account, testingWorkspaces.ToArray(), proportionOfTraffic, testType, testId, abTestRouter)
+        await InitializeParameters(ctx, testId, testingWorkspaces.ToArray(), proportionOfTraffic, testType)
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, ctx)
 
     } catch (err) {

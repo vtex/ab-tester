@@ -1,15 +1,15 @@
 import { TSMap } from 'typescript-map'
-import Router from '../clients/router'
 import { createTestingParameters } from '../typings/testingParameters'
 
-export async function InitializeParameters(account: string, testingWorkspaces: ABTestWorkspace[], proportion: number, testType: TestType, 
-    testId: string, router: Router): Promise<void> {
-        
+export async function InitializeParameters(ctx: Context, id: string, testingWorkspaces: ABTestWorkspace[], proportion: number, testType: TestType): Promise<void> {
+    const [ router, account ] = [ ctx.clients.abTestRouter, ctx.vtex.account ]
+
     const testingParameters = createTestingParameters(testType, testingWorkspaces)
     testingParameters.UpdateWithFixedParameters(proportion)
     const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
+    
     await router.setParameters(account, {
-        Id: testId,
+        Id: id,
         parameterPerWorkspace: tsmap,
     })
 }
