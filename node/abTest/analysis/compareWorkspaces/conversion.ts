@@ -18,3 +18,18 @@ export async function EvaluateConversion(abTestBeginning: string, workspaceAData
 
     return EvaluationResponseConversion(abTestBeginning, workspaceAData, workspaceBData, winner, lossA, lossB, probabilityTwoBeatsOne, PValue)
 }
+
+export function WinnerConversion(workspacesData: WorkspaceData[]): string {
+    if (!workspacesData || workspacesData.length === 0) return 'master'
+
+    let winner = workspacesData[0]
+    for (const workspace of workspacesData) {
+        winner = chooseBetter(winner, workspace)
+    }
+    return winner.Workspace
+}
+
+function chooseBetter(workspaceA: WorkspaceData, workspaceB: WorkspaceData): WorkspaceData {
+    const better = ChooseWinner(workspaceA, workspaceB, BoundError)
+    return better === workspaceB.Workspace ? workspaceB : workspaceA
+}
