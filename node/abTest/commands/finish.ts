@@ -3,6 +3,7 @@ import { TSMap } from 'typescript-map'
 import { createTestingParameters } from '../../typings/testingParameters'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
+import { CheckFinishingWorkspace as CheckWorkspace } from '../../utils/Request/Checks'
 import { EndTestForWorkspace, EndTest } from '../endTest'
 
 export async function FinishAbTest(ctx: Context): Promise<void> {
@@ -23,25 +24,16 @@ export async function FinishAbTest(ctx: Context): Promise<void> {
 
 export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
   const { vtex: { account, route: { params: { finishingWorkspace } } }, clients: { abTestRouter, storage } } = ctx
-  const workspaceName = firstOrDefault(finishingWorkspace)
 
-  if (workspaceName === 'master') {
-    ctx.status = 400
-    throw new Error(`Bad workspace name: the master workspace cannot be removed from the test`)
-  }
   try {
-
     const testingWorkspaces = await abTestRouter.getWorkspaces(account)
-
-    if (!(testingWorkspaces.Includes(workspaceName))) {
-      ctx.status = 400
-      throw new Error(`Bad workspace name: make sure to select one of the workspaces under test`)
-    }
 
     if (testingWorkspaces.Length() === 0) {
       ctx.response.status = 404
       throw new NotFoundError(`Test not initialized for this account`)
     }
+    const workspaceName = firstOrDefault(finishingWorkspace)
+    CheckWorkspace(workspaceName, testingWorkspaces)
 
     if (IsLastTestingWorkspace(testingWorkspaces)) {
       await EndTestForWorkspace(testingWorkspaces, ctx)

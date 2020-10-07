@@ -1,6 +1,6 @@
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import getRequestParams from '../../utils/Request/getRequestParams'
-import { checkTestType, checkIfNaN, CheckProportion, CheckWorkspaces } from '../../utils/Request/Checks'
+import { checkTestType, checkIfNaN, CheckProportion, CheckInitializingWorkspaces as CheckWorkspaces } from '../../utils/Request/Checks'
 import { InitializeParameters, InitializeWorkspaces } from '../initialize-Router'
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {

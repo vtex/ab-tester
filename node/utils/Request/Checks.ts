@@ -1,5 +1,6 @@
 import { concatErrorMessages } from '../../utils/errorHandling'
 import { WorkspaceMetadata } from '@vtex/api'
+import TestingWorkspaces from '../../typings/testingWorkspace'
 
 const expectedFields = ['InitializingWorkspaces', 'Hours', 'Proportion']
 
@@ -39,13 +40,13 @@ export const CheckProportion = (proportion: number): number => {
     return proportion >= 0 && proportion <= 10000 ? Math.round(proportion) : 10000
 }
 
-export const CheckWorkspaces = async (workspacesNames: string[], ctx: Context) => {
+export const CheckInitializingWorkspaces = async (workspacesNames: string[], ctx: Context) => {
     for (const workspace of workspacesNames) {
-        await CheckWorkspace(workspace, ctx)
+        await CheckInitializingWorkspace(workspace, ctx)
     }
 }
 
-const CheckWorkspace = async (workspaceName: string, ctx: Context) => {    
+const CheckInitializingWorkspace = async (workspaceName: string, ctx: Context) => {    
     if (workspaceName === 'master') {
         const err = new Error(`Bad workspace name: please, do not select the master workspace; the master workspace will be part of the test anyway`) as any
         err.status = 400
@@ -67,4 +68,17 @@ const CheckWorkspace = async (workspaceName: string, ctx: Context) => {
     const err = new Error(`Bad workspace name: the workspace ${workspaceName} is not one of your account's production workspaces`) as any
     err.status = 400
     throw err
+}
+
+export const CheckFinishingWorkspace = (workspaceName: string, testingWorkspaces: TestingWorkspaces) => {
+    if (workspaceName === 'master') {
+        const err = new Error(`Bad workspace name: the master workspace cannot be removed from the test`) as any
+        err.status = 400
+        throw err
+    }
+    if (!(testingWorkspaces.Includes(workspaceName))) {
+        const err = new Error(`Bad workspace name: make sure to select one of the workspaces under test`) as any
+        err.status = 400
+        throw err
+    }
 }
