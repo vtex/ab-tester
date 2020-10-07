@@ -6,7 +6,7 @@ import { FilteredWorkspacesData } from '../utils/workspace'
 import { MapWorkspaceData } from '../utils/workspacesInfo/workspaceData'
 import { IsInitialStage } from './analysis/time/initialStage'
 import { BuildCompleteData } from './data/buildData'
-import { ResetParameters } from './initializeParameters'
+import { InitializeParameters } from './initialize-Router'
 
 const MasterWorkspaceName = 'master'
 
@@ -40,7 +40,7 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
             })
             return
         }
-        await ResetParameters(ctx.vtex.account, testingWorkspaces.ToArray(), proportionOfTraffic, testType, testId, abTestRouter)
+        await InitializeParameters(ctx.vtex.account, testingWorkspaces.ToArray(), proportionOfTraffic, testType, testId, abTestRouter)
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, ctx)
 
     } catch (err) {

@@ -2,7 +2,7 @@ import { TSMap } from 'typescript-map'
 import Router from '../clients/router'
 import { createTestingParameters } from '../typings/testingParameters'
 
-export async function ResetParameters(account: string, testingWorkspaces: ABTestWorkspace[], proportion: number, testType: TestType, 
+export async function InitializeParameters(account: string, testingWorkspaces: ABTestWorkspace[], proportion: number, testType: TestType, 
     testId: string, router: Router): Promise<void> {
         
     const testingParameters = createTestingParameters(testType, testingWorkspaces)
