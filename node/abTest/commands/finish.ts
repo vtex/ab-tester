@@ -1,8 +1,7 @@
 import { NotFoundError } from '@vtex/api'
-import { TSMap } from 'typescript-map'
-import { createTestingParameters } from '../../typings/testingParameters'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
+import { InitializeParameters, InitializeWorkspaces } from '../initialize-Router'
 import { CheckFinishingWorkspace as CheckWorkspace } from '../../utils/Request/Checks'
 import { EndTestForWorkspace, EndTest } from '../endTest'
 
@@ -43,19 +42,9 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
       const [ testType, proportion, initialTime ] = [ testData.testType, testData.initialProportion, testData.initialStageTime ]
       
       testingWorkspaces.Remove(workspaceName)
-      await abTestRouter.setWorkspaces(account, {
-        id: testingWorkspaces.Id(),
-        workspaces: testingWorkspaces.ToArray(),
-      })
 
-      const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
-      testingParameters.UpdateWithFixedParameters(proportion)
-      const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
-      await abTestRouter.setParameters(account, {
-        Id: testingWorkspaces.Id(),
-        parameterPerWorkspace: tsmap,
-      })
-
+      await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
+      await InitializeParameters(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportion, testType)
       await storage.initializeABtest(initialTime, proportion, testType, ctx)
 
       ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
