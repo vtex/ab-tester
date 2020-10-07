@@ -3,6 +3,7 @@ import { createTestingParameters } from '../../typings/testingParameters'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import getRequestParams from '../../utils/Request/getRequestParams'
 import { checkTestType, checkIfNaN, CheckProportion, CheckWorkspaces } from '../../utils/Request/Checks'
+import { InitializeWorkspaces } from '../initialize-Router'
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     const workspace = ctx.vtex.route.params.initializingWorkspace
@@ -65,13 +66,4 @@ async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: 
         err.message = 'Error initializing A/B test: ' + err.message
         throw err
     }
-}
-
-async function InitializeWorkspaces(ctx: Context, id: string, testingWorkspaces: ABTestWorkspace[]): Promise<void> {
-    return await ctx.clients.abTestRouter.setWorkspaces(ctx.vtex.account, {
-        id: (id),
-        workspaces: testingWorkspaces,
-    }).catch((err) => {
-        err.message = 'Error initializing workspaces: ' + err.message
-    })
 }

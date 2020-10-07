@@ -13,3 +13,10 @@ export async function InitializeParameters(ctx: Context, id: string, testingWork
         parameterPerWorkspace: tsmap,
     })
 }
+
+export async function InitializeWorkspaces(ctx: Context, id: string, testingWorkspaces: ABTestWorkspace[]): Promise<void> {
+    await ctx.clients.abTestRouter.setWorkspaces(ctx.vtex.account, {
+        id: (id),
+        workspaces: testingWorkspaces,
+    })
+}
