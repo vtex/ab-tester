@@ -9,9 +9,9 @@ export async function Evaluate(testType: TestType, abTestBeginning: string, work
     return await EvaluateConversion(abTestBeginning, workspaceAData, workspaceBData)
 }
 
-export function WinnerOverAll(testType: TestType, workspacesData: WorkspaceData[]): string {
+export function WinnerOverAll(testType: TestType, workspacesData: WorkspaceData[]): WinnerOverAll {
     if (testType === 'revenue') {
-        return WinnerRevenue(workspacesData)
+        return { Winner: WinnerRevenue(workspacesData) }
     }
-    return WinnerConversion(workspacesData)
+    return { Winner: WinnerConversion(workspacesData) }
 }

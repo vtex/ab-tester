@@ -2,7 +2,7 @@ import Storedash from '../clients/storedash'
 import TestingWorkspaces from '../typings/testingWorkspace'
 import { DefaultEvaluationResponse } from '../utils/evaluation-response'
 import { FilteredWorkspacesData } from '../utils/workspace'
-import { Evaluate } from './analysis/compareWorkspaces'
+import { Evaluate, WinnerOverAll } from './analysis/compareWorkspaces'
 import { BuildCompleteData } from './data/buildData'
 
 const MasterWorkspaceName = 'master'
@@ -24,6 +24,8 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, t
             } else {
                 const workspacesCompleteData = await BuildCompleteData(account, abTestBeginning, workspacesData, storedash, abTestRouter)
                 const masterWorkspace = workspacesCompleteData.get(MasterWorkspaceName)
+
+                Results.push(WinnerOverAll(testType, workspacesData))
 
                 for (const workspaceData of workspacesCompleteData) {
                     if (workspaceData[0] !== MasterWorkspaceName) {

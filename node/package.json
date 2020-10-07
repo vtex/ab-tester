@@ -14,7 +14,7 @@
     "@vtex/api": "^3.66.2",
     "tslint": "^5.20.1",
     "tslint-config-vtex": "^2.0.0",
-    "typescript": "3.8.3",
+    "typescript": "3.9.7",
     "typescript-map": "^0.0.7"
   },
   "scripts": {
