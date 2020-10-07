@@ -39,3 +39,22 @@ export async function EvaluateRevenue(abTestBeginning: string, workspaceAData: W
     return EvaluationResponseRevenue(abTestBeginning, workspaceAData, workspaceBData, winner, lossA, lossB, probabilityTwoBeatsOne, PValueConversion, 
         winnerRevenue, pValueRevenue, effectSizeA, effectSizeB, medianA, medianB)
 }
+
+export function WinnerRevenue(workspacesData: WorkspaceData[]): string {
+    if (!workspacesData || workspacesData.length === 0) return 'master'
+
+    let winner = workspacesData[0]
+    for (const workspace of workspacesData) {
+        winner = pickBetter(winner, workspace)
+    }
+    return winner.Workspace
+}
+
+function pickBetter(workspaceA: WorkspaceData, workspaceB: WorkspaceData): WorkspaceData {
+    const [ ordersHistoryA, ordersHistoryB ] = [ workspaceA.OrdersValueHistory, workspaceB.OrdersValueHistory]
+    const uValue = CalculateUValue([ordersHistoryA, ordersHistoryB], 0)
+    const pValueRevenue = PValueRevenue(uValue, ordersHistoryA.length, ordersHistoryB.length)
+    const better = PickWinner(pValueRevenue, workspaceA.Workspace, workspaceB.Workspace)
+
+    return better === workspaceB.Workspace ? workspaceB : workspaceA
+}
