@@ -17,7 +17,7 @@ export const EndTestForWorkspace = async (testingWorkspaces: TestingWorkspaces, 
   const testType = testData.testType
   const results = await TestWorkspaces(account, beginning, testingWorkspaces, testType, ctx)
 
-  await storage.finishABtest(ctx, results)
+  await storage.finishABtest(ctx, results, beginning)
   ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
 }
 
@@ -35,7 +35,7 @@ export const EndTest = async (testingWorkspaces: TestingWorkspaces, ctx: Context
   const testType = testData.testType
   const results = await TestWorkspaces(account, beginning, testingWorkspaces, testType, ctx)
 
-  await storage.finishABtest(ctx, results)
+  await storage.finishABtest(ctx, results, beginning)
 
   ctx.vtex.logger.info({ message: `A/B Test finished in account ${account}`, account: `${account}`, method: 'TestFinished' })
 }

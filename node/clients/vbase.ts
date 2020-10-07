@@ -84,19 +84,18 @@ export default class VBase extends BaseClient {
     }
   }
 
-  public finishABtest = async (ctx: Context, results: TestResult[]): Promise<void> => {
+  public finishABtest = async (ctx: Context, results: TestResult, beginning: string): Promise<void> => {
     const testHistory = await this.fetchTestHistory(ctx)
     
-    let date = results[0].ABTestBeginning
-    if (date !== testHistory.onGoing) {
-      date = testHistory.onGoing
+    if (beginning !== testHistory.onGoing) {
+      beginning = testHistory.onGoing
       ctx.vtex.logger.error(`Inconsistent data about initialization date`)
     }
 
-    const testResultsFile = 'TestResults' + date + '.json'
+    const testResultsFile = 'TestResults' + beginning + '.json'
 
     testHistory.onGoing = ''
-    testHistory.finishedTests.push(date)
+    testHistory.finishedTests.push(beginning)
     if (testHistory.finishedTests.length > 100) {
       testHistory.finishedTests.shift()
     }

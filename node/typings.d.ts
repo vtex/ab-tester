@@ -24,7 +24,13 @@ declare global {
     SinceBeginning: WorkspaceData
   }
 
-  interface TestResult {
+  type TestResult = Array < WinnerOverAll | EvaluationResult >
+
+  interface WinnerOverAll {
+    Winner: string
+  }
+
+  interface EvaluationResult {
     ABTestBeginning: string
     WorkspaceA: string
     WorkspaceB: string

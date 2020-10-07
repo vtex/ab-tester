@@ -4,7 +4,7 @@ import { WorkspaceToBetaDistribution } from '../../../utils/workspace'
 import { DefaultEvaluationResponseRevenue, EvaluationResponseRevenue } from '../../../utils/evaluation-response'
 import { CalculateUValue, CalculatePValue as PValueRevenue, CalculateEffectSize, PickWinner, CalculateMedian } from '../../../utils/mathTools/decisionRule/forMannWhitney'
 
-export async function EvaluateRevenue(abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData): Promise<TestResult> {
+export async function EvaluateRevenue(abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData): Promise<EvaluationResult> {
     if (workspaceAData.SinceBeginning.Sessions === 0 || workspaceBData.SinceBeginning.Sessions === 0) {
         return DefaultEvaluationResponseRevenue(abTestBeginning, workspaceAData.SinceBeginning.Workspace, workspaceBData.SinceBeginning.Workspace)
     }

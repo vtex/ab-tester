@@ -1,7 +1,7 @@
 import { NotFoundError } from '@vtex/api'
 import { TestWorkspaces } from '../testWorkspaces'
 
-export async function ABTestStatus(ctx: Context): Promise<TestResult[]> {
+export async function ABTestStatus(ctx: Context): Promise<TestResult> {
   const { vtex: { account, logger }, clients: { abTestRouter, storage } } = ctx
   try {
     const testingWorkspaces = await abTestRouter.getWorkspaces(account)

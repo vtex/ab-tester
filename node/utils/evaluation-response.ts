@@ -1,4 +1,4 @@
-export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceAName: string, workspaceBName: string, testType: TestType): TestResult => {
+export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceAName: string, workspaceBName: string, testType: TestType): EvaluationResult => {
     
     if (testType === 'revenue') {
         return DefaultEvaluationResponseRevenue(abTestBeginning, workspaceAName, workspaceBName)
@@ -7,7 +7,7 @@ export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceANam
     return DefaultEvaluationResponseConversion(abTestBeginning, workspaceAName, workspaceBName)
 }
 
-export const DefaultEvaluationResponseConversion = (abTestBeginning: string, workspaceAName: string, workspaceBName: string): TestResult => ({
+export const DefaultEvaluationResponseConversion = (abTestBeginning: string, workspaceAName: string, workspaceBName: string): EvaluationResult => ({
     ABTestBeginning: abTestBeginning,
     ConversionA: 0,
     ConversionALast24Hours: 0,
@@ -30,7 +30,7 @@ export const DefaultEvaluationResponseConversion = (abTestBeginning: string, wor
     WorkspaceBSessionsLast24Hours: 0,
 })
 
-export const DefaultEvaluationResponseRevenue = (abTestBeginning: string, workspaceAName: string, workspaceBName: string): TestResult => ({
+export const DefaultEvaluationResponseRevenue = (abTestBeginning: string, workspaceAName: string, workspaceBName: string): EvaluationResult => ({
     ABTestBeginning: abTestBeginning,
     ConversionA: 0,
     ConversionALast24Hours: 0,
@@ -60,7 +60,7 @@ export const DefaultEvaluationResponseRevenue = (abTestBeginning: string, worksp
     OrdersMedianWorkspaceB: 0,
 })
 
-export const EvaluationResponseConversion = (abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, winner: string, lossA: number, lossB: number, probabilityOneBeatsTwo: number, pValue: number): TestResult => ({
+export const EvaluationResponseConversion = (abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, winner: string, lossA: number, lossB: number, probabilityOneBeatsTwo: number, pValue: number): EvaluationResult => ({
     ABTestBeginning: abTestBeginning,
     ConversionA: workspaceAData.SinceBeginning.Conversion,
     ConversionALast24Hours: workspaceAData.Last24Hours.Conversion,
@@ -84,7 +84,7 @@ export const EvaluationResponseConversion = (abTestBeginning: string, workspaceA
 })
 
 export const EvaluationResponseRevenue = (abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, winner: string, lossA: number, lossB: number, probabilityOneBeatTwo: number, pValue: number, 
-    winnerRevenue: string, pValueRevenue: number, effectSizeA: number, effectSizeB: number, medianA: number, medianB: number): TestResult => ({
+    winnerRevenue: string, pValueRevenue: number, effectSizeA: number, effectSizeB: number, medianA: number, medianB: number): EvaluationResult => ({
 
     ABTestBeginning: abTestBeginning,
     ConversionA: workspaceAData.SinceBeginning.Conversion,
