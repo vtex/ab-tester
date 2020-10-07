@@ -1,9 +1,7 @@
-import { TSMap } from 'typescript-map'
-import { createTestingParameters } from '../../typings/testingParameters'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import getRequestParams from '../../utils/Request/getRequestParams'
 import { checkTestType, checkIfNaN, CheckProportion, CheckWorkspaces } from '../../utils/Request/Checks'
-import { InitializeWorkspaces } from '../initialize-Router'
+import { InitializeParameters, InitializeWorkspaces } from '../initialize-Router'
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     const workspace = ctx.vtex.route.params.initializingWorkspace
@@ -46,18 +44,10 @@ async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: 
         for (const workspace of workspacesNames) {
             testingWorkspaces.Add(workspace)
         }
-        const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
-        testingParameters.UpdateWithFixedParameters(proportionOfTraffic)
-
+        await InitializeParameters(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportionOfTraffic, testType)
         await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
-
-        const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
-        await abTestRouter.setParameters(account, {
-            Id: testingWorkspaces.Id(),
-            parameterPerWorkspace: tsmap,
-        })
-
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, ctx)
+        
         logger.info({message: `A/B Test initialized in ${account} for workspaces ${workspacesNames}`, account: `${account}`, workspaces: `${workspacesNames}`, proportion: `${proportionOfTraffic}`, type: `${testType}`, method: 'TestInitialized' })
     } catch (err) {
         if (err.status === 404) {
