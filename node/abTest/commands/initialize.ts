@@ -2,6 +2,7 @@ import { firstOrDefault } from '../../utils/firstOrDefault'
 import getRequestParams from '../../utils/Request/getRequestParams'
 import { checkTestType, checkIfNaN, CheckProportion, CheckInitializingWorkspaces as CheckWorkspaces } from '../../utils/Request/Checks'
 import { InitializeParameters, InitializeWorkspaces } from '../initialize-Router'
+import TestingWorkspaces from '../../typings/testingWorkspace'
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     const workspace = ctx.vtex.route.params.initializingWorkspace
@@ -36,7 +37,8 @@ async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlP
 async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType): Promise<void> {
     const { vtex: { account, logger }, clients: { abTestRouter, storage } } = ctx
     try {
-        const testingWorkspaces = await abTestRouter.getWorkspaces(account)
+        const currentWorkspaces = await abTestRouter.getWorkspaces(account)   
+        const testingWorkspaces = new TestingWorkspaces({id: '', workspaces: currentWorkspaces.ToArray()})
         const hasTestingWorkspaces = testingWorkspaces.Length() > 0
         if (!hasTestingWorkspaces || !testingWorkspaces.Includes('master')) {
             testingWorkspaces.Add('master')

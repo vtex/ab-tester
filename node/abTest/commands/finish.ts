@@ -25,24 +25,25 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
   const { vtex: { account, route: { params: { finishingWorkspace } } }, clients: { abTestRouter, storage } } = ctx
 
   try {
-    const testingWorkspaces = await abTestRouter.getWorkspaces(account)
+    const currentWorkspaces = await abTestRouter.getWorkspaces(account)
 
-    if (testingWorkspaces.Length() === 0) {
+    if (currentWorkspaces.Length() === 0) {
       ctx.response.status = 404
       throw new NotFoundError(`Test not initialized for this account`)
     }
     const workspaceName = firstOrDefault(finishingWorkspace)
-    CheckWorkspace(workspaceName, testingWorkspaces)
+    CheckWorkspace(workspaceName, currentWorkspaces)
 
-    if (IsLastTestingWorkspace(testingWorkspaces)) {
-      await EndTestForWorkspace(testingWorkspaces, ctx)
+    if (IsLastTestingWorkspace(currentWorkspaces)) {
+      await EndTestForWorkspace(currentWorkspaces, ctx)
     } 
     else {
+      currentWorkspaces.Remove(workspaceName)
+      const testingWorkspaces = new TestingWorkspaces({id: '', workspaces: currentWorkspaces.ToArray()})
+
       const testData = await storage.getTestData(ctx)
       const [ testType, proportion, initialTime ] = [ testData.testType, testData.initialProportion, testData.initialStageTime ]
       
-      testingWorkspaces.Remove(workspaceName)
-
       await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
       await InitializeParameters(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportion, testType)
       await storage.initializeABtest(initialTime, proportion, testType, ctx)

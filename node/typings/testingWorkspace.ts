@@ -8,7 +8,7 @@ export default class TestingWorkspaces {
         const hasWorkspaces = (metaData !== null) && (metaData.workspaces !== null)
         const workspaces = hasWorkspaces ? MapInitialWorkspaces(metaData.workspaces) : new Map()
         this.workspaces = new Map(workspaces)
-        this.id = hasWorkspaces && (metaData.id !== null) ? metaData.id : uuid()
+        this.id = hasWorkspaces && metaData.id ? metaData.id : uuid()
     }
 
     public Id = (): string => {
