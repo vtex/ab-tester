@@ -12,7 +12,3 @@ export function incompleteBeta(x: number, a: number, b: number) {
 
     return value * beta(a, b)
 }
-
-export function intermediateBeta(x: number, y: number, a: number, b: number) {
-    return Math.abs(incompleteBeta(y, a, b) - incompleteBeta(x, a, b))
-}
