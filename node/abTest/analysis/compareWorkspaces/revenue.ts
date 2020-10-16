@@ -1,8 +1,8 @@
-import { ChooseWinner, LossFunctionChoosingVariantOne, ProbabilityOfOneBeatsTwo } from '../../../utils/mathTools/decisionRule/forBetaDistribution'
-import { BoundError, pValue as pValueConversion} from '../../../utils/mathTools/statistics/samplesRestrictions'
+import { ChooseWinner, LossFunctionChoosingVariantOne, ProbabilityOfOneBeatsTwo } from '../../../utils/mathTools/decisionRule/bayesianConversion'
+import { BoundError, pValue as pValueConversion} from '../../../utils/mathTools/forBetaDistribution/statistics/samplesRestrictions'
 import { WorkspaceToBetaDistribution } from '../../../utils/workspace'
 import { DefaultEvaluationResponseRevenue, EvaluationResponseRevenue } from '../../../utils/evaluation-response'
-import { CalculateUValue, CalculatePValue as PValueRevenue, CalculateEffectSize, PickWinner, CalculateMedian } from '../../../utils/mathTools/decisionRule/forMannWhitney'
+import { CalculateUValue, CalculatePValue as PValueRevenue, CalculateEffectSize, PickWinner, CalculateMedian } from '../../../utils/mathTools/decisionRule/frequentistRevenue'
 
 export async function EvaluateRevenue(abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData): Promise<EvaluationResult> {
     if (workspaceAData.SinceBeginning.Sessions === 0 || workspaceBData.SinceBeginning.Sessions === 0) {

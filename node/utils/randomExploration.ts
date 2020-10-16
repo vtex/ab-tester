@@ -1,4 +1,4 @@
-import { RandomBeta } from './mathTools/statistics/betaSampling'
+import { RandomBeta } from './mathTools/forBetaDistribution/statistics/betaSampling'
 import { WorkspaceToBetaDistribution } from './workspace'
 
 const BoundDeviation = 1e-1

@@ -1,5 +1,5 @@
 import Storedash from '../../../clients/storedash'
-import { BoundError, NumberOfSamples } from '../../../utils/mathTools/statistics/samplesRestrictions'
+import { BoundError, NumberOfSamples } from '../../../utils/mathTools/forBetaDistribution/statistics/samplesRestrictions'
 
 export async function TimeToCompleteAbTest(probability: number, storedash: Storedash): Promise<number> {
     const averageSessions = await AverageDaySessions(storedash)

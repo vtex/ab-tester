@@ -1,6 +1,6 @@
 import { WorkspaceToBetaDistribution } from '../../workspace'
-import { logBeta } from '../beta-function'
-import { pValue } from '../statistics/samplesRestrictions'
+import { logBeta } from '../forBetaDistribution/beta-function'
+import { pValue } from '../forBetaDistribution/statistics/samplesRestrictions'
 
 const Confidence = 0.95
 

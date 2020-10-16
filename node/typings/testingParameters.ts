@@ -1,5 +1,5 @@
-import { ProbabilityYBeatsAll } from '../utils/mathTools/decisionRule/forBetaDistribution'
-import { CalculateUValue } from '../utils/mathTools/decisionRule/forMannWhitney'
+import { ProbabilityYBeatsAll } from '../utils/mathTools/decisionRule/bayesianConversion'
+import { CalculateUValue } from '../utils/mathTools/decisionRule/frequentistRevenue'
 import { InitialABTestParameters, WorkspaceToBetaDistribution } from '../utils/workspace'
 
 const MasterWorkspaceName = 'master'

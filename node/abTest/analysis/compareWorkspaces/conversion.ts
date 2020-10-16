@@ -1,6 +1,6 @@
 import { DefaultEvaluationResponseConversion, EvaluationResponseConversion } from '../../../utils/evaluation-response'
-import { ChooseWinner, LossFunctionChoosingVariantOne, ProbabilityOfOneBeatsTwo } from '../../../utils/mathTools/decisionRule/forBetaDistribution'
-import { BoundError, pValue } from '../../../utils/mathTools/statistics/samplesRestrictions'
+import { ChooseWinner, LossFunctionChoosingVariantOne, ProbabilityOfOneBeatsTwo } from '../../../utils/mathTools/decisionRule/bayesianConversion'
+import { BoundError, pValue } from '../../../utils/mathTools/forBetaDistribution/statistics/samplesRestrictions'
 import { WorkspaceToBetaDistribution } from '../../../utils/workspace'
 
 export async function EvaluateConversion(abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData): Promise<EvaluationResult> {
