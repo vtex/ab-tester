@@ -65,3 +65,10 @@ export const InitialParameters = (workspaces: ABTestWorkspace[]): TSMap<string, 
     }
     return parameters
 }
+
+// Return only the workspaces of positive revenue
+export function positiveRevenueWorkspaces(workspaces: ABTestParameters[], averageRevenues: number[]): [ABTestParameters[], number[]] {
+    const filteredWorkspaces = workspaces.filter((_workspace, idx) => averageRevenues[idx] > 0)
+    const filteredRevenues = averageRevenues.filter((revenue => revenue > 0))
+    return [ filteredWorkspaces, filteredRevenues ]
+}
