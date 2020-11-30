@@ -4,20 +4,22 @@ import { InitialABTestParameters, WorkspaceToBetaDistribution } from '../utils/w
 
 const MasterWorkspaceName = 'master'
 
-interface ITestingParameters {
+interface TestingParameters {
     Get(): Map<string, ABTestParameters>;
 
-    Add(workspaceName: string): void;
+    Add(workspaceName: string, abTestParameter?: ABTestParameters): void;
 
     Remove(workspaceName: string): void;
-
-    Update(workspacesData: Map<string, WorkspaceData>): void;
 
     UpdateWithFixedParameters(proportion: number): void;
 }
 
-class TestingParametersConversion implements ITestingParameters{
-    private parameters: Map<string, ABTestParameters>
+interface ITestingParameters extends TestingParameters{
+    Update(workspacesData: Map<string, WorkspaceData>): void;
+}
+
+class GenericTestingParameters implements TestingParameters {
+    protected parameters: Map<string, ABTestParameters>
 
     constructor(testingWorkspaces: ABTestWorkspace[]) {
         const parameters = testingWorkspaces !== null ? MapInitialParameters(testingWorkspaces) : new Map()
@@ -28,12 +30,28 @@ class TestingParametersConversion implements ITestingParameters{
         return this.parameters
     }
 
-    public Add = (workspaceName: string, abTestParameter = InitialABTestParameters) => {
+    public Add = (workspaceName: string, abTestParameter: ABTestParameters = InitialABTestParameters) => {
         this.parameters.set(workspaceName, abTestParameter)
     }
 
     public Remove = (workspaceName: string) => {
         this.parameters.delete(workspaceName)
+    }
+
+    public UpdateWithFixedParameters = (proportion: number) => {
+        const size = this.parameters.size
+        const nonMasterParameter = (10000 - proportion) / (size - 1)
+
+        for (const workspace of this.parameters.keys()) {
+            const parameter = workspace === MasterWorkspaceName ? proportion : nonMasterParameter
+            this.parameters.set(workspace, { a: Math.round(parameter), b: 1 })
+        }
+    }
+}
+
+class TestingParametersBayesianConversion extends GenericTestingParameters implements ITestingParameters {
+    constructor(testingWorkspaces: ABTestWorkspace[]) {
+        super (testingWorkspaces)
     }
 
     public Update = (workspacesData: Map<string, WorkspaceData>) => {
@@ -54,39 +72,12 @@ class TestingParametersConversion implements ITestingParameters{
             betaParams.push(y)
         }
     }
-
-    public UpdateWithFixedParameters = (proportion: number) => {
-        const size = this.parameters.size
-        const nonMasterParameter = (10000 - proportion) / (size - 1)
-
-        for (const workspace of this.parameters.keys()) {
-            const parameter = workspace === MasterWorkspaceName ? proportion : nonMasterParameter
-            this.parameters.set(workspace, { a: Math.round(parameter), b: 1 })
-        }
-    }
 }
 
-class TestingParametersRevenue implements ITestingParameters{
-    private parameters: Map<string, ABTestParameters>
-
+class TestingParametersFrequentistRevenue extends GenericTestingParameters implements ITestingParameters {
     constructor(testingWorkspaces: ABTestWorkspace[]) {
-        const parameters = testingWorkspaces !== null ? MapInitialParameters(testingWorkspaces) : new Map()
-        this.parameters = new Map(parameters)
+        super(testingWorkspaces)
     }
-
-    public Get = (): Map<string, ABTestParameters> => {
-        return this.parameters
-    }
-
-    public Add = (workspaceName: string, abTestParameter: ABTestParameters = InitialABTestParameters) => {
-        this.parameters.set(workspaceName, abTestParameter)
-    }
-
-    public Remove = (workspaceName: string) => {
-        this.parameters.delete(workspaceName)
-    }
-
-
     // the proportion of traffic to each workspace is updated using the U value of the Mann Whitney U-test
     // this value is approximately the chance of one workspace being stochastically greater than another
     public Update(workspacesData: Map<string, WorkspaceData>) {
@@ -110,16 +101,6 @@ class TestingParametersRevenue implements ITestingParameters{
             this.parameters.set(testData.workspaceNames[i], { a: Math.round(10000*testData.U[i]/sum), b: 0 })
         }
     }
-
-    public UpdateWithFixedParameters = (proportion: number) => {
-        const size = this.parameters.size
-        const nonMasterParameter = (10000 - proportion) / (size - 1)
-
-        for (const workspace of this.parameters.keys()) {
-            const parameter = workspace === MasterWorkspaceName ? proportion : nonMasterParameter
-            this.parameters.set(workspace, { a: Math.round(parameter), b: 1 })
-        }
-    }
 }
 
 interface MannWhitneyTestData {
@@ -136,12 +117,22 @@ const MapInitialParameters = (workspaces: ABTestWorkspace[]): Map<string, ABTest
     }
     return map
 }
-export const createTestingParameters = (testType: TestType, testingWorkspaces: ABTestWorkspace[]): ITestingParameters => {
-    if (testType === 'conversion') {
-        return new TestingParametersConversion(testingWorkspaces)
+
+const testingParametersClasses = {
+    "frequentist": {
+        "conversion": TestingParametersBayesianConversion, // Provisional, while we don't have all TestingParameters classes implemented
+        "revenue": TestingParametersFrequentistRevenue
+    },
+    "bayesian": {
+        "conversion": TestingParametersBayesianConversion,
+        "revenue": TestingParametersFrequentistRevenue // Provisional, while we don't have all TestingParameters classes implemented
     }
-    if (testType === 'revenue') {
-        return new TestingParametersRevenue(testingWorkspaces)
-    }
-    return new TestingParametersConversion(testingWorkspaces)
+}
+
+export const createGenericTestingParameters = (TestingWorkspaces: ABTestWorkspace[]): GenericTestingParameters => {
+    return new GenericTestingParameters(TestingWorkspaces)
+}
+
+export const createTestingParameters = (testType: TestType, testApproach: TestApproach, testingWorkspaces: ABTestWorkspace[]): ITestingParameters => {
+    return new testingParametersClasses[testApproach][testType](testingWorkspaces)
 }
