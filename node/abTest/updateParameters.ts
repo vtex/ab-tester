@@ -11,10 +11,10 @@ import { InitializeParameters } from './initialize-Router'
 const MasterWorkspaceName = 'master'
 
 export async function UpdateParameters(ctx: Context, aBTestBeginning: string, hoursOfInitialStage: number, proportionOfTraffic: number,
-    workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, testType: TestType): Promise<void> {
+    workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, testType: TestType, approach: TestApproach): Promise<void> {
     try { 
         const { clients: { abTestRouter, storedash, storage } } = ctx
-        const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
+        const testingParameters = createTestingParameters(testType, approach, testingWorkspaces.ToArray())
 
         if (await IsInitialStage(hoursOfInitialStage, workspacesData, storedash)) {
             testingParameters.UpdateWithFixedParameters(proportionOfTraffic)
@@ -41,7 +41,7 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
             return
         }
         await InitializeParameters(ctx, testId, testingWorkspaces.ToArray(), proportionOfTraffic)
-        await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, ctx)
+        await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, approach, ctx)
 
     } catch (err) {
         err.message = 'Error updating parameters: ' + err.message
