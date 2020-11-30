@@ -52,7 +52,7 @@ export default class VBase extends BaseClient {
     }
   }
 
-  public initializeABtest = async (initialTime: number, proportion: number, testType: TestType, ctx: Context) => {
+  public initializeABtest = async (initialTime: number, proportion: number, testType: TestType, approach: TestApproach, ctx: Context) => {
     const beginning = new Date().toISOString().substr(0, 16)
     try {
       const initialCache = InitialWorkspaceDataCache(new Date())
@@ -67,6 +67,7 @@ export default class VBase extends BaseClient {
         initialProportion: proportion,
         initialStageTime: initialTime,
         testType: testType,
+        testApproach: approach
       } as VBaseABTestData, testFileName, ctx)
     } catch (err) {
       err.message = 'Error setting initial test data on VBase: ' + err.message
@@ -173,6 +174,7 @@ declare global {
     initialStageTime: number
     initialProportion: number
     testType: TestType
+    testApproach: TestApproach
   }
 }
 

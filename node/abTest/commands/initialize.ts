@@ -51,7 +51,7 @@ async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: 
         }
         await InitializeParameters(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportionOfTraffic, testType)
         await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
-        await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, ctx)
+        await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, approach, ctx)
         
         logger.info({message: `A/B Test initialized in ${account} for workspaces ${workspacesNames}`, account: `${account}`, workspaces: `${workspacesNames}`, proportion: `${proportionOfTraffic}`, type: `${testType}`, method: 'TestInitialized' })
     } catch (err) {
