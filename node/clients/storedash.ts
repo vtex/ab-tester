@@ -68,7 +68,7 @@ export default class Storedash extends ExternalClient {
                     const m: StoreDashResponse = metrics[i] as unknown as StoreDashResponse
                     const workspaceData = workspacesData.get(m['workspace'])
                     if (workspaceData !== undefined) {
-                        workspaceData.OrdersValueHistory.push(CalculateOrdersValue(m['data.ordersValue'], m['data.sessionsOrdered']))
+                        workspaceData.OrdersValueHistory.push(...CalculateOrdersValue(m['data.ordersValue'], m['data.sessionsOrdered']))
                     }
                 }
                 dateFrom.setTime(dateTo.getTime())
@@ -82,10 +82,17 @@ export default class Storedash extends ExternalClient {
     }
 }
 
-const CalculateOrdersValue = (value: number, sessions: number): number => {
-    const sessionsCleaned = (sessions === NaN || sessions <= 0) ? 1 : sessions
-    const valueCleaned = (value === NaN || value <= 0) ? 0 : value
-    return (valueCleaned/sessionsCleaned)
+const CalculateOrdersValue = (value: number, sessions: number): number[] => {
+    let ordersValue: number[] = []
+
+    if (isNaN(value) || isNaN(sessions) || value <= 0 || sessions <= 0) {
+        return ordersValue
+    }
+    const avarageValue = value/sessions
+    for (let i = 0; i < Math.round(sessions); i++) {
+        ordersValue.push(avarageValue)
+    }
+    return ordersValue
 }
 
 const AggregationQueryFrom = (from: string): string => (
