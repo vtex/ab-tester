@@ -40,7 +40,7 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
             })
             return
         }
-        await InitializeParameters(ctx, testId, testingWorkspaces.ToArray(), proportionOfTraffic, testType)
+        await InitializeParameters(ctx, testId, testingWorkspaces.ToArray(), proportionOfTraffic)
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, ctx)
 
     } catch (err) {

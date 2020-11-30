@@ -49,7 +49,7 @@ async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: 
         for (const workspace of workspacesNames) {
             testingWorkspaces.Add(workspace)
         }
-        await InitializeParameters(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportionOfTraffic, testType)
+        await InitializeParameters(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportionOfTraffic)
         await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, approach, ctx)
         
