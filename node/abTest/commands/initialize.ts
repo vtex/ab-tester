@@ -53,7 +53,7 @@ async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: 
         await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, approach, ctx)
         
-        logger.info({message: `A/B Test initialized in ${account} for workspaces ${workspacesNames}`, account: `${account}`, workspaces: `${workspacesNames}`, proportion: `${proportionOfTraffic}`, type: `${testType}`, method: 'TestInitialized' })
+        logger.info({message: `A/B Test initialized in ${account} for workspaces ${workspacesNames}`, account: `${account}`, workspaces: `${workspacesNames}`, proportion: `${proportionOfTraffic}`, type: `${testType}`, approach: `${approach}`, method: 'TestInitialized' })
     } catch (err) {
         if (err.status === 404) {
             err.message = 'Workspace not found: ' + err.message
