@@ -1,29 +1,32 @@
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import getRequestParams from '../../utils/Request/getRequestParams'
-import { checkTestType, checkIfNaN, CheckProportion, CheckInitializingWorkspaces as CheckWorkspaces } from '../../utils/Request/Checks'
+import { checkTestType, checkTestApproach, checkIfNaN, CheckProportion, CheckInitializingWorkspaces as CheckWorkspaces } from '../../utils/Request/Checks'
 import { InitializeParameters, InitializeWorkspaces } from '../initialize-Router'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     const workspace = ctx.vtex.route.params.initializingWorkspace
-    return RunChecksAndInitialize(ctx, workspace, '1', '5000', 'conversion')
+    return RunChecksAndInitialize(ctx, workspace, '1', '5000', 'conversion', 'bayesian')
 }
 
 export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promise<void> {
     const { vtex: { route: { params: { hours, proportion, initializingWorkspace } } }} = ctx  
-    return RunChecksAndInitialize(ctx, initializingWorkspace, hours, proportion, 'conversion')
+    return RunChecksAndInitialize(ctx, initializingWorkspace, hours, proportion, 'conversion', 'bayesian')
 }
 
 export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<void> {
-    const { InitializingWorkspaces, Hours, Proportion, Type } = await getRequestParams(ctx)
-    return RunChecksAndInitialize(ctx, InitializingWorkspaces, Hours, Proportion, Type)
+    const { InitializingWorkspaces, Hours, Proportion, Type, Approach } = await getRequestParams(ctx)
+    return RunChecksAndInitialize(ctx, InitializingWorkspaces, Hours, Proportion, Type, Approach)
 }
 
-async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlParameter, Hours: UrlParameter, Proportion: UrlParameter, Type: string): Promise<void> {
+async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlParameter, Hours: UrlParameter, Proportion: UrlParameter, Type: string, Approach: string): Promise<void> {
     const [ workspacesString, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspaces, Hours, Proportion ].map(firstOrDefault) 
 
     checkTestType(Type)
     const testType = Type as TestType
+
+    checkTestApproach(Approach)
+    const approach = Approach as TestApproach
 
     const workspacesNames = workspacesString.split(' ')
     await CheckWorkspaces(workspacesNames, ctx)
@@ -31,10 +34,10 @@ async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlP
     checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
     const [ numberHours, numberProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(proportionOfTraffic))]
 
-    return InitializeAbTest(workspacesNames, numberHours, numberProportion, ctx, testType)
+    return InitializeAbTest(workspacesNames, numberHours, numberProportion, ctx, testType, approach)
 }
 
-async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType): Promise<void> {
+async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType, approach: TestApproach): Promise<void> {
     const { vtex: { account, logger }, clients: { abTestRouter, storage } } = ctx
     try {
         const currentWorkspaces = await abTestRouter.getWorkspaces(account)   

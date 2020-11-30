@@ -23,6 +23,14 @@ export const checkTestType = (Type: string) => {
     }
 }
 
+export const checkTestApproach = (Approach: string) => {
+    if (Approach !== 'frequentist' && Approach !== 'bayesian') {
+        const err = new Error(`Error setting analysis approach: please make sure to spell it correctly (either 'frequentist' or 'bayesian')`) as any
+        err.status = 400
+        throw err
+    }
+}
+
 export const checkIfNaN = (hours: string, proportion: string) => {
     if (Number.isNaN(Number(hours))) {
         const err = new Error(`Error reading time parameter: make sure to insert a number`) as any
