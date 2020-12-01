@@ -1,17 +1,34 @@
-import { EvaluateConversion, WinnerConversion } from './conversion'
-import { EvaluateRevenue, WinnerRevenue } from './revenue'
+import { Evaluate as evaluateBayesianConversion, Winner as winnerBayesianConversion } from './bayesianConversion'
+import { Evaluate as evaluateBayesianRevenue, Winner as winnerBayesianRevenue } from './bayesianRevenue'
+import { Evaluate as evaluateFrequentistConversion, Winner as winnerFrequentistConversion } from './frequentistConversion'
+import { Evaluate as evaluateFrequentistRevenue, Winner as winnerFrequentistRevenue } from './frequentistRevenue'
 
-export async function Evaluate(testType: TestType, abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData): Promise<EvaluationResult> {
-
-    if (testType === 'revenue') {
-        return await EvaluateRevenue(abTestBeginning, workspaceAData, workspaceBData)
-    }
-    return await EvaluateConversion(abTestBeginning, workspaceAData, workspaceBData)
+export function Evaluate(testType: TestType, testApproach: TestApproach, abTestBeginning: string, workspaceA: WorkspaceCompleteData, workspaceB: WorkspaceCompleteData): EvaluationResult {
+    return evaluateFunctions[testApproach][testType](abTestBeginning, workspaceA, workspaceB)
 }
 
-export function WinnerOverAll(testType: TestType, workspacesData: WorkspaceData[]): WinnerOverAll {
-    if (testType === 'revenue') {
-        return { Winner: WinnerRevenue(workspacesData) }
+export function WinnerOverAll(testType: TestType, testApproach: TestApproach, workspacesData: WorkspaceData[]): WinnerOverAll {
+    return { Winner: winnerFunctions[testApproach][testType](workspacesData) }
+}
+
+const evaluateFunctions = {
+    "bayesian": {
+        "conversion": evaluateBayesianConversion,
+        "revenue": evaluateBayesianRevenue
+    },
+    "frequentist": {
+        "conversion": evaluateFrequentistConversion,
+        "revenue": evaluateFrequentistRevenue
     }
-    return { Winner: WinnerConversion(workspacesData) }
+}
+
+const winnerFunctions = {
+    "bayesian": {
+        "conversion": winnerBayesianConversion,
+        "revenue": winnerBayesianRevenue
+    },
+    "frequentist": {
+        "conversion": winnerFrequentistConversion,
+        "revenue": winnerFrequentistRevenue
+    }
 }
