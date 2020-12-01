@@ -32,34 +32,80 @@ declare global {
     Winner: string
   }
 
-  interface EvaluationResult {
+  type EvaluationResult = BayesianEvaluationResultConversion | BayesianEvaluationResultRevenue | FrequentistEvaluationResultConversion | FrequentistEvaluationResultRevenue
+
+  interface BayesianEvaluationResultConversion {
     ABTestBeginning: string
     WorkspaceA: string
     WorkspaceB: string
+    Winner: string
     WorkspaceASessions: number
     WorkspaceBSessions: number
+    ConversionRateA: number
+    ConversionRateB: number
     WorkspaceASessionsLast24Hours: number
     WorkspaceBSessionsLast24Hours: number
-    Winner: string
+    ConversionRateALast24Hours: number
+    ConversionRateBLast24Hours: number
+    ProbabilityAbeatsB: number
+    ProbabilityBbeatsA: number
     ExpectedLossChoosingA: number
-    ConversionA: number
-    ConversionALast24Hours: number
     ExpectedLossChoosingB: number
-    ConversionB: number
-    ConversionBLast24Hours: number
-    ProbabilityAlternativeBeatMaster: number
+  }
+
+  interface BayesianEvaluationResultRevenue {
+    ABTestBeginning: string
+    WorkspaceA: string
+    WorkspaceB: string
+    Winner: string
+    WorkspaceASessions: number
+    WorkspaceBSessions: number
+    AverageRevenueA: number
+    AverageRevenueB: number
+    WorkspaceASessionsLast24Hours: number
+    WorkspaceBSessionsLast24Hours: number
+    AverageRevenueALast24Hours: number
+    AverageRevenueBLast24Hours: number
+    ProbabilityAbeatsB: number
+    ProbabilityBbeatsA: number
+    ExpectedLossChoosingA: number
+    ExpectedLossChoosingB: number
+  }
+
+  interface FrequentistEvaluationResultConversion {
+    ABTestBeginning: string
+    WorkspaceA: string
+    WorkspaceB: string
+    Winner: string
     PValue: number
-    OrdersValueA: number
-    OrdersValueB: number
-    OrdersValueALast24Hours: number
-    OrdersValueBLast24Hours: number
-    WinnerRevenue?: string
-    PValueRevenue?: number
-    ProbabilityAlternativeBeatsMasterRevenue?: number
-    EffectSizeWorkspaceA?: number
-    EffectSizeWorkspaceB?: number
-    OrdersMedianWorkspaceA?: number
-    OrdersMedianWorkspaceB?: number
+    WorkspaceASessions: number
+    WorkspaceBSessions: number
+    ConversionRateA: number
+    ConversionRateB: number
+    WorkspaceASessionsLast24Hours: number
+    WorkspaceBSessionsLast24Hours: number
+    ConversionRateALast24Hours: number
+    ConversionRateBLast24Hours: number
+    UpLiftChoosingA: number
+    UpLiftChoosingB: number
+  }
+
+  interface FrequentistEvaluationResultRevenue {
+    ABTestBeginning: string
+    WorkspaceA: string
+    WorkspaceB: string
+    Winner: string
+    PValue: number
+    WorkspaceASessions: number
+    WorkspaceBSessions: number
+    AverageRevenueA: number
+    AverageRevenueB: number
+    WorkspaceASessionsLast24Hours: number
+    WorkspaceBSessionsLast24Hours: number
+    AverageRevenueALast24Hours: number
+    AverageRevenueBLast24Hours: number
+    UpLiftChoosingA: number
+    UpLiftChoosingB: number
   }
 
   interface ABTestParameters {
