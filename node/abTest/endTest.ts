@@ -15,7 +15,8 @@ export const EndTestForWorkspace = async (testingWorkspaces: TestingWorkspaces, 
     : new Date().toISOString().substr(0, 16)
 
   const testType = testData.testType
-  const results = await TestWorkspaces(account, beginning, testingWorkspaces, testType, ctx)
+  const testApproach = testData.testApproach
+  const results = await TestWorkspaces(ctx, account, beginning, testingWorkspaces, testType, testApproach)
 
   await storage.finishABtest(ctx, results, beginning)
   ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
@@ -33,7 +34,8 @@ export const EndTest = async (testingWorkspaces: TestingWorkspaces, ctx: Context
     : new Date().toISOString().substr(0, 16)
 
   const testType = testData.testType
-  const results = await TestWorkspaces(account, beginning, testingWorkspaces, testType, ctx)
+  const testApproach = testData.testApproach
+  const results = await TestWorkspaces(ctx, account, beginning, testingWorkspaces, testType, testApproach)
 
   await storage.finishABtest(ctx, results, beginning)
 

@@ -12,13 +12,14 @@ export async function ABTestStatus(ctx: Context): Promise<TestResult> {
 
     const testData = await storage.getTestData(ctx)
     const testType = testData.testType
+    const testApproach = testData.testApproach
     let beginning = testData.dateOfBeginning
     if (beginning === undefined) {
       beginning = new Date().toISOString().substr(0, 16)
     }
 
     logger.info({message: `A/B Test Status to user in ${account}`, account: `${account}`, method: 'TestStatus' })
-    return await TestWorkspaces(account, beginning, testingWorkspaces, testType, ctx) || []
+    return await TestWorkspaces(ctx, account, beginning, testingWorkspaces, testType, testApproach) || []
   } catch (err) {
     err.message = 'Error calculating A/B test status: ' + err.message
     throw err
