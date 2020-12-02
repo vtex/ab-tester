@@ -1,7 +1,6 @@
 import { DefaultResponseBayesianConversion } from '../../../utils/evaluation-response/default'
 import { EvaluationResponseBayesianConversion } from '../../../utils/evaluation-response/evaluation'
 import { ChooseWinner, LossFunctionChoosingVariantOne, ProbabilityOfOneBeatsTwo } from '../../../utils/mathTools/decisionRule/bayesianConversion'
-import { BoundError } from '../../../utils/mathTools/forBetaDistribution/statistics/samplesRestrictions'
 import { WorkspaceToBetaDistribution } from '../../../utils/workspace'
 
 export function Evaluate(abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData): BayesianEvaluationResultConversion {
@@ -14,7 +13,7 @@ export function Evaluate(abTestBeginning: string, workspaceAData: WorkspaceCompl
     const lossA = LossFunctionChoosingVariantOne(betaDistributionA, betaDistributionB)
     const lossB = LossFunctionChoosingVariantOne(betaDistributionB, betaDistributionA)
     const probabilityAbeatsB = ProbabilityOfOneBeatsTwo(betaDistributionA.a, betaDistributionA.b, betaDistributionB.a, betaDistributionB.b)
-    const winner = ChooseWinner(workspaceAData.SinceBeginning, workspaceBData.SinceBeginning, BoundError) || 'Not yet decided'
+    const winner = ChooseWinner(workspaceAData.SinceBeginning, workspaceBData.SinceBeginning)
 
     return EvaluationResponseBayesianConversion(abTestBeginning, workspaceAData, workspaceBData, winner, probabilityAbeatsB, lossA, lossB)
 }
@@ -30,6 +29,6 @@ export function Winner(workspacesData: WorkspaceData[]): string {
 }
 
 function chooseBetter(workspaceA: WorkspaceData, workspaceB: WorkspaceData): WorkspaceData {
-    const better = ChooseWinner(workspaceA, workspaceB, BoundError)
+    const better = ChooseWinner(workspaceA, workspaceB)
     return better === workspaceB.Workspace ? workspaceB : workspaceA
 }
