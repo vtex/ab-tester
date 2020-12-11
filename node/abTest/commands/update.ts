@@ -1,4 +1,4 @@
-import { UpdateParameters } from '../updateParameters'
+import { UpdateProportions } from '../updateProportions'
 
 export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
   const { vtex: { account, logger }, clients: { abTestRouter, storedash, storage } } = ctx
@@ -17,7 +17,7 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
       const testType = testData.testType
       const testApproach = testData.testApproach
       const workspacesData: WorkspaceData[] = (testType === 'revenue') ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
-      await UpdateParameters(ctx, beginning, hours, proportion, workspacesData, testingWorkspaces, testingWorkspaces.Id() || 'noId', testType, testApproach)
+      await UpdateProportions(ctx, beginning, hours, proportion, workspacesData, testingWorkspaces, testingWorkspaces.Id() || 'noId', testType, testApproach)
     }
   } catch (err) {
     err.message = 'Error on test update: ' + err.message

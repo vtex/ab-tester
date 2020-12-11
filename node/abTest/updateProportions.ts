@@ -10,7 +10,7 @@ import { InitializeProportions } from './initialize-Router'
 
 const MasterWorkspaceName = 'master'
 
-export async function UpdateParameters(ctx: Context, aBTestBeginning: string, hoursOfInitialStage: number, proportionOfTraffic: number,
+export async function UpdateProportions(ctx: Context, aBTestBeginning: string, hoursOfInitialStage: number, proportionOfTraffic: number,
     workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, testType: TestType, approach: TestApproach): Promise<void> {
     try { 
         const { clients: { abTestRouter, storedash, storage } } = ctx
@@ -36,7 +36,7 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
             const tsmap = new TSMap<string, proportion>([...testingProportions.Get()])
             await abTestRouter.setProportions(ctx.vtex.account, {
                 Id: testId,
-                proportionPerWorkspace: tsmap,
+                parameterPerWorkspace: tsmap,
             })
             return
         }
@@ -44,7 +44,7 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, approach, ctx)
 
     } catch (err) {
-        err.message = 'Error updating parameters: ' + err.message
+        err.message = 'Error updating proportions: ' + err.message
         throw err
     }
 }
