@@ -7,6 +7,11 @@ export const WorkspaceToBetaDistribution = (Workspace: WorkspaceData): BetaParam
     b: Workspace.NoOrderSessions + 1,
 })
 
+export const WorkspaceToBayesRevParameters = (Workspace: WorkspaceData): BayesianRevenueParams => ({
+    ...WorkspaceToBetaDistribution(Workspace),
+    r: Workspace.OrdersValue / Workspace.OrderSessions
+})
+
 export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSessions: number, OrdersValue: number): WorkspaceData => ({
     Conversion: (TotalSessions > 0 ? OrderSessions / TotalSessions : 0),
     NoOrderSessions: (TotalSessions - OrderSessions),
@@ -66,8 +71,6 @@ export const InitialProportion = (workspaces: ABTestWorkspace[]): TSMap<string, 
 }
 
 // Return only the workspaces of positive revenue
-export function positiveRevenueWorkspaces(workspaces: BetaParameters[], averageRevenues: number[]): [BetaParameters[], number[]] {
-    const filteredWorkspaces = workspaces.filter((_workspace, idx) => averageRevenues[idx] > 0)
-    const filteredRevenues = averageRevenues.filter((revenue => revenue > 0))
-    return [ filteredWorkspaces, filteredRevenues ]
+export function positiveRevenueWorkspaces(workspaces: BayesianRevenueParams[]): BayesianRevenueParams[] {
+    return workspaces.filter(workspace => workspace.r > 0)
 }

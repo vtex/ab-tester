@@ -114,4 +114,8 @@ declare global {
     a: number
     b: number
   }
+
+  interface BayesianRevenueParams extends BetaParameters {
+    r: number   // revenue per conversion
+  }
 }
