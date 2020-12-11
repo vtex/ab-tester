@@ -1,6 +1,6 @@
 import { ProbabilityYBeatsAll } from '../utils/mathTools/decisionRule/bayesianConversion'
 import { CalculateUValue } from '../utils/mathTools/decisionRule/frequentistRevenue'
-import { InitialABTestProportion, WorkspaceToBetaDistribution } from '../utils/workspace'
+import { MapInitialProportion, InitialABTestProportion, WorkspaceToBetaDistribution } from '../utils/workspace'
 
 const MasterWorkspaceName = 'master'
 
@@ -108,14 +108,6 @@ interface MannWhitneyTestData {
     OrdersValueHistory: number[][],
     U: number[],
 
-}
-
-const MapInitialProportion = (workspaces: ABTestWorkspace[]): Map<string, proportion> => {
-    const map = new Map()
-    for (const workspace of workspaces) {
-        map.set(workspace.name, InitialABTestProportion)
-    }
-    return map
 }
 
 const testingProportionsClasses = {
