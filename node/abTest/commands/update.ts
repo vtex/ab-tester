@@ -12,7 +12,7 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
       if (!(beginning && initialMasterProportion && hours !== undefined)) {
         beginning = new Date().toISOString().substr(0, 16)
         hours = 0
-        initialMasterProportion = 10000
+        initialMasterProportion = 5000
       }
       const testType = testData.testType
       const testApproach = testData.testApproach
