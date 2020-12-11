@@ -6,7 +6,7 @@ import { FilteredWorkspacesData } from '../utils/workspace'
 import { MapWorkspaceData } from '../utils/workspacesInfo/workspaceData'
 import { IsInitialStage } from './analysis/time/initialStage'
 import { BuildCompleteData } from './data/buildData'
-import { InitializeParameters } from './initialize-Router'
+import { InitializeProportions } from './initialize-Router'
 
 const MasterWorkspaceName = 'master'
 
@@ -40,7 +40,7 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
             })
             return
         }
-        await InitializeParameters(ctx, testId, testingWorkspaces.ToArray(), proportionOfTraffic)
+        await InitializeProportions(ctx, testId, testingWorkspaces.ToArray(), proportionOfTraffic)
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, approach, ctx)
 
     } catch (err) {

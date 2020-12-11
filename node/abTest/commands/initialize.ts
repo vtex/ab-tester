@@ -1,7 +1,7 @@
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import getRequestParams from '../../utils/Request/getRequestParams'
 import { checkTestType, checkTestApproach, checkIfNaN, CheckProportion, CheckInitializingWorkspaces as CheckWorkspaces } from '../../utils/Request/Checks'
-import { InitializeParameters, InitializeWorkspaces } from '../initialize-Router'
+import { InitializeProportions, InitializeWorkspaces } from '../initialize-Router'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
@@ -49,7 +49,7 @@ async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: 
         for (const workspace of workspacesNames) {
             testingWorkspaces.Add(workspace)
         }
-        await InitializeParameters(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportionOfTraffic)
+        await InitializeProportions(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportionOfTraffic)
         await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
         await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, approach, ctx)
         

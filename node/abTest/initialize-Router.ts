@@ -1,7 +1,7 @@
 import { TSMap } from 'typescript-map'
 import { createGenericTestingProportions } from '../typings/testingProportions'
 
-export async function InitializeParameters(ctx: Context, id: string, testingWorkspaces: ABTestWorkspace[], proportion: number): Promise<void> {
+export async function InitializeProportions(ctx: Context, id: string, testingWorkspaces: ABTestWorkspace[], proportion: number): Promise<void> {
     const [ router, account ] = [ ctx.clients.abTestRouter, ctx.vtex.account ]
 
     const testingProportions = createGenericTestingProportions(testingWorkspaces)

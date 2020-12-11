@@ -1,7 +1,7 @@
 import { NotFoundError } from '@vtex/api'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
-import { InitializeParameters, InitializeWorkspaces } from '../initialize-Router'
+import { InitializeProportions, InitializeWorkspaces } from '../initialize-Router'
 import { CheckFinishingWorkspace as CheckWorkspace } from '../../utils/Request/Checks'
 import { EndTestForWorkspace, EndTest } from '../endTest'
 
@@ -45,7 +45,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
       const [ testType, testApproach, proportion, initialTime ] = [ testData.testType, testData.testApproach, testData.initialProportion, testData.initialStageTime ]
       
       await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
-      await InitializeParameters(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportion)
+      await InitializeProportions(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportion)
       await storage.initializeABtest(initialTime, proportion, testType, testApproach, ctx)
 
       ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
