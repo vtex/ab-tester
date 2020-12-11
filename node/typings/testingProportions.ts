@@ -1,6 +1,7 @@
 import { ProbabilityYBeatsAll } from '../utils/mathTools/decisionRule/bayesianConversion'
+import { ProbabilityXIsBest } from '../utils/mathTools/decisionRule/bayesianRevenue'
 import { CalculateUValue } from '../utils/mathTools/decisionRule/frequentistRevenue'
-import { MapInitialProportion, InitialABTestProportion, WorkspaceToBetaDistribution } from '../utils/workspace'
+import { MapInitialProportion, InitialABTestProportion, WorkspaceToBetaDistribution, WorkspaceToBayesRevParameters } from '../utils/workspace'
 
 const MasterWorkspaceName = 'master'
 
@@ -74,6 +75,30 @@ class TestingProportionsBayesianConversion extends GenericTestingProportions imp
     }
 }
 
+class TestingProportionsBayesianRevenue extends GenericTestingProportions implements ITestingProportions {
+    constructor(testingWorkspaces: ABTestWorkspace[]) {
+        super (testingWorkspaces)
+    }
+
+    public Update = (workspacesData: Map<string, WorkspaceData>) => {
+        const names = Array<string>(0)
+        const params = Array<BayesianRevenueParams>(0)
+
+        for (const workspace of this.proportions.keys()) {
+            if (workspacesData.has(workspace)) {
+                names.push(workspace)
+                params.push(WorkspaceToBayesRevParameters(workspacesData.get(workspace)!))
+            }
+        }
+
+        for (const _idx in names) {
+            const X = params.shift()!
+            this.proportions.set(names.shift()!, Math.round(10000*ProbabilityXIsBest(X, params) + 1))
+            params.push(X)
+        }
+    }
+}
+
 class TestingProportionsFrequentistRevenue extends GenericTestingProportions implements ITestingProportions {
     constructor(testingWorkspaces: ABTestWorkspace[]) {
         super(testingWorkspaces)
@@ -117,7 +142,7 @@ const testingProportionsClasses = {
     },
     "bayesian": {
         "conversion": TestingProportionsBayesianConversion,
-        "revenue": TestingProportionsFrequentistRevenue // Provisional, while we don't have all TestingProportions classes implemented
+        "revenue": TestingProportionsBayesianRevenue
     }
 }
 
