@@ -1,17 +1,17 @@
 import { ProbabilityYBeatsAll } from '../utils/mathTools/decisionRule/bayesianConversion'
 import { CalculateUValue } from '../utils/mathTools/decisionRule/frequentistRevenue'
-import { InitialABTestParameters, WorkspaceToBetaDistribution } from '../utils/workspace'
+import { InitialABTestProportion, WorkspaceToBetaDistribution } from '../utils/workspace'
 
 const MasterWorkspaceName = 'master'
 
 interface TestingParameters {
-    Get(): Map<string, ABTestParameters>;
+    Get(): Map<string, proportion>;
 
-    Add(workspaceName: string, abTestParameter?: ABTestParameters): void;
+    Add(workspaceName: string, proportion?: proportion): void;
 
     Remove(workspaceName: string): void;
 
-    UpdateWithFixedParameters(proportion: number): void;
+    UpdateWithFixedParameters(masterProportion: number): void;
 }
 
 interface ITestingParameters extends TestingParameters{
@@ -19,32 +19,32 @@ interface ITestingParameters extends TestingParameters{
 }
 
 class GenericTestingParameters implements TestingParameters {
-    protected parameters: Map<string, ABTestParameters>
+    protected parameters: Map<string, proportion>
 
     constructor(testingWorkspaces: ABTestWorkspace[]) {
-        const parameters = testingWorkspaces !== null ? MapInitialParameters(testingWorkspaces) : new Map()
+        const parameters = testingWorkspaces !== null ? MapInitialProportion(testingWorkspaces) : new Map()
         this.parameters = new Map(parameters)
     }
 
-    public Get = (): Map<string, ABTestParameters> => {
+    public Get = (): Map<string, proportion> => {
         return this.parameters
     }
 
-    public Add = (workspaceName: string, abTestParameter: ABTestParameters = InitialABTestParameters) => {
-        this.parameters.set(workspaceName, abTestParameter)
+    public Add = (workspaceName: string, proportion: proportion = InitialABTestProportion) => {
+        this.parameters.set(workspaceName, proportion)
     }
 
     public Remove = (workspaceName: string) => {
         this.parameters.delete(workspaceName)
     }
 
-    public UpdateWithFixedParameters = (proportion: number) => {
+    public UpdateWithFixedParameters = (masterProportion: number) => {
         const size = this.parameters.size
-        const nonMasterParameter = (10000 - proportion) / (size - 1)
+        const nonMasterParameter = (10000 - masterProportion) / (size - 1)
 
         for (const workspace of this.parameters.keys()) {
-            const parameter = workspace === MasterWorkspaceName ? proportion : nonMasterParameter
-            this.parameters.set(workspace, { a: Math.round(parameter), b: 1 })
+            const proportion = workspace === MasterWorkspaceName ? masterProportion : nonMasterParameter
+            this.parameters.set(workspace, proportion)
         }
     }
 }
@@ -98,7 +98,7 @@ class TestingParametersFrequentistRevenue extends GenericTestingParameters imple
             sum += U
         }
         for (let i = 0; i < size; i++) {
-            this.parameters.set(testData.workspaceNames[i], { a: Math.round(10000*testData.U[i]/sum), b: 0 })
+            this.parameters.set(testData.workspaceNames[i], Math.round(10000*testData.U[i]/sum))
         }
     }
 }
@@ -110,10 +110,10 @@ interface MannWhitneyTestData {
 
 }
 
-const MapInitialParameters = (workspaces: ABTestWorkspace[]): Map<string, ABTestParameters> => {
+const MapInitialProportion = (workspaces: ABTestWorkspace[]): Map<string, proportion> => {
     const map = new Map()
     for (const workspace of workspaces) {
-        map.set(workspace.name, InitialABTestParameters)
+        map.set(workspace.name, InitialABTestProportion)
     }
     return map
 }

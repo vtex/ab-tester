@@ -6,7 +6,7 @@ export async function InitializeParameters(ctx: Context, id: string, testingWork
 
     const testingParameters = createGenericTestingParameters(testingWorkspaces)
     testingParameters.UpdateWithFixedParameters(proportion)
-    const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
+    const tsmap = new TSMap<string, proportion>([...testingParameters.Get()])
     
     await router.setParameters(account, {
         Id: id,

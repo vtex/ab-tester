@@ -108,6 +108,8 @@ declare global {
     UpLiftChoosingB: number
   }
 
+  type proportion = number
+
   interface ABTestParameters {
     a: number
     b: number

@@ -1,6 +1,6 @@
 import { TSMap } from 'typescript-map'
 
-export const InitialABTestParameters: ABTestParameters = { a: 1, b: 1 }
+export const InitialABTestProportion: proportion = 1
 
 export const WorkspaceToBetaDistribution = (Workspace: WorkspaceData): ABTestParameters => ({
     a: Workspace.OrderSessions + 1,
@@ -57,10 +57,10 @@ export function GetWorkspaceData(workspacesData: WorkspaceData[], workspace: str
     return ErrorWorkspaceData(workspace)
 }
 
-export const InitialParameters = (workspaces: ABTestWorkspace[]): TSMap<string, ABTestParameters> => {
-    const parameters = new TSMap<string, ABTestParameters>()
+export const InitialProportion = (workspaces: ABTestWorkspace[]): TSMap<string, proportion> => {
+    const parameters = new TSMap<string, proportion>()
     for (const workspace of workspaces) {
-        parameters.set(workspace.name, InitialABTestParameters)
+        parameters.set(workspace.name, InitialABTestProportion)
     }
     return parameters
 }

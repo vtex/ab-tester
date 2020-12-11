@@ -18,7 +18,7 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
 
         if (await IsInitialStage(hoursOfInitialStage, workspacesData, storedash)) {
             testingParameters.UpdateWithFixedParameters(proportionOfTraffic)
-            const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
+            const tsmap = new TSMap<string, proportion>([...testingParameters.Get()])
             await abTestRouter.setParameters(ctx.vtex.account, {
                 Id: testId,
                 parameterPerWorkspace: tsmap,
@@ -33,7 +33,7 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
         }
         if (!randomRestart) {
             testingParameters.Update(MapWorkspaceData(workspacesData))
-            const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
+            const tsmap = new TSMap<string, proportion>([...testingParameters.Get()])
             await abTestRouter.setParameters(ctx.vtex.account, {
                 Id: testId,
                 parameterPerWorkspace: tsmap,

@@ -60,5 +60,5 @@ export default class Router extends InfraClient {
 
 interface ABTestMetadata {
     Id: string
-    parameterPerWorkspace: TSMap<string, ABTestParameters>
+    parameterPerWorkspace: TSMap<string, proportion>
 }
