@@ -60,6 +60,14 @@ export function GetWorkspaceData(workspacesData: WorkspaceData[], workspace: str
     return ErrorWorkspaceData(workspace)
 }
 
+export const MapWorkspaceData = (workspacesData: WorkspaceData[]): Map<string, WorkspaceData> => {
+    const map = new Map()
+    for(const workspaceData of workspacesData) {
+        map.set(workspaceData.Workspace, workspaceData)
+    }
+    return map
+}
+
 export const MapInitialProportion = (workspaces: ABTestWorkspace[]): Map<string, proportion> => {
     const proportions = new Map<string, proportion>()
     for (const workspace of workspaces) {
