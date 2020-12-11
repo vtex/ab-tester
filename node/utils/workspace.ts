@@ -58,11 +58,11 @@ export function GetWorkspaceData(workspacesData: WorkspaceData[], workspace: str
 }
 
 export const InitialProportion = (workspaces: ABTestWorkspace[]): TSMap<string, proportion> => {
-    const parameters = new TSMap<string, proportion>()
+    const proportions = new TSMap<string, proportion>()
     for (const workspace of workspaces) {
-        parameters.set(workspace.name, InitialABTestProportion)
+        proportions.set(workspace.name, InitialABTestProportion)
     }
-    return parameters
+    return proportions
 }
 
 // Return only the workspaces of positive revenue
