@@ -1,7 +1,7 @@
 import { TSMap } from 'typescript-map'
 import { createTestingProportions } from '../typings/testingProportions'
 import TestingWorkspaces from '../typings/testingWorkspace'
-import { RandomRestart } from '../utils/randomExploration'
+import { RandomRestart } from '../utils/randomExploration/randomRestart'
 import { FilteredWorkspacesData } from '../utils/workspace'
 import { MapWorkspaceData } from '../utils/workspace'
 import { IsInitialStage } from './analysis/time/initialStage'
@@ -29,7 +29,7 @@ export async function UpdateProportions(ctx: Context, aBTestBeginning: string, h
         const masterWorkspace = workspacesCompleteData.get(MasterWorkspaceName)
         let randomRestart: boolean = false
         for (const workspaceCompleteData of workspacesCompleteData) {
-            randomRestart = workspaceCompleteData[0] === MasterWorkspaceName ? false : RandomRestart(workspaceCompleteData[1], masterWorkspace!)
+            randomRestart = workspaceCompleteData[0] === MasterWorkspaceName ? false : RandomRestart(approach, testType, workspaceCompleteData[1], masterWorkspace!)
         }
         if (!randomRestart) {
             testingProportions.Update(MapWorkspaceData(workspacesData))
