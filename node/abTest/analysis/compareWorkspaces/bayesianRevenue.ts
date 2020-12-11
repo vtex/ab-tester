@@ -14,7 +14,7 @@ export function Evaluate(abTestBeginning: string, workspaceA: WorkspaceCompleteD
     const probabilityAbeatsB = ProbabilityXIsBest(parametersA, [parametersB])
     const lossChoosingA = LossChoosingB(parametersB, parametersA)
     const lossChoosingB = LossChoosingB(parametersA, parametersB)
-    const winner = PickWinner(workspaceA.SinceBeginning, workspaceB.SinceBeginning)
+    const winner = PickWinner(workspaceA.Last24Hours.Workspace, workspaceB.Last24Hours.Workspace, lossChoosingA, lossChoosingB)
 
     return EvaluationResponseBayesianRevenue(abTestBeginning, workspaceA, workspaceB, winner, probabilityAbeatsB, lossChoosingA, lossChoosingB)
 }
@@ -30,6 +30,11 @@ export function Winner(workspacesData: WorkspaceData[]): string {
 }
 
 function chooseBetter(workspaceA: WorkspaceData, workspaceB: WorkspaceData): WorkspaceData {
-    const better = PickWinner(workspaceA, workspaceB)
+    const parametersA = WorkspaceToBayesRevParameters(workspaceA)
+    const parametersB = WorkspaceToBayesRevParameters(workspaceB)
+    const lossChoosingA = LossChoosingB(parametersB, parametersA)
+    const lossChoosingB = LossChoosingB(parametersA, parametersB)
+
+    const better = PickWinner(workspaceA.Workspace, workspaceB.Workspace, lossChoosingA, lossChoosingB)
     return better === workspaceB.Workspace ? workspaceB : workspaceA
 }

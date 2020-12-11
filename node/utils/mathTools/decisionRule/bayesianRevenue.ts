@@ -1,7 +1,7 @@
 import { probabilityUnderDiagonal, differenceExpectationUnderDiagonal } from '../riemannIntegration'
 import { betaDensity } from '../forBetaDistribution/statistics/betaDistribution'
 import { calculateBound, has0or1Probability } from '../forBetaDistribution/statistics/densityEstimations'
-import { positiveRevenueWorkspaces, WorkspaceToBayesRevParameters } from '../../workspace'
+import { positiveRevenueWorkspaces } from '../../workspace'
 
 export function ProbabilityXIsBest(X: BayesianRevenueParams, Others: BayesianRevenueParams[]) {
     if (X.r === 0) return 0
@@ -36,14 +36,8 @@ export function LossChoosingB(A: BayesianRevenueParams, B: BayesianRevenueParams
     return differenceExpectationUnderDiagonal(densityA, densityB, A.r, B.r, boundA, boundB)
 }
 
-export function PickWinner(WorkspaceA: WorkspaceData, WorkspaceB: WorkspaceData): string {
-    const A = WorkspaceToBayesRevParameters(WorkspaceA)
-    const B = WorkspaceToBayesRevParameters(WorkspaceB)
-
-    const lossA = LossChoosingB(B, A)
-    const lossB = LossChoosingB(A, B)
-
-    if (lossA < lossB) return WorkspaceA.Workspace
-    if (lossA > lossB) return WorkspaceB.Workspace
+export function PickWinner(workspaceA: string, workspaceB: string, lossChoosingA: number, lossChoosingB: number): string {
+    if (lossChoosingA < lossChoosingB) return workspaceA
+    if (lossChoosingA > lossChoosingB) return workspaceB
     return 'draw'
 }
