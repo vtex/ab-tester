@@ -4,7 +4,7 @@ import TestingWorkspaces from '../typings/testingWorkspace'
 import { concatErrorMessages } from '../utils/errorHandling'
 
 const routes = {
-    Parameters: (account: string) => `/${account}/_abtest/parameters`,
+    Proportions: (account: string) => `/${account}/_abtest/parameters`,
     Workspaces: (account: string) => `/${account}/_abtest/workspaces`,
 }
 
@@ -31,11 +31,11 @@ export default class Router extends InfraClient {
             throw err
         }
     }
-    public setParameters = async (account: string, metadata: Partial<ABTestMetadata>) => {
+    public setProportions = async (account: string, metadata: Partial<ABTestMetadata>) => {
         try {
-            return await this.http.put(routes.Parameters(account), metadata, { metric: 'abtest-set-parameters' })
+            return await this.http.put(routes.Proportions(account), metadata, { metric: 'abtest-set-parameters' })
         } catch (err) {
-            err.message = concatErrorMessages('Error setting parameteres to Router', err.message)
+            err.message = concatErrorMessages('Error setting proportions to Router', err.message)
             throw err
         }
     }
@@ -48,11 +48,11 @@ export default class Router extends InfraClient {
             throw err
         }
     }
-    public deleteParameters = async (account: string) => {
+    public deleteProportions = async (account: string) => {
         try {
-            return await this.http.delete(routes.Parameters(account), { metric: 'abtest-delete-parameters' })
+            return await this.http.delete(routes.Proportions(account), { metric: 'abtest-delete-parameters' })
         } catch (err) {
-            err.message = concatErrorMessages('Error deleting parameters from Router', err.message)
+            err.message = concatErrorMessages('Error deleting proportions from Router', err.message)
             throw err
         }
     }

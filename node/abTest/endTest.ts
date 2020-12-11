@@ -6,7 +6,7 @@ export const EndTestForWorkspace = async (testingWorkspaces: TestingWorkspaces, 
   const { vtex: { account, route: { params: { finishingWorkspace } } }, clients: { abTestRouter, storage } } = ctx
   const workspaceName = firstOrDefault(finishingWorkspace)
 
-  await abTestRouter.deleteParameters(account)
+  await abTestRouter.deleteProportions(account)
   await abTestRouter.deleteWorkspaces(account)
 
   const testData = await storage.getTestData(ctx)
@@ -25,7 +25,7 @@ export const EndTestForWorkspace = async (testingWorkspaces: TestingWorkspaces, 
 export const EndTest = async (testingWorkspaces: TestingWorkspaces, ctx: Context) => {
   const { vtex: { account }, clients: { abTestRouter, storage } } = ctx
 
-  await abTestRouter.deleteParameters(account)
+  await abTestRouter.deleteProportions(account)
   await abTestRouter.deleteWorkspaces(account)
 
   const testData = await storage.getTestData(ctx)

@@ -8,7 +8,7 @@ export async function InitializeParameters(ctx: Context, id: string, testingWork
     testingProportions.UpdateWithFixedProportions(proportion)
     const tsmap = new TSMap<string, proportion>([...testingProportions.Get()])
     
-    await router.setParameters(account, {
+    await router.setProportions(account, {
         Id: id,
         parameterPerWorkspace: tsmap,
     })
