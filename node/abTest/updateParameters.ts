@@ -1,5 +1,5 @@
 import { TSMap } from 'typescript-map'
-import { createTestingParameters } from '../typings/testingParameters'
+import { createTestingProportions } from '../typings/testingProportions'
 import TestingWorkspaces from '../typings/testingWorkspace'
 import { RandomRestart } from '../utils/randomExploration'
 import { FilteredWorkspacesData } from '../utils/workspace'
@@ -14,11 +14,11 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
     workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, testType: TestType, approach: TestApproach): Promise<void> {
     try { 
         const { clients: { abTestRouter, storedash, storage } } = ctx
-        const testingParameters = createTestingParameters(testType, approach, testingWorkspaces.ToArray())
+        const testingProportions = createTestingProportions(testType, approach, testingWorkspaces.ToArray())
 
         if (await IsInitialStage(hoursOfInitialStage, workspacesData, storedash)) {
-            testingParameters.UpdateWithFixedParameters(proportionOfTraffic)
-            const tsmap = new TSMap<string, proportion>([...testingParameters.Get()])
+            testingProportions.UpdateWithFixedProportions(proportionOfTraffic)
+            const tsmap = new TSMap<string, proportion>([...testingProportions.Get()])
             await abTestRouter.setParameters(ctx.vtex.account, {
                 Id: testId,
                 parameterPerWorkspace: tsmap,
@@ -32,8 +32,8 @@ export async function UpdateParameters(ctx: Context, aBTestBeginning: string, ho
             randomRestart = workspaceCompleteData[0] === MasterWorkspaceName ? false : RandomRestart(workspaceCompleteData[1], masterWorkspace!)
         }
         if (!randomRestart) {
-            testingParameters.Update(MapWorkspaceData(workspacesData))
-            const tsmap = new TSMap<string, proportion>([...testingParameters.Get()])
+            testingProportions.Update(MapWorkspaceData(workspacesData))
+            const tsmap = new TSMap<string, proportion>([...testingProportions.Get()])
             await abTestRouter.setParameters(ctx.vtex.account, {
                 Id: testId,
                 parameterPerWorkspace: tsmap,

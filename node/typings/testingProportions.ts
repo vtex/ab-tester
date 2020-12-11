@@ -4,52 +4,52 @@ import { InitialABTestProportion, WorkspaceToBetaDistribution } from '../utils/w
 
 const MasterWorkspaceName = 'master'
 
-interface TestingParameters {
+interface TestingProportions {
     Get(): Map<string, proportion>;
 
     Add(workspaceName: string, proportion?: proportion): void;
 
     Remove(workspaceName: string): void;
 
-    UpdateWithFixedParameters(masterProportion: number): void;
+    UpdateWithFixedProportions(masterProportion: number): void;
 }
 
-interface ITestingParameters extends TestingParameters{
+interface ITestingProportions extends TestingProportions{
     Update(workspacesData: Map<string, WorkspaceData>): void;
 }
 
-class GenericTestingParameters implements TestingParameters {
-    protected parameters: Map<string, proportion>
+class GenericTestingProportions implements TestingProportions {
+    protected proportions: Map<string, proportion>
 
     constructor(testingWorkspaces: ABTestWorkspace[]) {
-        const parameters = testingWorkspaces !== null ? MapInitialProportion(testingWorkspaces) : new Map()
-        this.parameters = new Map(parameters)
+        const proportions = testingWorkspaces !== null ? MapInitialProportion(testingWorkspaces) : new Map()
+        this.proportions = new Map(proportions)
     }
 
     public Get = (): Map<string, proportion> => {
-        return this.parameters
+        return this.proportions
     }
 
     public Add = (workspaceName: string, proportion: proportion = InitialABTestProportion) => {
-        this.parameters.set(workspaceName, proportion)
+        this.proportions.set(workspaceName, proportion)
     }
 
     public Remove = (workspaceName: string) => {
-        this.parameters.delete(workspaceName)
+        this.proportions.delete(workspaceName)
     }
 
-    public UpdateWithFixedParameters = (masterProportion: number) => {
-        const size = this.parameters.size
-        const nonMasterParameter = (10000 - masterProportion) / (size - 1)
+    public UpdateWithFixedProportions = (masterProportion: number) => {
+        const size = this.proportions.size
+        const nonMasterProportion = (10000 - masterProportion) / (size - 1)
 
-        for (const workspace of this.parameters.keys()) {
-            const proportion = workspace === MasterWorkspaceName ? masterProportion : nonMasterParameter
-            this.parameters.set(workspace, proportion)
+        for (const workspace of this.proportions.keys()) {
+            const proportion = workspace === MasterWorkspaceName ? masterProportion : nonMasterProportion
+            this.proportions.set(workspace, proportion)
         }
     }
 }
 
-class TestingParametersBayesianConversion extends GenericTestingParameters implements ITestingParameters {
+class TestingProportionsBayesianConversion extends GenericTestingProportions implements ITestingProportions {
     constructor(testingWorkspaces: ABTestWorkspace[]) {
         super (testingWorkspaces)
     }
@@ -58,7 +58,7 @@ class TestingParametersBayesianConversion extends GenericTestingParameters imple
         const names = Array<string>(0)
         const betaParams = Array<ABTestParameters>(0)
 
-        for (const workspace of this.parameters.keys()) {
+        for (const workspace of this.proportions.keys()) {
             if (workspacesData.has(workspace)) {
                 names.push(workspace)
                 betaParams.push(WorkspaceToBetaDistribution(workspacesData.get(workspace)!))
@@ -68,13 +68,13 @@ class TestingParametersBayesianConversion extends GenericTestingParameters imple
         const size = betaParams.length
         for (let i = 0; i < size; i++) {
             const y = betaParams.shift()!
-            this.parameters.set(names.shift()!, ProbabilityYBeatsAll(y, betaParams))
+            this.proportions.set(names.shift()!, ProbabilityYBeatsAll(y, betaParams))
             betaParams.push(y)
         }
     }
 }
 
-class TestingParametersFrequentistRevenue extends GenericTestingParameters implements ITestingParameters {
+class TestingProportionsFrequentistRevenue extends GenericTestingProportions implements ITestingProportions {
     constructor(testingWorkspaces: ABTestWorkspace[]) {
         super(testingWorkspaces)
     }
@@ -83,7 +83,7 @@ class TestingParametersFrequentistRevenue extends GenericTestingParameters imple
     public Update(workspacesData: Map<string, WorkspaceData>) {
         const testData: MannWhitneyTestData = {workspaceNames: [], OrdersValueHistory: [], U: []}
 
-        for (const workspaceName of this.parameters.keys()) {
+        for (const workspaceName of this.proportions.keys()) {
             if (workspacesData.has(workspaceName)) {
                 testData.workspaceNames.push(workspaceName)
                 testData.OrdersValueHistory.push(workspacesData.get(workspaceName)!.OrdersValueHistory!)
@@ -98,7 +98,7 @@ class TestingParametersFrequentistRevenue extends GenericTestingParameters imple
             sum += U
         }
         for (let i = 0; i < size; i++) {
-            this.parameters.set(testData.workspaceNames[i], Math.round(10000*testData.U[i]/sum))
+            this.proportions.set(testData.workspaceNames[i], Math.round(10000*testData.U[i]/sum))
         }
     }
 }
@@ -118,21 +118,21 @@ const MapInitialProportion = (workspaces: ABTestWorkspace[]): Map<string, propor
     return map
 }
 
-const testingParametersClasses = {
+const testingProportionsClasses = {
     "frequentist": {
-        "conversion": TestingParametersBayesianConversion, // Provisional, while we don't have all TestingParameters classes implemented
-        "revenue": TestingParametersFrequentistRevenue
+        "conversion": TestingProportionsBayesianConversion, // Provisional, while we don't have all TestingProportions classes implemented
+        "revenue": TestingProportionsFrequentistRevenue
     },
     "bayesian": {
-        "conversion": TestingParametersBayesianConversion,
-        "revenue": TestingParametersFrequentistRevenue // Provisional, while we don't have all TestingParameters classes implemented
+        "conversion": TestingProportionsBayesianConversion,
+        "revenue": TestingProportionsFrequentistRevenue // Provisional, while we don't have all TestingProportions classes implemented
     }
 }
 
-export const createGenericTestingParameters = (TestingWorkspaces: ABTestWorkspace[]): GenericTestingParameters => {
-    return new GenericTestingParameters(TestingWorkspaces)
+export const createGenericTestingProportions = (TestingWorkspaces: ABTestWorkspace[]): GenericTestingProportions => {
+    return new GenericTestingProportions(TestingWorkspaces)
 }
 
-export const createTestingParameters = (testType: TestType, testApproach: TestApproach, testingWorkspaces: ABTestWorkspace[]): ITestingParameters => {
-    return new testingParametersClasses[testApproach][testType](testingWorkspaces)
+export const createTestingProportions = (testType: TestType, testApproach: TestApproach, testingWorkspaces: ABTestWorkspace[]): ITestingProportions => {
+    return new testingProportionsClasses[testApproach][testType](testingWorkspaces)
 }
