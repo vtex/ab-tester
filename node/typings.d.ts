@@ -110,7 +110,7 @@ declare global {
 
   type proportion = number
 
-  interface ABTestParameters {
+  interface BetaParameters {
     a: number
     b: number
   }

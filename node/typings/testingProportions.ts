@@ -56,7 +56,7 @@ class TestingProportionsBayesianConversion extends GenericTestingProportions imp
 
     public Update = (workspacesData: Map<string, WorkspaceData>) => {
         const names = Array<string>(0)
-        const betaParams = Array<ABTestParameters>(0)
+        const betaParams = Array<BetaParameters>(0)
 
         for (const workspace of this.proportions.keys()) {
             if (workspacesData.has(workspace)) {

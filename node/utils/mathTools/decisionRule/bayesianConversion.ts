@@ -18,7 +18,7 @@ export function ProbabilityOfOneBeatsTwo(a: number, b: number, c: number, d: num
     return result
 }
 
-function ProbabilityAllBeatsY(Y: ABTestParameters, X: Array<ABTestParameters>, idxs: Array<number>, next: number) {
+function ProbabilityAllBeatsY(Y: BetaParameters, X: Array<BetaParameters>, idxs: Array<number>, next: number) {
     let x = Y.a
     let y = Y.b
     for (let i = 0; i < idxs.length; i++) {
@@ -59,7 +59,7 @@ function NextComb(v: Array<number>) {
     }
 }
 
-export function ProbabilityYBeatsAll(Y: ABTestParameters, X: Array<ABTestParameters>) {
+export function ProbabilityYBeatsAll(Y: BetaParameters, X: Array<BetaParameters>) {
     let ret = 1
     let els = Array<number>(X.length)
     for (let i = 0; i < els.length; i++) {
@@ -69,7 +69,7 @@ export function ProbabilityYBeatsAll(Y: ABTestParameters, X: Array<ABTestParamet
     for (let i = 0; i < maxi; i++) {
         let curr = 0
         NextComb(els)
-        let CurrX = Array<ABTestParameters>(0)
+        let CurrX = Array<BetaParameters>(0)
         let idxs = []
         for (let j = 0; j < els.length; j++) {
             if (els[j] === 1) {
@@ -85,7 +85,7 @@ export function ProbabilityYBeatsAll(Y: ABTestParameters, X: Array<ABTestParamet
     return Math.round(ret)
 }
 
-export function LossFunctionChoosingVariantOne(Beta1: ABTestParameters, Beta2: ABTestParameters) {
+export function LossFunctionChoosingVariantOne(Beta1: BetaParameters, Beta2: BetaParameters) {
     const a = Beta2.a
     const b = Beta2.b
     const c = Beta1.a

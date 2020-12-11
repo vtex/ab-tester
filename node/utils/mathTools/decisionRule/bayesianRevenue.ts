@@ -3,7 +3,7 @@ import { betaDensity } from '../forBetaDistribution/statistics/betaDistribution'
 import { calculateBound, has0or1Probability } from '../forBetaDistribution/statistics/densityEstimations'
 import { positiveRevenueWorkspaces, WorkspaceToBetaDistribution } from '../../workspace'
 
-export function ProbabilityXIsBest(X: ABTestParameters, Others: ABTestParameters[], rX: number, rOthers: number[]) {
+export function ProbabilityXIsBest(X: BetaParameters, Others: BetaParameters[], rX: number, rOthers: number[]) {
     if (rX === 0) return 0
 
     const [relevantWorkspaces, revenues] = positiveRevenueWorkspaces(Others, rOthers)
@@ -20,7 +20,7 @@ export function ProbabilityXIsBest(X: ABTestParameters, Others: ABTestParameters
     return probabilityUnderDiagonal(densityX, densitiesOthers, r, boundX, boundsOthers)
 }
 
-export function LossChoosingB(A: ABTestParameters, B: ABTestParameters, rA: number, rB: number) {
+export function LossChoosingB(A: BetaParameters, B: BetaParameters, rA: number, rB: number) {
     if (rA === 0) return 0
     if (rB === 0) return rA * A.a/(A.a+A.b)
 

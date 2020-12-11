@@ -1,6 +1,6 @@
 // The next algorithm is due to Cheng in Generating Beta Variates with Nonintegral Parameters
 
-export const RandomBeta = (betaVariable: ABTestParameters): number => {
+export const RandomBeta = (betaVariable: BetaParameters): number => {
     const a = betaVariable.a
     const b = betaVariable.b
     const ratio = a / b

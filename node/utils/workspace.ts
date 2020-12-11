@@ -2,7 +2,7 @@ import { TSMap } from 'typescript-map'
 
 export const InitialABTestProportion: proportion = 1
 
-export const WorkspaceToBetaDistribution = (Workspace: WorkspaceData): ABTestParameters => ({
+export const WorkspaceToBetaDistribution = (Workspace: WorkspaceData): BetaParameters => ({
     a: Workspace.OrderSessions + 1,
     b: Workspace.NoOrderSessions + 1,
 })
@@ -66,7 +66,7 @@ export const InitialProportion = (workspaces: ABTestWorkspace[]): TSMap<string, 
 }
 
 // Return only the workspaces of positive revenue
-export function positiveRevenueWorkspaces(workspaces: ABTestParameters[], averageRevenues: number[]): [ABTestParameters[], number[]] {
+export function positiveRevenueWorkspaces(workspaces: BetaParameters[], averageRevenues: number[]): [BetaParameters[], number[]] {
     const filteredWorkspaces = workspaces.filter((_workspace, idx) => averageRevenues[idx] > 0)
     const filteredRevenues = averageRevenues.filter((revenue => revenue > 0))
     return [ filteredWorkspaces, filteredRevenues ]

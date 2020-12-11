@@ -14,7 +14,7 @@ const error = 1e-4
 // interval belong to such set, we can assume we are integrating over (0,1) x (0,1).
 // On the other hand, if none of the points in the significant interval satisfy the inequality,
 // the integration amounts to approximately - with extremely small error - zero.
-export function has0or1Probability(X: ABTestParameters, Others: ABTestParameters[], boundX: number, boundsOthers: number[], r: number[]): [boolean, number] {
+export function has0or1Probability(X: BetaParameters, Others: BetaParameters[], boundX: number, boundsOthers: number[], r: number[]): [boolean, number] {
     const lowerBoundX = calculateLowerBound(X.a, X.b)
 
     for (const i in Others) {
