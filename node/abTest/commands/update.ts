@@ -16,7 +16,7 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
       }
       const testType = testData.testType
       const testApproach = testData.testApproach
-      const workspacesData: WorkspaceData[] = (testType === 'revenue') ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
+      const workspacesData: WorkspaceData[] = (testApproach === 'frequentist' && testType === 'revenue') ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
       await UpdateProportions(ctx, beginning, hours, initialMasterProportion, workspacesData, testingWorkspaces, testingWorkspaces.Id() || 'noId', testType, testApproach)
     }
   } catch (err) {
