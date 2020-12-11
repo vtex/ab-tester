@@ -1,7 +1,6 @@
 import { TSMap } from 'typescript-map'
 
 export const InitialABTestParameters: ABTestParameters = { a: 1, b: 1 }
-export const DefaultABTestParameters: ABTestParameters = { a: 0, b: 0 }
 
 export const WorkspaceToBetaDistribution = (Workspace: WorkspaceData): ABTestParameters => ({
     a: Workspace.OrderSessions + 1,
