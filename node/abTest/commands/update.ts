@@ -8,16 +8,16 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
       const testData = await storage.getTestData(ctx)
       let beginning = testData.dateOfBeginning
       let hours = testData.initialStageTime
-      let proportion = testData.initialProportion
-      if (!(beginning && proportion && hours !== undefined)) {
+      let initialMasterProportion = testData.initialProportion
+      if (!(beginning && initialMasterProportion && hours !== undefined)) {
         beginning = new Date().toISOString().substr(0, 16)
         hours = 0
-        proportion = 10000
+        initialMasterProportion = 10000
       }
       const testType = testData.testType
       const testApproach = testData.testApproach
       const workspacesData: WorkspaceData[] = (testType === 'revenue') ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
-      await UpdateProportions(ctx, beginning, hours, proportion, workspacesData, testingWorkspaces, testingWorkspaces.Id() || 'noId', testType, testApproach)
+      await UpdateProportions(ctx, beginning, hours, initialMasterProportion, workspacesData, testingWorkspaces, testingWorkspaces.Id() || 'noId', testType, testApproach)
     }
   } catch (err) {
     err.message = 'Error on test update: ' + err.message

@@ -10,14 +10,14 @@ import { InitializeProportions } from './initialize-Router'
 
 const MasterWorkspaceName = 'master'
 
-export async function UpdateProportions(ctx: Context, aBTestBeginning: string, hoursOfInitialStage: number, proportionOfTraffic: number,
+export async function UpdateProportions(ctx: Context, aBTestBeginning: string, hoursOfInitialStage: number, masterProportion: number,
     workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, testType: TestType, approach: TestApproach): Promise<void> {
     try { 
         const { clients: { abTestRouter, storedash, storage } } = ctx
         const testingProportions = createTestingProportions(testType, approach, testingWorkspaces.ToArray())
 
         if (await IsInitialStage(hoursOfInitialStage, workspacesData, storedash)) {
-            testingProportions.UpdateWithFixedProportions(proportionOfTraffic)
+            testingProportions.UpdateWithFixedProportions(masterProportion)
             const tsmap = new TSMap<string, proportion>([...testingProportions.Get()])
             await abTestRouter.setProportions(ctx.vtex.account, {
                 Id: testId,
@@ -40,8 +40,8 @@ export async function UpdateProportions(ctx: Context, aBTestBeginning: string, h
             })
             return
         }
-        await InitializeProportions(ctx, testId, testingWorkspaces.ToArray(), proportionOfTraffic)
-        await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, approach, ctx)
+        await InitializeProportions(ctx, testId, testingWorkspaces.ToArray(), masterProportion)
+        await storage.initializeABtest(hoursOfInitialStage, masterProportion, testType, approach, ctx)
 
     } catch (err) {
         err.message = 'Error updating proportions: ' + err.message

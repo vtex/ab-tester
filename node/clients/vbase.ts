@@ -52,7 +52,7 @@ export default class VBase extends BaseClient {
     }
   }
 
-  public initializeABtest = async (initialTime: number, proportion: number, testType: TestType, approach: TestApproach, ctx: Context) => {
+  public initializeABtest = async (initialTime: number, masterProportion: number, testType: TestType, approach: TestApproach, ctx: Context) => {
     const beginning = new Date().toISOString().substr(0, 16)
     try {
       const initialCache = InitialWorkspaceDataCache(new Date())
@@ -64,7 +64,7 @@ export default class VBase extends BaseClient {
     try {
       await this.save({
         dateOfBeginning: beginning,
-        initialProportion: proportion,
+        initialProportion: masterProportion,
         initialStageTime: initialTime,
         testType: testType,
         testApproach: approach

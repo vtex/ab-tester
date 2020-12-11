@@ -20,7 +20,7 @@ export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<
 }
 
 async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlParameter, Hours: UrlParameter, Proportion: UrlParameter, Type: string, Approach: string): Promise<void> {
-    const [ workspacesString, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspaces, Hours, Proportion ].map(firstOrDefault) 
+    const [ workspacesString, hoursOfInitialStage, masterProportion ] = [ InitializingWorkspaces, Hours, Proportion ].map(firstOrDefault) 
 
     checkTestType(Type)
     const testType = Type as TestType
@@ -31,13 +31,13 @@ async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlP
     const workspacesNames = workspacesString.split(' ')
     await CheckWorkspaces(workspacesNames, ctx)
 
-    checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
-    const [ numberHours, numberProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(proportionOfTraffic))]
+    checkIfNaN(hoursOfInitialStage, masterProportion)
+    const [ numberHours, numberMasterProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(masterProportion))]
 
-    return InitializeAbTest(workspacesNames, numberHours, numberProportion, ctx, testType, approach)
+    return InitializeAbTest(workspacesNames, numberHours, numberMasterProportion, ctx, testType, approach)
 }
 
-async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType, approach: TestApproach): Promise<void> {
+async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: number, masterProportion: number, ctx: Context, testType: TestType, approach: TestApproach): Promise<void> {
     const { vtex: { account, logger }, clients: { abTestRouter, storage } } = ctx
     try {
         const currentWorkspaces = await abTestRouter.getWorkspaces(account)   
@@ -49,11 +49,11 @@ async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: 
         for (const workspace of workspacesNames) {
             testingWorkspaces.Add(workspace)
         }
-        await InitializeProportions(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), proportionOfTraffic)
+        await InitializeProportions(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), masterProportion)
         await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
-        await storage.initializeABtest(hoursOfInitialStage, proportionOfTraffic, testType, approach, ctx)
+        await storage.initializeABtest(hoursOfInitialStage, masterProportion, testType, approach, ctx)
         
-        logger.info({message: `A/B Test initialized in ${account} for workspaces ${workspacesNames}`, account: `${account}`, workspaces: `${workspacesNames}`, proportion: `${proportionOfTraffic}`, type: `${testType}`, approach: `${approach}`, method: 'TestInitialized' })
+        logger.info({message: `A/B Test initialized in ${account} for workspaces ${workspacesNames}`, account: `${account}`, workspaces: `${workspacesNames}`, proportion: `${masterProportion}`, type: `${testType}`, approach: `${approach}`, method: 'TestInitialized' })
     } catch (err) {
         if (err.status === 404) {
             err.message = 'Workspace not found: ' + err.message

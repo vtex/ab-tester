@@ -1,11 +1,11 @@
 import { TSMap } from 'typescript-map'
 import { createGenericTestingProportions } from '../typings/testingProportions'
 
-export async function InitializeProportions(ctx: Context, id: string, testingWorkspaces: ABTestWorkspace[], proportion: number): Promise<void> {
+export async function InitializeProportions(ctx: Context, id: string, testingWorkspaces: ABTestWorkspace[], masterProportion: number): Promise<void> {
     const [ router, account ] = [ ctx.clients.abTestRouter, ctx.vtex.account ]
 
     const testingProportions = createGenericTestingProportions(testingWorkspaces)
-    testingProportions.UpdateWithFixedProportions(proportion)
+    testingProportions.UpdateWithFixedProportions(masterProportion)
     const tsmap = new TSMap<string, proportion>([...testingProportions.Get()])
     
     await router.setProportions(account, {
