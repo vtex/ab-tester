@@ -1,6 +1,7 @@
 import { logGamma } from '../gamma-function'
 
-const error = 1e-4
+const error = 1e-4      // mind the fact that this has not the same role as the error 
+                        //from forNormalDistribution/densityEstimation
 
 /*
 *  When the parameters are big, the beta distribution's pdf evaluates to huge numbers
