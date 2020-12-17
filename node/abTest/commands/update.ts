@@ -17,7 +17,7 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
       const testType = testData.testType
       const testApproach = testData.testApproach
       const workspacesData: WorkspaceData[] = (testApproach === 'frequentist' && testType === 'revenue') ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
-      await UpdateProportions(ctx, beginning, hours, initialMasterProportion, workspacesData, testingWorkspaces, testingWorkspaces.Id() || 'noId', testType, testApproach)
+      await UpdateProportions(ctx, beginning, hours, initialMasterProportion, workspacesData, testingWorkspaces, testingWorkspaces.Id(), testType, testApproach)
     }
   } catch (err) {
     err.message = 'Error on test update: ' + err.message
