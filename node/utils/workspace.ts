@@ -22,6 +22,7 @@ export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSes
     Sessions: TotalSessions,
     Workspace: `${Workspace}`,
     OrdersValue: (OrdersValue),
+    OrdersValueVariance: NaN,
     OrdersValueHistory: []
 })
 
@@ -32,6 +33,7 @@ const ErrorWorkspaceData = (workspace: string): WorkspaceData => ({
     Sessions: 0,
     Workspace: workspace,
     OrdersValue: 0,
+    OrdersValueVariance: 0,
     OrdersValueHistory: [],
 })
 

@@ -18,6 +18,7 @@ declare global {
     NoOrderSessions: number
     Conversion: number
     OrdersValue: number
+    OrdersValueVariance: number
     OrdersValueHistory: number[]
   }
 
