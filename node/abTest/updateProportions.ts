@@ -41,7 +41,7 @@ export async function UpdateProportions(ctx: Context, aBTestBeginning: string, h
             return
         }
         await InitializeProportions(ctx, testId, testingWorkspaces.ToArray(), masterProportion)
-        await storage.initializeABtest(hoursOfInitialStage, masterProportion, testType, approach, ctx)
+        await storage.initializeABtest(testingWorkspaces.WorkspacesNames(), hoursOfInitialStage, masterProportion, testType, approach, ctx)
 
     } catch (err) {
         err.message = 'Error updating proportions: ' + err.message

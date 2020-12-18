@@ -46,7 +46,7 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
       
       await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
       await InitializeProportions(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), initialMasterProportion)
-      await storage.initializeABtest(initialTime, initialMasterProportion, testType, testApproach, ctx)
+      await storage.initializeABtest(testingWorkspaces.WorkspacesNames(), initialTime, initialMasterProportion, testType, testApproach, ctx)
 
       ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
     }

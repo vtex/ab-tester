@@ -26,7 +26,7 @@ export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSes
     OrdersValueHistory: []
 })
 
-const ErrorWorkspaceData = (workspace: string): WorkspaceData => ({
+export const InitialWorkspaceData = (workspace: string): WorkspaceData => ({
     Conversion: 0,
     NoOrderSessions: 0,
     OrderSessions: 0,
@@ -57,14 +57,14 @@ export const totalSessions = (workspacesData: WorkspaceData[]): number => {
 
 export function GetWorkspaceData(workspacesData: WorkspaceData[], workspace: string): WorkspaceData {
     if (workspacesData === null) {
-        return ErrorWorkspaceData(workspace)
+        return InitialWorkspaceData(workspace)
     }
     for (const workspaceData of workspacesData) {
         if (workspaceData.Workspace === workspace) {
             return workspaceData
         }
     }
-    return ErrorWorkspaceData(workspace)
+    return InitialWorkspaceData(workspace)
 }
 
 export const MapWorkspaceData = (workspacesData: WorkspaceData[]): Map<string, WorkspaceData> => {

@@ -1,6 +1,7 @@
 import { VBase as BaseClient } from '@vtex/api'
 import { Readable } from 'stream'
 import { concatErrorMessages } from '../utils/errorHandling'
+import { InitialWorkspaceData } from '../utils/workspace'
 
 const bucketName = (account: string) => 'ABTest-' + account
 const abTestHistoryFile = 'abTestHistory.json'
@@ -14,10 +15,10 @@ const jsonStream = (arg: any) => {
   return readable
 }
 
-const InitialWorkspaceDataCache = (date: Date): WorkspaceDataCache => {
+const InitialWorkspaceDataCache = (date: Date, workspaces: string[]): WorkspaceDataCache => {
   return {
     lastUpdate: date.toISOString().substr(0, 16),
-    ordersValue: [],
+    ordersValue: workspaces.map(workspace => InitialWorkspaceData(workspace)),
   }
 }
 
@@ -52,10 +53,10 @@ export default class VBase extends BaseClient {
     }
   }
 
-  public initializeABtest = async (initialTime: number, masterProportion: number, testType: TestType, approach: TestApproach, ctx: Context) => {
+  public initializeABtest = async (testingWorkspaces: string[], initialTime: number, masterProportion: number, testType: TestType, approach: TestApproach, ctx: Context) => {
     const beginning = new Date().toISOString().substr(0, 16)
     try {
-      const initialCache = InitialWorkspaceDataCache(new Date())
+      const initialCache = InitialWorkspaceDataCache(new Date(), testingWorkspaces)
       await this.save(initialCache, WorkspaceDataFile, ctx)
     } catch (err) {
       err.message = 'Error setting initial cache on VBase: ' + err.message
