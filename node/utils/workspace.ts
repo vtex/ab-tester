@@ -15,6 +15,11 @@ export const ConversionToNormalDistribution = (Workspace: WorkspaceData): Normal
     v: Workspace.Conversion * (1-Workspace.Conversion) / Workspace.Sessions
 })
 
+export const RevenueToNormalDistribution = (Workspace: WorkspaceData): NormalDistribution => ({
+    m: Workspace.OrdersValue / Workspace.Sessions,
+    v: Workspace.OrdersValueVariance
+})
+
 export const WorkspaceData = (Workspace: string, TotalSessions: number, OrderSessions: number, OrdersValue: number): WorkspaceData => ({
     Conversion: (TotalSessions > 0 ? OrderSessions / TotalSessions : 0),
     NoOrderSessions: (TotalSessions - OrderSessions),
