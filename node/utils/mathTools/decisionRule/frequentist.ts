@@ -18,6 +18,10 @@ export function ProbabilityXIsBest(X: NormalDistribution, Others: NormalDistribu
     return ProbabilityUnderDiagonal(densityX, densitiesOthers, boundsX, boundsOthers)
 }
 
+export function UpLiftChoosingA(A: NormalDistribution, B: NormalDistribution) {
+    return (A.m - B.m) / B.m
+}
+
 export function PValue(A: NormalDistribution, B: NormalDistribution) {
     const gaussianA = new Gaussian(A.m, A.v)
     return 2 * gaussianA.cdf(A.m - Math.abs(A.m-B.m))
