@@ -7,8 +7,8 @@ export function Evaluate(testType: TestType, testApproach: TestApproach, abTestB
     return evaluateFunctions[testApproach][testType](abTestBeginning, workspaceA, workspaceB)
 }
 
-export function WinnerOverAll(testType: TestType, testApproach: TestApproach, workspacesData: WorkspaceData[]): WinnerOverAll {
-    return { Winner: winnerFunctions[testApproach][testType](workspacesData) }
+export function WinnerOverAll(testType: TestType, testApproach: TestApproach, testResult: TestResult): WinnerOverAll {
+    return { Winner: winnerFunctions[testApproach][testType](testResult) }
 }
 
 const evaluateFunctions = {

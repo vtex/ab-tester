@@ -28,13 +28,14 @@ export async function TestWorkspaces(ctx: Context, account: string, abTestBeginn
                 const workspacesCompleteData = await BuildCompleteData(account, abTestBeginning, workspacesData, storedash, abTestRouter)
                 const masterWorkspace = workspacesCompleteData.get(MasterWorkspaceName)
 
-                Results.push(WinnerOverAll(testType, approach, workspacesData))
-
                 for (const workspaceData of workspacesCompleteData) {
                     if (workspaceData[0] !== MasterWorkspaceName) {
                         Results.push(Evaluate(testType, approach, abTestBeginning, masterWorkspace!, workspaceData[1]))
                     }
                 }
+
+                Results.push(WinnerOverAll(testType, approach, Results))
+
             }
         } catch (err) {
             err.message = 'Error evaluating test results: ' + err.message
