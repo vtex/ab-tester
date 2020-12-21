@@ -1,7 +1,7 @@
 import { ProbabilityYBeatsAll } from '../utils/mathTools/decisionRule/bayesianConversion'
-import { ProbabilityXIsBest } from '../utils/mathTools/decisionRule/bayesianRevenue'
-import { CalculateUValue } from '../utils/mathTools/decisionRule/frequentistRevenue'
-import { MapInitialProportion, InitialABTestProportion, WorkspaceToBetaDistribution, WorkspaceToBayesRevParameters } from '../utils/workspace'
+import { ProbabilityXIsBest as BayesProbabilityXIsBest } from '../utils/mathTools/decisionRule/bayesianRevenue'
+import { ProbabilityXIsBest as FreqProbabilityXIsBest } from '../utils/mathTools/decisionRule/frequentist'
+import { MapInitialProportion, InitialABTestProportion, WorkspaceToBetaDistribution, WorkspaceToBayesRevParameters, RevenueToNormalDistribution } from '../utils/workspace'
 
 const MasterWorkspaceName = 'master'
 
@@ -50,6 +50,30 @@ class GenericTestingProportions implements TestingProportions {
     }
 }
 
+class TestingProportionsFrequentistRevenue extends GenericTestingProportions implements ITestingProportions {
+    constructor(testingWorkspaces: ABTestWorkspace[]) {
+        super(testingWorkspaces)
+    }
+
+    public Update(workspacesData: Map<string, WorkspaceData>) {
+        const names = Array<string>(0)
+        const params = Array<NormalDistribution>(0)
+
+        for (const workspace of this.proportions.keys()) {
+            if (workspacesData.has(workspace)) {
+                names.push(workspace)
+                params.push(RevenueToNormalDistribution(workspacesData.get(workspace)!))
+            }
+        }
+
+        for (const _idx in names) {
+            const X = params.shift()!
+            this.proportions.set(names.shift()!, Math.round(10000*FreqProbabilityXIsBest(X, params)))
+            params.push(X)
+        }
+    }
+}
+
 class TestingProportionsBayesianConversion extends GenericTestingProportions implements ITestingProportions {
     constructor(testingWorkspaces: ABTestWorkspace[]) {
         super (testingWorkspaces)
@@ -93,46 +117,10 @@ class TestingProportionsBayesianRevenue extends GenericTestingProportions implem
 
         for (const _idx in names) {
             const X = params.shift()!
-            this.proportions.set(names.shift()!, Math.round(10000*ProbabilityXIsBest(X, params) + 1))
+            this.proportions.set(names.shift()!, Math.round(10000*BayesProbabilityXIsBest(X, params) + 1))
             params.push(X)
         }
     }
-}
-
-class TestingProportionsFrequentistRevenue extends GenericTestingProportions implements ITestingProportions {
-    constructor(testingWorkspaces: ABTestWorkspace[]) {
-        super(testingWorkspaces)
-    }
-    // the proportion of traffic to each workspace is updated using the U value of the Mann Whitney U-test
-    // this value is approximately the chance of one workspace being stochastically greater than another
-    public Update(workspacesData: Map<string, WorkspaceData>) {
-        const testData: MannWhitneyTestData = {workspaceNames: [], OrdersValueHistory: [], U: []}
-
-        for (const workspaceName of this.proportions.keys()) {
-            if (workspacesData.has(workspaceName)) {
-                testData.workspaceNames.push(workspaceName)
-                testData.OrdersValueHistory.push(workspacesData.get(workspaceName)!.OrdersValueHistory!)
-            }
-        }
-        
-        const size = testData.workspaceNames.length
-        let sum = 0
-        for (let i = 0; i < size; i++) {
-            const U = CalculateUValue(testData.OrdersValueHistory, i)
-            testData.U.push(U)
-            sum += U
-        }
-        for (let i = 0; i < size; i++) {
-            this.proportions.set(testData.workspaceNames[i], Math.round(10000*testData.U[i]/sum))
-        }
-    }
-}
-
-interface MannWhitneyTestData {
-    workspaceNames: string[],
-    OrdersValueHistory: number[][],
-    U: number[],
-
 }
 
 const testingProportionsClasses = {
