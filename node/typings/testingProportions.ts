@@ -1,7 +1,7 @@
 import { ProbabilityYBeatsAll } from '../utils/mathTools/decisionRule/bayesianConversion'
 import { ProbabilityXIsBest as BayesProbabilityXIsBest } from '../utils/mathTools/decisionRule/bayesianRevenue'
 import { ProbabilityXIsBest as FreqProbabilityXIsBest } from '../utils/mathTools/decisionRule/frequentist'
-import { MapInitialProportion, InitialABTestProportion, WorkspaceToBetaDistribution, WorkspaceToBayesRevParameters, RevenueToNormalDistribution } from '../utils/workspace'
+import { MapInitialProportion, InitialABTestProportion, WorkspaceToBetaDistribution, WorkspaceToBayesRevParameters, ConversionToNormalDistribution, RevenueToNormalDistribution } from '../utils/workspace'
 
 const MasterWorkspaceName = 'master'
 
@@ -48,6 +48,30 @@ class GenericTestingProportions implements TestingProportions {
             this.proportions.set(workspace, proportion)
         }
     }
+}
+
+class TestingProportionsFrequentistConversion extends GenericTestingProportions implements ITestingProportions {
+    constructor(testingWorkspaces: ABTestWorkspace[]) {
+        super(testingWorkspaces)
+    }
+
+    public Update(workspacesData: Map<string, WorkspaceData>) {
+        const names = Array<string>(0)
+        const params = Array<NormalDistribution>(0)
+
+        for (const workspace of this.proportions.keys()) {
+            if (workspacesData.has(workspace)) {
+                names.push(workspace)
+                params.push(ConversionToNormalDistribution(workspacesData.get(workspace)!))
+            }
+        }
+
+        for (const _idx in names) {
+            const X = params.shift()!
+            this.proportions.set(names.shift()!, Math.round(10000*FreqProbabilityXIsBest(X, params)))
+            params.push(X)
+        }
+    }    
 }
 
 class TestingProportionsFrequentistRevenue extends GenericTestingProportions implements ITestingProportions {
@@ -125,7 +149,7 @@ class TestingProportionsBayesianRevenue extends GenericTestingProportions implem
 
 const testingProportionsClasses = {
     "frequentist": {
-        "conversion": TestingProportionsBayesianConversion, // Provisional, while we don't have all TestingProportions classes implemented
+        "conversion": TestingProportionsFrequentistConversion,
         "revenue": TestingProportionsFrequentistRevenue
     },
     "bayesian": {
