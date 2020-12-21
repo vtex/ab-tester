@@ -15,7 +15,7 @@ const error = 1e-5
 // belong to such set, we can assume we are integrating over (-infty, infty) x (-infty, infty).
 // On the other hand, if none of the points in the significant interval satisfy the inequality,
 // the integration amounts to approximately - with extremely small error - zero.
-export function has0or1Probability(boundsX: Bounds, boundsOthers: Bounds[]) {
+export function has0or1Probability(boundsX: Bounds, boundsOthers: Bounds[]): [boolean, number] {
     for (const i in boundsOthers) {
         if (boundsX.u < boundsOthers[i].l) return [true, 0]
         if (boundsX.l < boundsOthers[i].u) return [false, NaN]
