@@ -18,17 +18,24 @@ export function Evaluate(abTestBeginning: string, workspaceAData: WorkspaceCompl
     return EvaluationResponseBayesianConversion(abTestBeginning, workspaceAData, workspaceBData, winner, probabilityAbeatsB, lossA, lossB)
 }
 
-export function Winner(workspacesData: WorkspaceData[]): string {
-    if (!workspacesData || workspacesData.length === 0) return 'master'
+export function Winner(testResult: TestResult): string {
+    const results = testResult as BayesianEvaluationResultConversion[]
 
-    let winner = workspacesData[0]
-    for (const workspace of workspacesData) {
-        winner = chooseBetter(winner, workspace)
+    if (!results || results.length === 0) return 'master'
+
+    if (results[0].ExpectedLossChoosingA < results[0].ExpectedLossChoosingB) {
+        results.shift()
+        return Winner(results)
     }
-    return winner.Workspace
-}
 
-function chooseBetter(workspaceA: WorkspaceData, workspaceB: WorkspaceData): WorkspaceData {
-    const better = ChooseWinner(workspaceA, workspaceB)
-    return better === workspaceB.Workspace ? workspaceB : workspaceA
+    let winner = results[0].WorkspaceB
+    let loss = results[0].ExpectedLossChoosingB
+
+    for (let i = 1; i < results.length; i++) {
+        if (results[i].ExpectedLossChoosingB < loss) {
+            winner = results[i].WorkspaceB
+            loss = results[i].ExpectedLossChoosingB
+        }
+    }
+    return winner
 }
