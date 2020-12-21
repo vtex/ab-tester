@@ -4,6 +4,7 @@ import { DefaultEvaluationResponse } from '../utils/evaluation-response/default'
 import { FilteredWorkspacesData } from '../utils/workspace'
 import { Evaluate, WinnerOverAll } from './analysis/compareWorkspaces'
 import { BuildCompleteData } from './data/buildData'
+import { GetGranularData } from './data/cachedData'
 
 const MasterWorkspaceName = 'master'
 
@@ -15,7 +16,7 @@ export async function TestWorkspaces(ctx: Context, account: string, abTestBeginn
 
     if (testingWorkspaces.Length() > 0) {
         try {
-            const workspacesData = await FilterWorkspacesData(abTestBeginning, testingWorkspaces.WorkspacesNames(), storedash, testType, approach)
+            const workspacesData = await FilterWorkspacesData(ctx, abTestBeginning, testingWorkspaces.WorkspacesNames(), storedash, testType, approach)
 
             if (!HasWorkspacesData(workspacesData)) {
                 for (const workspaceName of testingWorkspaces.WorkspacesNames()) {
@@ -46,11 +47,13 @@ export async function TestWorkspaces(ctx: Context, account: string, abTestBeginn
     return Results
 }
 
-async function FilterWorkspacesData(aBTestBeginning: string, testingWorkspaces: string[], storedash: Storedash, testType: TestType, testApproach: TestApproach): Promise<WorkspaceData[]> {
+async function FilterWorkspacesData(ctx: Context, aBTestBeginning: string, testingWorkspaces: string[], storedash: Storedash, testType: TestType,
+    testApproach: TestApproach): Promise<WorkspaceData[]> {
+
     let workspacesData: WorkspaceData[] = []
 
     if (testType === 'revenue' && testApproach === 'frequentist') {
-        workspacesData = (await storedash.getWorkspacesGranularData(aBTestBeginning)).data
+        workspacesData = (await GetGranularData(ctx))
     } else {
         workspacesData = await storedash.getWorkspacesData(aBTestBeginning)
     }
