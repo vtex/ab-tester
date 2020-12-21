@@ -19,21 +19,19 @@ export function Evaluate(abTestBeginning: string, workspaceA: WorkspaceCompleteD
     return EvaluationResponseFrequentistRevenue(abTestBeginning, workspaceA, workspaceB, winner, pValue, upLiftChoosingA, upLiftChoosingB)
 }
 
-export function Winner(workspacesData: WorkspaceData[]): string {
-    if (!workspacesData || workspacesData.length === 0) return 'master'
-    
-    let winner = workspacesData[0]
-    for (const workspace of workspacesData) {
-        winner = chooseBetter(winner, workspace)
+export function Winner(testResult: TestResult): string {
+    const results = testResult as FrequentistEvaluationResultRevenue[]
+
+    if (!results || results.length === 0) return 'master'
+
+    let winner = 'master'
+    let averageRevenue = results[0].AverageRevenueA
+
+    for (const workspace of results) {
+        if (workspace.AverageRevenueB > averageRevenue) {
+            winner = workspace.WorkspaceB
+            averageRevenue = workspace.AverageRevenueB
+        }
     }
-    return winner.Workspace
-}
-
-function chooseBetter(workspaceA: WorkspaceData, workspaceB: WorkspaceData): WorkspaceData {
-    const parametersA = RevenueToNormalDistribution(workspaceA)
-    const parametersB = RevenueToNormalDistribution(workspaceB)
-    const pValue = PValue(parametersA, parametersB)
-    const better = PickWinner(workspaceA.Workspace, workspaceB.Workspace, parametersA, parametersB, pValue)
-
-    return better === workspaceB.Workspace ? workspaceB : workspaceA
+    return winner
 }
