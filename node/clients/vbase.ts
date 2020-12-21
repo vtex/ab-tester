@@ -177,14 +177,14 @@ declare global {
     testType: TestType
     testApproach: TestApproach
   }
+
+  interface WorkspaceDataCache {
+    ordersValue: WorkspaceData[]
+    lastUpdate: string
+  }
 }
 
 interface ABTestHistory {
   onGoing: string
   finishedTests: string[]
-}
-
-interface WorkspaceDataCache {
-  ordersValue: WorkspaceData[]
-  lastUpdate: string
 }
