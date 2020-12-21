@@ -19,22 +19,24 @@ export function Evaluate(abTestBeginning: string, workspaceA: WorkspaceCompleteD
     return EvaluationResponseBayesianRevenue(abTestBeginning, workspaceA, workspaceB, winner, probabilityAbeatsB, lossChoosingA, lossChoosingB)
 }
 
-export function Winner(workspacesData: WorkspaceData[]): string {
-    if (!workspacesData || workspacesData.length === 0) return 'master'
-    
-    let winner = workspacesData[0]
-    for (const workspace of workspacesData) {
-        winner = chooseBetter(winner, workspace)
+export function Winner(testResult: TestResult): string {
+    const results = testResult as BayesianEvaluationResultRevenue[]
+
+    if (!results || results.length === 0) return 'master'
+
+    if (results[0].ExpectedLossChoosingA < results[0].ExpectedLossChoosingB) {
+        results.shift()
+        return Winner(results)
     }
-    return winner.Workspace
-}
 
-function chooseBetter(workspaceA: WorkspaceData, workspaceB: WorkspaceData): WorkspaceData {
-    const parametersA = WorkspaceToBayesRevParameters(workspaceA)
-    const parametersB = WorkspaceToBayesRevParameters(workspaceB)
-    const lossChoosingA = LossChoosingB(parametersB, parametersA)
-    const lossChoosingB = LossChoosingB(parametersA, parametersB)
+    let winner = results[0].WorkspaceB
+    let loss = results[0].ExpectedLossChoosingB
 
-    const better = PickWinner(workspaceA.Workspace, workspaceB.Workspace, lossChoosingA, lossChoosingB)
-    return better === workspaceB.Workspace ? workspaceB : workspaceA
+    for (let i = 1; i < results.length; i++) {
+        if (results[i].ExpectedLossChoosingB < loss) {
+            winner = results[i].WorkspaceB
+            loss = results[i].ExpectedLossChoosingB
+        }
+    }
+    return winner
 }
