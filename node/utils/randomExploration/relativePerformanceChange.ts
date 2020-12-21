@@ -1,5 +1,6 @@
 import { RandomBeta } from '../mathTools/forBetaDistribution/statistics/betaSampling'
-import { WorkspaceToBetaDistribution, RevenuePerConversion } from '../workspace'
+import { normalQuantile } from '../mathTools/forNormalDistribution/quantile'
+import { WorkspaceToBetaDistribution, RevenuePerConversion, RevenueToNormalDistribution } from '../workspace'
 
 export function relativeChange(approach: TestApproach, type: TestType, workspaceData: WorkspaceCompleteData): number {
     return relativeChangeFunctions[approach][type](workspaceData)
@@ -37,6 +38,9 @@ function relativeChangeFrequentistConversion(_workspaceData: WorkspaceCompleteDa
     return 1    // Provisional, until we implement the respective analysis
 }
 
-function relativeChangeFrequentistRevenue(_workspaceData: WorkspaceCompleteData): number {
-    return 1    // Provisional, until we implement the respective analysis
+function relativeChangeFrequentistRevenue(workspaceData: WorkspaceCompleteData): number {
+    const normalVariateOld = normalQuantile(RevenueToNormalDistribution(workspaceData.SinceBeginning), Math.random())
+    const normalVariateRecent = normalQuantile(RevenueToNormalDistribution(workspaceData.Last24Hours), Math.random())
+
+    return normalVariateRecent / normalVariateOld
 }
