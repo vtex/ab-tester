@@ -2,7 +2,7 @@ import { concatErrorMessages } from '../../utils/errorHandling'
 import { WorkspaceMetadata } from '@vtex/api'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 
-const expectedFields = ['InitializingWorkspaces', 'Hours', 'Proportion', 'Type', 'Approach']
+const expectedFields = ['InitializingWorkspaces', 'Hours', 'Proportion', 'Type', 'Approach', 'IsMAB']
 
 export const checkForExpectedFields = (object: object) => {
     for (let idx = 0; idx < expectedFields.length; idx++) {
