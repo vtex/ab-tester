@@ -40,7 +40,7 @@ async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlP
     return InitializeAbTest(workspacesNames, numberHours, numberMasterProportion, ctx, testType, approach, isMAB)
 }
 
-async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: number, masterProportion: number, ctx: Context, testType: TestType, approach: TestApproach): Promise<void> {
+async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: number, masterProportion: number, ctx: Context, testType: TestType, approach: TestApproach, isMAB: boolean): Promise<void> {
     const { vtex: { account, logger }, clients: { abTestRouter, storage } } = ctx
     try {
         const currentWorkspaces = await abTestRouter.getWorkspaces(account)   
@@ -54,7 +54,7 @@ async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: 
         }
         await InitializeProportions(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray(), masterProportion)
         await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
-        await storage.initializeABtest(testingWorkspaces.WorkspacesNames(), hoursOfInitialStage, masterProportion, testType, approach, ctx)
+        await storage.initializeABtest(testingWorkspaces.WorkspacesNames(), hoursOfInitialStage, masterProportion, testType, approach, isMAB, ctx)
         
         logger.info({message: `A/B Test initialized in ${account} for workspaces ${workspacesNames}`, account: `${account}`, workspaces: `${workspacesNames}`, proportion: `${masterProportion}`, type: `${testType}`, approach: `${approach}`, method: 'TestInitialized' })
     } catch (err) {
