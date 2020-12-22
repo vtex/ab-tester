@@ -117,7 +117,7 @@ class TestingProportionsBayesianConversion extends GenericTestingProportions imp
         const size = betaParams.length
         for (let i = 0; i < size; i++) {
             const y = betaParams.shift()!
-            this.proportions.set(names.shift()!, ProbabilityYBeatsAll(y, betaParams))
+            this.proportions.set(names.shift()!, Math.round(10000*ProbabilityYBeatsAll(y, betaParams)))
             betaParams.push(y)
         }
     }
