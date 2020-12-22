@@ -31,6 +31,15 @@ export const checkTestApproach = (Approach: string) => {
     }
 }
 
+export const checkIsMAB = (IsMAB: string) => {
+    if (IsMAB !== 'true' && IsMAB !== 'false') {
+        const err = new Error(`Error setting IsMAB option: please make sure to spell it correctly (either 'true' or 'false')`) as any
+        err.status = 400
+        throw err
+    }
+}
+
+
 export const checkIfNaN = (hours: string, proportion: string) => {
     if (Number.isNaN(Number(hours))) {
         const err = new Error(`Error reading time parameter: make sure to insert a number`) as any

@@ -1,6 +1,6 @@
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import getRequestParams from '../../utils/Request/getRequestParams'
-import { checkTestType, checkTestApproach, checkIfNaN, CheckProportion, CheckInitializingWorkspaces as CheckWorkspaces } from '../../utils/Request/Checks'
+import { checkTestType, checkTestApproach, checkIsMAB, checkIfNaN, CheckProportion, CheckInitializingWorkspaces as CheckWorkspaces } from '../../utils/Request/Checks'
 import { InitializeProportions, InitializeWorkspaces } from '../initialize-Router'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 
@@ -19,7 +19,7 @@ export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<
     return RunChecksAndInitialize(ctx, InitializingWorkspaces, Hours, Proportion, Type, Approach, IsMAB)
 }
 
-async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlParameter, Hours: UrlParameter, Proportion: UrlParameter, Type: string, Approach: string): Promise<void> {
+async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlParameter, Hours: UrlParameter, Proportion: UrlParameter, Type: string, Approach: string, IsMAB: string): Promise<void> {
     const [ workspacesString, hoursOfInitialStage, masterProportion ] = [ InitializingWorkspaces, Hours, Proportion ].map(firstOrDefault) 
 
     checkTestType(Type)
@@ -28,13 +28,16 @@ async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlP
     checkTestApproach(Approach)
     const approach = Approach as TestApproach
 
+    checkIsMAB(IsMAB)
+    const isMAB = IsMAB as unknown as boolean
+
     const workspacesNames = workspacesString.split(' ')
     await CheckWorkspaces(workspacesNames, ctx)
 
     checkIfNaN(hoursOfInitialStage, masterProportion)
     const [ numberHours, numberMasterProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(masterProportion))]
 
-    return InitializeAbTest(workspacesNames, numberHours, numberMasterProportion, ctx, testType, approach)
+    return InitializeAbTest(workspacesNames, numberHours, numberMasterProportion, ctx, testType, approach, isMAB)
 }
 
 async function InitializeAbTest(workspacesNames: string[], hoursOfInitialStage: number, masterProportion: number, ctx: Context, testType: TestType, approach: TestApproach): Promise<void> {
