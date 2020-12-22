@@ -6,17 +6,17 @@ import TestingWorkspaces from '../../typings/testingWorkspace'
 
 export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
     const workspace = ctx.vtex.route.params.initializingWorkspace
-    return RunChecksAndInitialize(ctx, workspace, '1', '5000', 'conversion', 'bayesian')
+    return RunChecksAndInitialize(ctx, workspace, '1', '5000', 'conversion', 'bayesian', 'true')
 }
 
 export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promise<void> {
     const { vtex: { route: { params: { hours, proportion, initializingWorkspace } } }} = ctx  
-    return RunChecksAndInitialize(ctx, initializingWorkspace, hours, proportion, 'conversion', 'bayesian')
+    return RunChecksAndInitialize(ctx, initializingWorkspace, hours, proportion, 'conversion', 'bayesian', 'true')
 }
 
 export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<void> {
-    const { InitializingWorkspaces, Hours, Proportion, Type, Approach } = await getRequestParams(ctx)
-    return RunChecksAndInitialize(ctx, InitializingWorkspaces, Hours, Proportion, Type, Approach)
+    const { InitializingWorkspaces, Hours, Proportion, Type, Approach, IsMAB } = await getRequestParams(ctx)
+    return RunChecksAndInitialize(ctx, InitializingWorkspaces, Hours, Proportion, Type, Approach, IsMAB)
 }
 
 async function RunChecksAndInitialize(ctx: Context, InitializingWorkspaces: UrlParameter, Hours: UrlParameter, Proportion: UrlParameter, Type: string, Approach: string): Promise<void> {
