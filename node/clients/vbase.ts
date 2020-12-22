@@ -176,6 +176,7 @@ declare global {
     initialProportion: number
     testType: TestType
     testApproach: TestApproach
+    isMAB: boolean
   }
 
   interface WorkspaceDataCache {
