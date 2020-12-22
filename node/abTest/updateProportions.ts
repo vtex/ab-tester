@@ -11,7 +11,7 @@ import { InitializeProportions } from './initialize-Router'
 const MasterWorkspaceName = 'master'
 
 export async function UpdateProportions(ctx: Context, aBTestBeginning: string, hoursOfInitialStage: number, masterProportion: number,
-    workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, testType: TestType, approach: TestApproach): Promise<void> {
+    workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, testType: TestType, approach: TestApproach, isMAB: boolean): Promise<void> {
     try { 
         const { clients: { abTestRouter, storedash, storage } } = ctx
         const testingProportions = createTestingProportions(testType, approach, testingWorkspaces.ToArray())
@@ -41,7 +41,7 @@ export async function UpdateProportions(ctx: Context, aBTestBeginning: string, h
             return
         }
         await InitializeProportions(ctx, testId, testingWorkspaces.ToArray(), masterProportion)
-        await storage.initializeABtest(testingWorkspaces.WorkspacesNames(), hoursOfInitialStage, masterProportion, testType, approach, ctx)
+        await storage.initializeABtest(testingWorkspaces.WorkspacesNames(), hoursOfInitialStage, masterProportion, testType, approach, isMAB, ctx)
 
     } catch (err) {
         err.message = 'Error updating proportions: ' + err.message

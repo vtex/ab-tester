@@ -22,9 +22,10 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
         }
         const testType = testData.testType
         const testApproach = testData.testApproach
+        const isMAB = testData.isMAB
         const workspacesData: WorkspaceData[] = (testApproach === 'frequentist' && testType === 'revenue') ? await GetGranularData(ctx) : await storedash.getWorkspacesData(beginning)
 
-        await UpdateProportions(ctx, beginning, hours, initialMasterProportion, workspacesData, testingWorkspaces, testingWorkspaces.Id(), testType, testApproach)
+        await UpdateProportions(ctx, beginning, hours, initialMasterProportion, workspacesData, testingWorkspaces, testingWorkspaces.Id(), testType, testApproach, isMAB)
       }
     }
   } catch (err) {
