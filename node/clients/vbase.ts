@@ -123,6 +123,13 @@ export default class VBase extends BaseClient {
       err.message = concatErrorMessages(`Error deleting file ${testFileName} from VBase's bucket ${bucketName(ctx.vtex.account)}: test's metadata may be inconsistent`, err.message)
       throw err
     }
+
+    try {
+      await this.deleteFile(bucketName(ctx.vtex.account), WorkspaceDataFile)
+    } catch (err) {
+      err.message = concatErrorMessages(`Error deleting file ${WorkspaceDataFile} from VBase's bucket ${bucketName(ctx.vtex.account)}`, err.message)
+      throw err
+    }
   }
 
   public updateWorkspaceDataCache = async (newValue: WorkspaceDataCache, ctx: Context): Promise<void> => {
