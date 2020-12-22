@@ -81,8 +81,7 @@ export function ProbabilityYBeatsAll(Y: BetaParameters, X: Array<BetaParameters>
         curr *= Math.pow(-1, idxs.length)
         ret += curr
     }
-    ret *= 10000
-    return Math.round(ret)
+    return ret
 }
 
 export function LossFunctionChoosingVariantOne(Beta1: BetaParameters, Beta2: BetaParameters) {
