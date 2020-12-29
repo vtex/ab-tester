@@ -18,13 +18,14 @@ const error = 1e-4      // mind the fact that this has not the same role as the 
 export function has0or1Probability(X: BetaParameters, Others: BetaParameters[], boundX: number, boundsOthers: number[], r: number[]): [boolean, number] {
     const lowerBoundX = calculateLowerBound(X.a, X.b)
 
+    let has = true
     for (const i in Others) {
         const lowerBound = calculateLowerBound(Others[i].a, Others[i].b)
 
         if (r[i]*boundX < lowerBound) return [true, 0]
-        if (r[i] * lowerBoundX < boundsOthers[i]) return [false, NaN]
+        if (r[i] * lowerBoundX < boundsOthers[i]) has = false
     }
-    return [true, 1]
+    return [has, 1]
 }
 
 // Returns l in [0,1) such that beta(a,b)(x) > 1/e^10 => x > l.

@@ -16,11 +16,12 @@ const error = 1e-5
 // On the other hand, if none of the points in the significant interval satisfy the inequality,
 // the integration amounts to approximately - with extremely small error - zero.
 export function has0or1Probability(boundsX: Bounds, boundsOthers: Bounds[]): [boolean, number] {
+    let has = true
     for (const i in boundsOthers) {
         if (boundsX.u < boundsOthers[i].l) return [true, 0]
-        if (boundsX.l < boundsOthers[i].u) return [false, NaN]
+        if (boundsX.l < boundsOthers[i].u) has = false
     }
-    return [true, 1]
+    return [has, 1]
 }
 
 // Returns l and u such that PDF(x) > error => l < x < u.
