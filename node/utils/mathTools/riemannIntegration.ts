@@ -1,8 +1,23 @@
 import { Bounds } from './forNormalDistribution/densityEstimation'
 
 type Function = (x: number) => number
+
 const nSteps = 5e+4
- 
+
+export function integrate(f: Function, from: number, to: number) {
+    if (to <= from) return 0
+
+    const n_steps = 1e+4
+    const step = (to-from) / (n_steps+1)
+    let I = 0
+
+    for (let i = 1; i <= n_steps; i++) {
+        I += f(from + i*step)
+    }
+
+    return I * (to - from) / n_steps
+}
+
 // The function below integrates f(x).g[0](y[0]).g[1](y[1])...g[len(g)-1](y[len(g)-1])
 // over the set of points (x, y) in (0,boundX) x (0,boundsY[0]) x ... x (0,boundsY[len(g)-1]) 
 // such that y[i] < r[i]x for all i = 0,1,...len(g)-1.

@@ -1,21 +1,32 @@
-import { bounds, has0or1Probability } from '../forNormalDistribution/densityEstimation'
-import { density } from '../forNormalDistribution/distribution'
-import { ProbabilityUnderDiagonal } from '../riemannIntegration'
+import { bounds } from '../forNormalDistribution/densityEstimation'
+import { integrate } from '../riemannIntegration'
 import { Gaussian } from 'ts-gaussian'
 
 const confidence = 0.95
 
 export function ProbabilityXIsBest(X: NormalDistribution, Others: NormalDistribution[]) {
+    if (Others.length === 1) return ProbabilityXbeatsY(X, Others[0])
+
+    const normalX = new Gaussian(X.m, X.v)
+    const normalOthers = Others.map(parameters => new Gaussian(parameters.m, parameters.v))
+
+    const integrand = (p: number) => {
+        let value = normalX.pdf(p) 
+        for (const normal of normalOthers) value *= normal.cdf(p)
+        return value
+    }
+
     const boundsX = bounds(X)
-    const boundsOthers = Others.map(workspace => bounds(workspace))
 
-    const fastResult = has0or1Probability(boundsX, boundsOthers)
-    if (fastResult[0]) return fastResult[1]
+    return integrate(integrand, boundsX.l, boundsX.u)
+}
 
-    const densityX = density(X)
-    const densitiesOthers = Others.map(workspace => density(workspace))
+function ProbabilityXbeatsY(X: NormalDistribution, Y: NormalDistribution) {
+    const difference_mean = X.m - Y.m
+    const difference_variance = X.v + Y.v
+    const difference = new Gaussian(difference_mean, difference_variance)
 
-    return ProbabilityUnderDiagonal(densityX, densitiesOthers, boundsX, boundsOthers)
+    return 1 - difference.cdf(0)
 }
 
 export function UpLiftChoosingA(A: NormalDistribution, B: NormalDistribution) {
