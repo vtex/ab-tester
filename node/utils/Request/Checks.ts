@@ -5,8 +5,7 @@ import TestingWorkspaces from '../../typings/testingWorkspace'
 const expectedFields = ['InitializingWorkspaces', 'Hours', 'Proportion', 'Type', 'Approach', 'IsMAB']
 
 export const checkForExpectedFields = (object: object) => {
-    for (let idx = 0; idx < expectedFields.length; idx++) {
-        const field = expectedFields[idx]
+    for (const field of expectedFields) {
         if (!(field in object)) {
             const err = new Error(`Error getting request's parameters: make sure to set the ${field} field`) as any
             err.status = 400
