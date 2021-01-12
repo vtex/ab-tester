@@ -2,15 +2,20 @@ import { concatErrorMessages } from '../../utils/errorHandling'
 import { WorkspaceMetadata } from '@vtex/api'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 
-const expectedFields = ['InitializingWorkspaces', 'Hours', 'Proportion', 'Type', 'Approach', 'IsMAB']
+const expectedFields = ['InitializingWorkspaces', 'Proportion', 'Type', 'Approach', 'IsMAB']
 
-export const checkForExpectedFields = (object: object) => {
+export const checkForExpectedFields = (object: any) => {
     for (const field of expectedFields) {
         if (!(field in object)) {
             const err = new Error(`Error getting request's parameters: make sure to set the ${field} field`) as any
             err.status = 400
             throw err
         }
+    }
+    if (object['IsMAB'] === 'true') if (!("Hours" in object)) {
+        const err = new Error(`Error getting request's parameters: make sure to set the Hours field`) as any
+        err.status = 400
+        throw err
     }
 }
 
