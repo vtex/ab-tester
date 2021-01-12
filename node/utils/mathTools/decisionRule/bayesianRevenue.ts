@@ -2,11 +2,17 @@ import { probabilityUnderDiagonal, differenceExpectationUnderDiagonal } from '..
 import { betaDensity } from '../forBetaDistribution/statistics/betaDistribution'
 import { calculateBound, has0or1Probability } from '../forBetaDistribution/statistics/densityEstimations'
 import { positiveRevenueWorkspaces } from '../../workspace'
+import { convertIntoNormal } from '../forBetaDistribution/normalApprox'
+import { ProbabilityXIsBest as frequentistProb } from './frequentist'
 
 export function ProbabilityXIsBest(X: BayesianRevenueParams, Others: BayesianRevenueParams[]) {
     if (X.r === 0) return 0
 
     const relevantWorkspaces = positiveRevenueWorkspaces(Others)
+    if (relevantWorkspaces.length === 0) return 1
+
+    if (hasEnoughData(X, ...relevantWorkspaces)) return NormalApproximationProb(X, relevantWorkspaces)
+
     const r = relevantWorkspaces.map(workspace => X.r / workspace.r)
     const boundX = calculateBound(X.a, X.b)
     const boundsOthers = relevantWorkspaces.map((workspace) => calculateBound(workspace.a, workspace.b))
@@ -18,6 +24,13 @@ export function ProbabilityXIsBest(X: BayesianRevenueParams, Others: BayesianRev
     const densitiesOthers = relevantWorkspaces.map((workspace) => ((y: number) => betaDensity(y, workspace.a, workspace.b)))
 
     return probabilityUnderDiagonal(densityX, densitiesOthers, r, boundX, boundsOthers)
+}
+
+function NormalApproximationProb(X: BayesianRevenueParams, Others: BayesianRevenueParams[]) {
+    const normalX = convertIntoNormal(X)
+    const normalOthers = Others.map(workspace => convertIntoNormal(workspace))
+
+    return frequentistProb(normalX, normalOthers)
 }
 
 export function LossChoosingB(A: BayesianRevenueParams, B: BayesianRevenueParams) {
@@ -40,4 +53,11 @@ export function PickWinner(workspaceA: string, workspaceB: string, lossChoosingA
     if (lossChoosingA < lossChoosingB) return workspaceA
     if (lossChoosingA > lossChoosingB) return workspaceB
     return 'draw'
+}
+
+const hasEnoughData = (...workspaces: BayesianRevenueParams[]) => {
+    for (const workspace of workspaces) {
+        if (workspace.a < 100 || workspace.b < 1e+5) return false
+    }
+    return true
 }
