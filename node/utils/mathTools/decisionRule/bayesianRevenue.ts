@@ -2,8 +2,9 @@ import { probabilityUnderDiagonal, differenceExpectationUnderDiagonal } from '..
 import { betaDensity } from '../forBetaDistribution/statistics/betaDistribution'
 import { calculateBound, has0or1Probability } from '../forBetaDistribution/statistics/densityEstimations'
 import { positiveRevenueWorkspaces } from '../../workspace'
-import { convertIntoNormal } from '../forBetaDistribution/normalApprox'
+import { convertIntoNormal, differenceDistribution } from '../forBetaDistribution/normalApprox'
 import { ProbabilityXIsBest as frequentistProb } from './frequentist'
+import { Gaussian } from 'ts-gaussian'
 
 export function ProbabilityXIsBest(X: BayesianRevenueParams, Others: BayesianRevenueParams[]) {
     if (X.r === 0) return 0
@@ -37,6 +38,8 @@ export function LossChoosingB(A: BayesianRevenueParams, B: BayesianRevenueParams
     if (A.r === 0) return 0
     if (B.r === 0) return A.r * A.a/(A.a+A.b)
 
+    if (hasEnoughData(A, B)) return NormalApproximationLoss(A, B)
+
     const boundA = calculateBound(A.a, A.b)
     const boundB = calculateBound(B.a, B.b)
 
@@ -47,6 +50,15 @@ export function LossChoosingB(A: BayesianRevenueParams, B: BayesianRevenueParams
     const densityB = (y: number) => betaDensity(y, B.a, B.b)
 
     return differenceExpectationUnderDiagonal(densityA, densityB, A.r, B.r, boundA, boundB)
+}
+
+function NormalApproximationLoss(A: BayesianRevenueParams, B: BayesianRevenueParams) {
+    const normalA = convertIntoNormal(A)
+    const normalB = convertIntoNormal(B)
+    const diff = differenceDistribution(normalA, normalB)
+    const gauss = new Gaussian(diff.m, diff.v)
+
+    return diff.m * (1-gauss.cdf(0)) + Math.sqrt(diff.v)/ ( Math.exp(diff.m**2/(2*diff.v)) * Math.sqrt(2*Math.PI) )
 }
 
 export function PickWinner(workspaceA: string, workspaceB: string, lossChoosingA: number, lossChoosingB: number): string {

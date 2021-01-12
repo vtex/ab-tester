@@ -4,3 +4,10 @@ export function convertIntoNormal(params: BayesianRevenueParams) {
         v: params.r**2 * params.a*params.b / ( (params.a+params.b)**2 * (params.a+params.b+1) )
     }
 }
+
+export function differenceDistribution(A: NormalDistribution, B: NormalDistribution) {
+    return {
+        m: A.m - B.m,
+        v: A.v + B.v
+    }
+}
