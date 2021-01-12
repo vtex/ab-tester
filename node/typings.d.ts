@@ -116,12 +116,12 @@ declare global {
     b: number
   }
 
+  interface BayesianRevenueParams extends BetaParameters {
+    r: number   // revenue per conversion
+  }
+
   interface NormalDistribution {
     m: number   // mean
     v: number   // variance
-  }
-
-  interface BayesianRevenueParams extends BetaParameters {
-    r: number   // revenue per conversion
   }
 }
