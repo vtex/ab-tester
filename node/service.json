@@ -18,6 +18,10 @@
       "path": "/_v/private/abtesting/initialize/parameters/:initializingWorkspace/:hours/:proportion",
       "public": false
     },
+    "initializeAbTest": {
+      "path": "/_v/private/abtesting/initialize",
+      "public": false
+    },
     "abTestStatus": {
       "path": "/_v/private/abtesting/status",
       "public": false
