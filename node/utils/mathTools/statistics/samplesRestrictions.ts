@@ -18,7 +18,7 @@ export const pValue = (control: ABTestParameters, alternative: ABTestParameters)
     return customBetaProbability(alternativeConversion, control.a, control.b)
 }
 
-export const customBetaProbability = (x: number, a: number, b: number): number => {
+const customBetaProbability = (x: number, a: number, b: number): number => {
     const lambda = (a - 1) / (a + b - 2)
     const lambda1 = lambda - BoundError
     const a1 = 1 + Math.floor((lambda1 / lambda) * (a - 1))

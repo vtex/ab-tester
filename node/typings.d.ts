@@ -1,10 +1,11 @@
 import {  ServiceContext } from '@vtex/api'
 import { Clients } from './clients'
+
 declare global {
 
   type Context = ServiceContext<Clients>
 
-  export interface WorkspaceData {
+  interface WorkspaceData {
     Workspace: string
     Sessions: number
     OrderSessions: number
@@ -14,12 +15,12 @@ declare global {
     OrdersValueHistory: number[]
   }
 
-  export interface WorkspaceCompleteData {
+  interface WorkspaceCompleteData {
     Last24Hours: WorkspaceData
     SinceBeginning: WorkspaceData
   }
 
-  export interface TestResult {
+  interface TestResult {
     ABTestBeginning: string
     WorkspaceA: string
     WorkspaceB: string
@@ -42,7 +43,7 @@ declare global {
     OrdersValueBLast24Hours: number
   }
 
-  export interface ABTestParameters {
+  interface ABTestParameters {
     a: number
     b: number
   }

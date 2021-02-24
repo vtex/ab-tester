@@ -49,8 +49,5 @@ async function FilterWorkspacesData(aBTestBeginning: string, testingWorkspaces: 
 }
 
 const HasWorkspacesData = (workspacesData: WorkspaceData[]): boolean => {
-    if (workspacesData.length > 0) {
-        return true
-    }
-    return false
+    return (workspacesData.length > 0)
 }

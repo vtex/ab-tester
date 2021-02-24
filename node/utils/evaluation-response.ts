@@ -21,7 +21,7 @@ export const DefaultEvaluationResponse = (abTestBeginning: string, workspaceANam
     WorkspaceBSessionsLast24Hours: 0,
 })
 
-export const EvaluationResponse = (abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, winner: string, lossA: number, lossB: number, probabilityOneBeatTwo: number, pValue: number): TestResult => ({
+export const EvaluationResponse = (abTestBeginning: string, workspaceAData: WorkspaceCompleteData, workspaceBData: WorkspaceCompleteData, winner: string, lossA: number, lossB: number, probabilityOneBeatsTwo: number, pValue: number): TestResult => ({
     ABTestBeginning: abTestBeginning,
     ConversionA: workspaceAData.SinceBeginning.Conversion,
     ConversionALast24Hours: workspaceAData.Last24Hours.Conversion,
@@ -34,7 +34,7 @@ export const EvaluationResponse = (abTestBeginning: string, workspaceAData: Work
     OrdersValueB: workspaceBData.SinceBeginning.OrdersValue,
     OrdersValueBLast24Hours: workspaceBData.Last24Hours.OrdersValue,
     PValue : pValue,
-    ProbabilityAlternativeBeatMaster: probabilityOneBeatTwo,
+    ProbabilityAlternativeBeatMaster: probabilityOneBeatsTwo,
     Winner: winner,
     WorkspaceA: workspaceAData.SinceBeginning.Workspace,
     WorkspaceASessions: workspaceAData.SinceBeginning.Sessions,
