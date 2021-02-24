@@ -41,6 +41,14 @@ declare global {
     OrdersValueB: number
     OrdersValueALast24Hours: number
     OrdersValueBLast24Hours: number
+    WinnerRevenue?: string
+    PValueRevenue?: number
+    ProbabilityAlternativeBeatsMasterRevenue?: number
+    UValue?: number
+    EffectSizeWorkspaceA?: number
+    EffectSizeWorkspaceB?: number
+    OrdersMedianWorkspaceA?: number
+    OrdersMedianWorkspaceB?: number
   }
 
   interface ABTestParameters {

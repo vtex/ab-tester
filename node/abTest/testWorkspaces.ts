@@ -1,6 +1,6 @@
 import Storedash from '../clients/storedash'
 import TestingWorkspaces from '../typings/testingWorkspace'
-import { DefaultEvaluationResponse } from '../utils/evaluation-response'
+import { DefaultEvaluationResponseConversion } from '../utils/evaluation-response'
 import { FilteredWorkspacesData } from '../utils/workspace'
 import { Evaluate } from './analysis/compareWorkspaces/conversion'
 import { BuildCompleteData } from './data/buildData'
@@ -18,7 +18,7 @@ export async function TestWorkspaces(account: string, abTestBeginning: string, t
             if (!HasWorkspacesData(workspacesData)) {
                 for (const workspaceName of testingWorkspaces.WorkspacesNames()) {
                     if (workspaceName !== 'master') {
-                        Results.push(DefaultEvaluationResponse(abTestBeginning, MasterWorkspaceName, workspaceName))
+                        Results.push(DefaultEvaluationResponseConversion(abTestBeginning, MasterWorkspaceName, workspaceName))
                     }
                 }
                 return Results
