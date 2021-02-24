@@ -38,16 +38,6 @@ export const FilteredWorkspacesData = (workspacesData: WorkspaceData[], testingW
     return filteredWorkspaces
 }
 
-export function InitialWorkspaceMetadata(Workspace: ABWorkspaceMetadata): ABWorkspaceMetadata {
-    const abWorkspaceMetadata: ABWorkspaceMetadata = {
-        abTestParameters: InitialABTestParameters,
-        name: Workspace.name,
-        production: Workspace.production,
-        weight: Workspace.weight,
-    }
-    return abWorkspaceMetadata
-}
-
 export const totalSessions = (workspacesData: WorkspaceData[]): number => {
     let total = 0
     for (const workspaceData of workspacesData) {
@@ -66,15 +56,6 @@ export function GetWorkspaceData(workspacesData: WorkspaceData[], workspace: str
         }
     }
     return ErrorWorkspaceData(workspace)
-}
-
-export const ToWorkspaceMetadada = (workspaceData: WorkspaceData, weight: number, production: boolean): ABWorkspaceMetadata => {
-    return {
-        abTestParameters: WorkspaceToBetaDistribution(workspaceData),
-        name: workspaceData.Workspace,
-        production: (production),
-        weight: (weight),
-    }
 }
 
 export const InitialParameters = (workspaces: ABTestWorkspace[]): TSMap<string, ABTestParameters> => {

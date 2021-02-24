@@ -1,8 +1,6 @@
-import { Context as KoaContext } from 'koa'
-import { IOContext, Events, ServiceContext } from '@vtex/api'
+import {  ServiceContext } from '@vtex/api'
 import { Clients } from './clients'
 declare global {
-  type LogLevel = 'info' | 'error' | 'warning' | 'debug'
 
   type Context = ServiceContext<Clients>
 
@@ -47,12 +45,5 @@ declare global {
   export interface ABTestParameters {
     a: number
     b: number
-  }
-
-  export interface ABWorkspaceMetadata {
-    name: string
-    weight: number
-    abTestParameters: ABTestParameters
-    production: boolean
   }
 }
