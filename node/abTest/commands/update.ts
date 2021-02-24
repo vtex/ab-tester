@@ -2,7 +2,7 @@ import { TestType } from '../../clients/vbase'
 import { UpdateParameters } from '../updateParameters'
 
 export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
-  const { vtex: { account }, clients: { abTestRouter, logger, storedash, storage } } = ctx
+  const { vtex: { account, logger }, clients: { abTestRouter, storedash, storage } } = ctx
   try {
     const testingWorkspaces = await abTestRouter.getWorkspaces(account)
     if (testingWorkspaces.Length() > 0) {

@@ -5,8 +5,8 @@ export const getWithRetriesHelper = (handler: any) => async (retries: number, ct
           return await handler(ctx)
       } catch (err) {
           err.response ?
-              ctx.clients.logger.error(`Error ${err.response.status} on ${handler}, ${retries} retries left`) :
-              ctx.clients.logger.error(`Error on ${handler}, ${retries} retries left`)
+              ctx.vtex.logger.error(`Error ${err.response.status} on ${handler}, ${retries} retries left`) :
+              ctx.vtex.logger.error(`Error on ${handler}, ${retries} retries left`)
           error = err
       }
   }

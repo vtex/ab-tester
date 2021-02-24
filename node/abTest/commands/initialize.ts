@@ -44,7 +44,7 @@ export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<
 }
 
 async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType = TestType.conversion): Promise<void> {
-    const { vtex: { account }, clients: { logger, abTestRouter, storage } } = ctx
+    const { vtex: { account, logger }, clients: { abTestRouter, storage } } = ctx
     try {
         const testingWorkspaces = await abTestRouter.getWorkspaces(account)
         const hasTestingWorkspaces = testingWorkspaces.Length() > 0
