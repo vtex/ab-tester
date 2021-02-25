@@ -13,15 +13,7 @@ export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
 export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promise<void> {
     const { vtex: { route: { params: { hours, proportion, initializingWorkspace } } }} = ctx
     const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ initializingWorkspace, hours, proportion ].map(firstOrDefault)
-    
-    if (Number.isNaN(Number(hoursOfInitialStage)))
-    {
-        throw new Error(`An error occurred when reading amount of hours to fix proportion of traffic: value is not a number.`)
-    }
-    if (Number.isNaN(Number(proportionOfTraffic)))
-    {
-        throw new Error(`An error occurred when reading proportion of traffic being distributed between workspaces: value is not a number.`)
-    }
+    checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
     
     return InitializeAbTest(workspaceName, Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx)
 }
@@ -30,15 +22,8 @@ export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<
     const { InitializingWorkspace, Hours, Proportion, Type } = await getRequestParams(ctx)
     const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspace, Hours, Proportion ].map(firstOrDefault)
     const testType = Type as TestType
-
-    if (Number.isNaN(Number(hoursOfInitialStage)))
-    {
-        throw new Error(`An error occurred when reading amount of hours to fix proportion of traffic: value is not a number.`)
-    }
-    if (Number.isNaN(Number(proportionOfTraffic)))
-    {
-        throw new Error(`An error occurred when reading proportion of traffic being distributed between workspaces: value is not a number.`)
-    }
+    
+    checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
 
     return InitializeAbTest(workspaceName, Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx, testType)
 }
@@ -81,3 +66,12 @@ function InitializeWorkspaces(ctx: Context, id: string, testingWorkspaces: ABTes
         workspaces: testingWorkspaces,
     })
 }
+
+const checkIfNaN = (hours: string, proportion: string) => {
+    if (Number.isNaN(Number(hours))) {
+        throw new Error(`Error reading time parameter: make sure to insert a number`)
+    }
+    if (Number.isNaN(Number(proportion))) {
+        throw new Error(`Error reading proportion parameter: make sure to insert a number`)
+    }
+} 
