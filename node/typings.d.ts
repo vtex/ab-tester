@@ -5,6 +5,8 @@ declare global {
 
   type Context = ServiceContext<Clients>
 
+  type TestType = 'conversion' | 'revenue'
+
   interface WorkspaceData {
     Workspace: string
     Sessions: number

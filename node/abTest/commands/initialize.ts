@@ -1,5 +1,4 @@
 import { TSMap } from 'typescript-map'
-import { TestType } from '../../clients/vbase'
 import { createTestingParameters } from '../../typings/testingParameters'
 import { firstOrDefault } from '../../utils/firstOrDefault'
 import getRequestParams from '../../utils/BodyParser/getRequestParams'
@@ -29,8 +28,8 @@ export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promis
 
 export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<void> {
     const { InitializingWorkspace, Hours, Proportion, Type } = await getRequestParams(ctx)
-    const [ workspaceName, hoursOfInitialStage, proportionOfTraffic, type ] = [ InitializingWorkspace, Hours, Proportion, Type ].map(firstOrDefault)
-    const testType = TestType[type as keyof typeof TestType]
+    const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ InitializingWorkspace, Hours, Proportion ].map(firstOrDefault)
+    const testType = Type as TestType
 
     if (Number.isNaN(Number(hoursOfInitialStage)))
     {
@@ -44,7 +43,7 @@ export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<
     return InitializeAbTest(workspaceName, Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx, testType)
 }
 
-async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType = TestType.conversion): Promise<void> {
+async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType = 'conversion'): Promise<void> {
     const { vtex: { account, logger }, clients: { abTestRouter, storage } } = ctx
     try {
         const testingWorkspaces = await abTestRouter.getWorkspaces(account)

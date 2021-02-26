@@ -7,8 +7,6 @@ import { MapWorkspaceData } from '../utils/workspacesInfo/workspaceData'
 import { IsInitialStage } from './analysis/time/initialStage'
 import { BuildCompleteData } from './data/buildData'
 import { InitializeParameters } from './initializeParameters'
-import { TestType } from '../clients/vbase';
-
 
 const MasterWorkspaceName = 'master'
 

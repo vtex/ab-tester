@@ -1,6 +1,5 @@
 import { ProbabilityYBeatsAll } from '../utils/mathTools/forBetaDistribution/decisionRule'
 import { InitialABTestParameters, WorkspaceToBetaDistribution } from '../utils/workspace'
-import { TestType } from '../clients/vbase'
 
 const MasterWorkspaceName = 'master'
 
@@ -183,10 +182,10 @@ const MapInitialParameters = (workspaces: ABTestWorkspace[]): Map<string, ABTest
     return map
 }
 export const createTestingParameters = (testType: TestType, testingWorkspaces: ABTestWorkspace[]): ITestingParameters => {
-    if (testType === TestType.conversion) {
+    if (testType === 'conversion') {
         return new TestingParametersConversion(testingWorkspaces)
     }
-    if (testType === TestType.revenue) {
+    if (testType === 'revenue') {
         return new TestingParametersRevenue(testingWorkspaces)
     }
     return new TestingParametersConversion(testingWorkspaces)

@@ -21,7 +21,7 @@ const checkForExpectedFields = (object: object) => {
 }
 
 const checkTestType = (Type: string) => {
-    if (Type && Type !== 'conversion' && Type !== 'revenue') {
+    if (Type !== 'conversion' && Type !== 'revenue') {
         throw new Error(`Error setting test type: please make sure to spell it correctly (either 'conversion' or 'revenue')`)
     }
 }
