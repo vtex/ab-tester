@@ -3,7 +3,7 @@ import { TSMap } from 'typescript-map'
 import { createTestingParameters } from '../../typings/testingParameters'
 import TestingWorkspaces from '../../typings/testingWorkspace'
 import { firstOrDefault } from '../../utils/firstOrDefault'
-import { TestWorkspaces } from '../testWorkspaces'
+import EndTest from '../endTest'
 
 export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
   const { vtex: { account, route: { params: { finishingWorkspace } } }, clients: { abTestRouter, storage } } = ctx
@@ -21,35 +21,14 @@ export async function FinishAbTestForWorkspace(ctx: Context): Promise<void> {
     throw new NotFoundError(`Test not initialized for this account`)
   }
 
-  testingWorkspaces.Remove(workspaceName)
-  if (testingWorkspaces.Length() <= 1) {
-    try {
-      await abTestRouter.deleteParameters(account).catch(logErrorTest(ctx))
-      await abTestRouter.deleteWorkspaces(account).catch(logErrorTest(ctx))
-
-      const testData = await storage.getTestData(ctx).catch(logErrorTest(ctx))
-      const beginning = testData && testData.dateOfBeginning
-        ? testData.dateOfBeginning
-        : new Date().toISOString().substr(0, 16)
-
-      const results = await TestWorkspaces(account, beginning, testingWorkspaces, ctx).catch(logErrorTest(ctx))
-
-      await storage.finishABtest(ctx, results).catch(logErrorTest(ctx))
-      ctx.vtex.logger.info({ message: `A/B Test finished in ${account} for workspace ${workspaceName}`, account: `${account}`, workspace: `${workspaceName}`, method: 'TestFinished' })
-      return
-    } catch (err) {
-      if (err.status === 404) {
-        err.message = 'Workspace not found'
-      }
-      ctx.vtex.logger.error({ status: ctx.status, message: err.message })
-      throw err
-    }
+  if (IsLastTestingWorkspace(testingWorkspaces)) {
+    return await EndTest(testingWorkspaces, ctx).catch(logErrorTest(ctx))
   }
 
   try {
     const testType = (await storage.getTestData(ctx)).testType
+    testingWorkspaces.Remove(workspaceName)
     const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
-    testingParameters.Remove(workspaceName)
     await abTestRouter.setWorkspaces(account, {
       id: testingWorkspaces.Id(),
       workspaces: testingWorkspaces.ToArray(),
@@ -75,4 +54,8 @@ const logErrorTest = (ctx: Context) => (err: any) => {
   }
   ctx.vtex.logger.error({ status: ctx.status, message: err.message })
   throw err
+}
+
+const IsLastTestingWorkspace = (testingWorkspaces: TestingWorkspaces): boolean => {
+  return (testingWorkspaces.Length() <= 2)
 }
