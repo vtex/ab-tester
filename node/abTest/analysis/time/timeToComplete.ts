@@ -9,12 +9,17 @@ export async function TimeToCompleteAbTest(probability: number, storedash: Store
 }
 
 export async function AverageDaySessions(storedash: Storedash): Promise<number> {
-    const beginning = new Date()
-    beginning.setDate(beginning.getDate() - 7)
-    const workspacesData = await storedash.getWorkspacesData(beginning.toISOString().substr(0, 16))
-    let totalSessions = 0
-    for (const workspaceData of workspacesData) {
-        totalSessions += workspaceData.Sessions / 7
+    try {
+        const beginning = new Date()
+        beginning.setDate(beginning.getDate() - 7)
+        const workspacesData = await storedash.getWorkspacesData(beginning.toISOString().substr(0, 16))
+        let totalSessions = 0
+        for (const workspaceData of workspacesData) {
+            totalSessions += workspaceData.Sessions / 7
+        }
+        return totalSessions
+    } catch (err) {
+        err.message = 'Error calculating AvarageDaySessions: ' + err.message
+        throw err
     }
-    return totalSessions
 }

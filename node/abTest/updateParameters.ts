@@ -12,34 +12,39 @@ const MasterWorkspaceName = 'master'
 
 export async function UpdateParameters(ctx: Context, aBTestBeginning: string, hoursOfInitialStage: number, proportionOfTraffic: number,
     workspacesData: WorkspaceData[], testingWorkspaces: TestingWorkspaces, testId: string, testType: TestType): Promise<void> {
+    try { 
         const { clients: { abTestRouter, storedash } } = ctx
-    const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
-    if (await IsInitialStage(hoursOfInitialStage, workspacesData, storedash)) {
-        testingParameters.UpdateWithFixedParameters(proportionOfTraffic)
-        const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
-        abTestRouter.setParameters(ctx.vtex.account, {
-            Id: testId,
-            parameterPerWorkspace: tsmap,
-        })
-
-        return
-    }
-
-    const workspacesCompleteData = await BuildCompleteData(ctx.vtex.account, aBTestBeginning, FilteredWorkspacesData(workspacesData, testingWorkspaces.WorkspacesNames()), storedash, abTestRouter)
-    const masterWorkspace = workspacesCompleteData.get(MasterWorkspaceName)
-    let randomRestart: boolean = false
-    for (const workspaceCompleteData of workspacesCompleteData) {
-        randomRestart = workspaceCompleteData[0] === MasterWorkspaceName ? false : RandomRestart(workspaceCompleteData[1], masterWorkspace!)
-        if (!randomRestart) {
-            testingParameters.Update(MapWorkspaceData(workspacesData))
+        const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
+        if (await IsInitialStage(hoursOfInitialStage, workspacesData, storedash)) {
+            testingParameters.UpdateWithFixedParameters(proportionOfTraffic)
             const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
-            abTestRouter.setParameters(ctx.vtex.account, {
+            await abTestRouter.setParameters(ctx.vtex.account, {
                 Id: testId,
                 parameterPerWorkspace: tsmap,
             })
+
             return
         }
-    }
 
-    await InitializeParameters(ctx.vtex.account, testingWorkspaces.ToArray(), testId, abTestRouter)
+        const workspacesCompleteData = await BuildCompleteData(ctx.vtex.account, aBTestBeginning, FilteredWorkspacesData(workspacesData, testingWorkspaces.WorkspacesNames()), storedash, abTestRouter)
+        const masterWorkspace = workspacesCompleteData.get(MasterWorkspaceName)
+        let randomRestart: boolean = false
+        for (const workspaceCompleteData of workspacesCompleteData) {
+            randomRestart = workspaceCompleteData[0] === MasterWorkspaceName ? false : RandomRestart(workspaceCompleteData[1], masterWorkspace!)
+            if (!randomRestart) {
+                testingParameters.Update(MapWorkspaceData(workspacesData))
+                const tsmap = new TSMap<string, ABTestParameters>([...testingParameters.Get()])
+                await abTestRouter.setParameters(ctx.vtex.account, {
+                    Id: testId,
+                    parameterPerWorkspace: tsmap,
+                })
+                return
+            }
+        }
+
+        await InitializeParameters(ctx.vtex.account, testingWorkspaces.ToArray(), testId, abTestRouter)
+    } catch (err) {
+        err.message = 'Error updating parameters: ' + err.message
+        throw err
+    }
 }

@@ -19,6 +19,7 @@ export async function UpdateStatusOnEvent(ctx: Context): Promise<void> {
       await UpdateParameters(ctx, beginning, hours, proportion, workspacesData, testingWorkspaces, testingWorkspaces.Id() || 'noId', testType)
     }
   } catch (err) {
+    err.message = 'Error on test update: ' + err.message
     logger.error({ status: err.status, message: err.message })
     throw err
   }

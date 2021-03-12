@@ -27,9 +27,9 @@ export default class VBase extends BaseClient {
     try {
       const testData = await this.get(testFileName, ctx)
       return testData as VBaseABTestData
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`An error occurred trying to get test's metadata!`)
+    } catch (err) {
+      err.message = 'Error getting test\'s metadata from VBase: ' + err.message
+      throw err
     }
   }
 
@@ -37,9 +37,9 @@ export default class VBase extends BaseClient {
     try {
       const ordersValueHistory = await this.get(WorkspaceDataFile, ctx)
       return ordersValueHistory as WorkspaceDataCache
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`An error occurred trying to get test's OrdersValueHistory!`)
+    } catch (err) {
+      err.message = `Error getting test's OrdersValueHistory from VBase: ` + err.message
+      throw err
     }
   }
 
@@ -121,10 +121,10 @@ export default class VBase extends BaseClient {
 
   public updateWorkspaceDataCache = async (newValue: WorkspaceDataCache, ctx: Context): Promise<void> => {
     try {
-      return this.save(newValue, WorkspaceDataFile, ctx)
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`An error occurred trying to update test's workspace data cache!`)
+      return await this.save(newValue, WorkspaceDataFile, ctx)
+    } catch (err) {
+      err.message = `Error updating test's workspace data cache on VBase: ` + err.message
+      throw err
     }
   }
 
