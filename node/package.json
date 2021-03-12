@@ -20,3 +20,4 @@
     "lint": "tsc --noEmit && tslint -c tslint.json './**/*.ts'"
   },
   "version": "0.18.13"
+}
