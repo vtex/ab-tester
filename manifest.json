@@ -1,7 +1,7 @@
 {
   "name": "ab-tester",
   "vendor": "vtex",
-  "version": "0.18.13",
+  "version": "0.18.14",
   "title": "A/B Tester",
   "description": "The App that run the core of a A/B Test",
   "categories": [],
