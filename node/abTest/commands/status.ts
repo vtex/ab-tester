@@ -19,7 +19,7 @@ export async function ABTestStatus(ctx: Context): Promise<TestResult[]> {
     logger.info({message: `A/B Test Status to user in ${account}`, account: `${account}`, method: 'TestStatus' })
     return await TestWorkspaces(account, beginning, testingWorkspaces, ctx) || []
   } catch (err) {
-    logger.error({ status: ctx.status, message: err.message })
+    err.message = 'Error calculating A/B test status: ' + err.message
     throw err
   }
 }
