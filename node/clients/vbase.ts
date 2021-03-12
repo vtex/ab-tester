@@ -1,5 +1,6 @@
 import { VBase as BaseClient } from '@vtex/api'
 import { Readable } from 'stream'
+import { concatErrorMessages } from '../utils/errorHandling'
 
 const bucketName = (account: string) => 'ABTest-' + account
 const abTestHistoryFile = 'abTestHistory.json'
@@ -45,9 +46,9 @@ export default class VBase extends BaseClient {
   public save = async (data: any, file: string, ctx: Context) => {
     try {
       await this.saveFile(bucketName(ctx.vtex.account), file, jsonStream(data))
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`Save request for key ${file} in bucket ${bucketName(ctx.vtex.account)} failed!`)
+    } catch (err) {
+      err.message = concatErrorMessages(`Error saving file ${file} in bucket ${bucketName(ctx.vtex.account)}`, err.message)
+      throw err
     }
   }
 
@@ -56,9 +57,9 @@ export default class VBase extends BaseClient {
     try {
       const initialCache = InitialWorkspaceDataCache(new Date())
       await this.save(initialCache, WorkspaceDataFile, ctx)
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`An error occurred initializing the test!`)
+    } catch (err) {
+      err.message = 'Error setting initial cache on VBase: ' + err.message
+      throw err
     }
     try {
       await this.save({
@@ -67,19 +68,19 @@ export default class VBase extends BaseClient {
         initialStageTime: initialTime,
         testType: testType,
       } as VBaseABTestData, testFileName, ctx)
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`An error occurred initializing the test!`)
+    } catch (err) {
+      err.message = 'Error setting initial test data on VBase: ' + err.message
+      throw err
     }
 
     try {
       const testHistory = await this.fetchTestHistory(ctx)
       testHistory.onGoing = beginning
       await this.save(testHistory, abTestHistoryFile, ctx)
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      this.maintainConsistentMetadata(ctx)
-      throw new Error(`An error occurred initializing the test!`)
+    } catch (err) {
+      err.message = 'Error setting test history on VBase: ' + err.message
+      await this.maintainConsistentMetadata(ctx).catch((ex) => {err.message = ex.message + err.message})
+      throw err
     }
   }
 
@@ -131,9 +132,9 @@ export default class VBase extends BaseClient {
     try {
       const rawFile = await this.getFile(bucketName(ctx.vtex.account), file)
       return JSON.parse(rawFile.data.toString())
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
-      throw new Error(`Get request for key ${testFileName} in bucket ${bucketName(ctx.vtex.account)} failed!`)
+    } catch (err) {
+      err.message = concatErrorMessages(`Error reading from file ${testFileName} in bucket ${bucketName(ctx.vtex.account)}`, err.message)
+      throw err
     }
   }
 
@@ -141,16 +142,15 @@ export default class VBase extends BaseClient {
     try {
       const abTestHistory = await this.get(abTestHistoryFile, ctx) as ABTestHistory
       return abTestHistory
-    } catch (ex) {
-      ctx.vtex.logger.error(ex)
+    } catch (err) {
       if (ctx.status === 404) {
         return {
           finishedTests: [],
           onGoing: '',
         } as ABTestHistory
       }
-      ctx.vtex.logger.error(ex)
-      throw new Error(`An error occurred fetching test metadata!`)
+      err.message = 'Error fetching test\'s metadata: ' + err.message
+      throw err
     }
   }
 
@@ -159,7 +159,7 @@ export default class VBase extends BaseClient {
       await this.deleteFile(bucketName(ctx.vtex.account), testFileName)
     } catch (ex) {
       ctx.vtex.logger.error({ exception: ex, error: 'inconsistent_state', account: ctx.vtex.account, workspace: ctx.vtex.workspace })
-      throw new Error(`An error occurred initializing the test and its metadata are inconsistent!`)
+      throw new Error(`The test metadata are inconsistent! `)
     }
   }
 }
