@@ -38,7 +38,6 @@ async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: numb
         }
         testingWorkspaces.Add(workspaceName)
         const testingParameters = createTestingParameters(testType, testingWorkspaces.ToArray())
-        testingParameters.Add(workspaceName)
         testingParameters.UpdateWithFixedParameters(proportionOfTraffic)
 
         await InitializeWorkspaces(ctx, testingWorkspaces.Id(), testingWorkspaces.ToArray())
