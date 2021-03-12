@@ -13,9 +13,11 @@ export function InitializeAbTestForWorkspace(ctx: Context): Promise<void> {
 export function InitializeAbTestForWorkspaceWithParameters(ctx: Context): Promise<void> {
     const { vtex: { route: { params: { hours, proportion, initializingWorkspace } } }} = ctx
     const [ workspaceName, hoursOfInitialStage, proportionOfTraffic ] = [ initializingWorkspace, hours, proportion ].map(firstOrDefault)
-    checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
     
-    return InitializeAbTest(workspaceName, Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx)
+    checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
+    const [ numberHours, numberProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(proportionOfTraffic))]
+    
+    return InitializeAbTest(workspaceName, numberHours, numberProportion, ctx)
 }
 
 export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<void> {
@@ -24,8 +26,9 @@ export async function InitializeAbTestWithBodyParameters(ctx: Context): Promise<
     const testType = Type as TestType
     
     checkIfNaN(hoursOfInitialStage, proportionOfTraffic)
+    const [ numberHours, numberProportion] = [ Number(hoursOfInitialStage), CheckProportion(Number(proportionOfTraffic))]
 
-    return InitializeAbTest(workspaceName, Number(hoursOfInitialStage), Number(proportionOfTraffic), ctx, testType)
+    return InitializeAbTest(workspaceName, numberHours, numberProportion, ctx, testType)
 }
 
 async function InitializeAbTest(workspaceName: string, hoursOfInitialStage: number, proportionOfTraffic: number, ctx: Context, testType: TestType = 'conversion'): Promise<void> {
@@ -76,3 +79,7 @@ const checkIfNaN = (hours: string, proportion: string) => {
         throw new Error(`Error reading proportion parameter: make sure to insert a number`)
     }
 } 
+
+const CheckProportion = (proportion: number): number => {
+    return proportion >= 0 && proportion <= 10000 ? Math.round(proportion) : 10000
+}
